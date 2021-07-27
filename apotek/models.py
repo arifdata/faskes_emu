@@ -19,6 +19,7 @@ class DataObat(models.Model):
     satuan = models.CharField(max_length=3, choices=SAT, help_text="Bentuk sediaan", verbose_name="Bentuk sediaan")
     ab = models.BooleanField(help_text="Check jika termasuk antibiotik", verbose_name="Antibiotik?")
     okt = models.BooleanField(help_text="Check jika termasuk narko/psiko", verbose_name="Narkotik / Psikotropik")
+    is_alkes = models.BooleanField(help_text="Check jika bukan obat konsumsi / alkes", verbose_name="Alkes?")
 
     def __str__(self):
         return str(self.nama_obat)
@@ -27,7 +28,8 @@ class DataObat(models.Model):
         
 class StokObat(models.Model):
     nama_obat = models.ForeignKey('DataObat', on_delete=models.CASCADE)
-    jml = models.PositiveSmallIntegerField()
+    jml = models.SmallIntegerField()
+    tgl_kadaluarsa = models.DateField(blank=True)
     
     def __str__(self):
         return self.nama_obat.nama_obat
@@ -36,7 +38,17 @@ class StokObat(models.Model):
         
 class Resep(models.Model):
     nama_obat = models.ForeignKey('StokObat', on_delete=models.CASCADE)
-    jumlah = models.PositiveSmallIntegerField()
+    jumlah = models.PositiveSmallIntegerField(blank=False)
+    ATURAN_PK = (
+        (0, '3x1'),
+        (1, '2x1'),
+        (2, '1x1'),
+        (3, 'sue'),
+        (4, 'sprn'),
+        (5, 'suc'),
+        )
+    aturan_pakai = models.PositiveSmallIntegerField(choices=ATURAN_PK, blank=True)
+    lama_pengobatan = models.PositiveSmallIntegerField(blank=True)
     
     def __str__(self):
         return str(self.nama_obat.nama_obat.nama_obat)
