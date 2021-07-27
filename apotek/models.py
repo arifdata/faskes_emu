@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import F
+from poli.models import DataKunjungan
 
 # Create your models here.
 class DataObat(models.Model):
@@ -28,8 +29,8 @@ class DataObat(models.Model):
         
 class StokObat(models.Model):
     nama_obat = models.ForeignKey('DataObat', on_delete=models.CASCADE)
-    jml = models.SmallIntegerField()
-    tgl_kadaluarsa = models.DateField(blank=True)
+    jml = models.SmallIntegerField(verbose_name="Jumlah")
+    tgl_kadaluarsa = models.DateField(verbose_name="Tanggal Kadaluarsa")
     
     def __str__(self):
         return self.nama_obat.nama_obat
@@ -37,8 +38,9 @@ class StokObat(models.Model):
         verbose_name_plural = "Stok Obat"
         
 class Resep(models.Model):
+    kunjungan_pasien = models.ForeignKey(DataKunjungan, on_delete=models.CASCADE)
     nama_obat = models.ForeignKey('StokObat', on_delete=models.CASCADE)
-    jumlah = models.PositiveSmallIntegerField(blank=False)
+    jumlah = models.PositiveSmallIntegerField(blank=False, verbose_name="Jumlah")
     ATURAN_PK = (
         (0, '3x1'),
         (1, '2x1'),
@@ -47,8 +49,8 @@ class Resep(models.Model):
         (4, 'sprn'),
         (5, 'suc'),
         )
-    aturan_pakai = models.PositiveSmallIntegerField(choices=ATURAN_PK, blank=True)
-    lama_pengobatan = models.PositiveSmallIntegerField(blank=True)
+    aturan_pakai = models.PositiveSmallIntegerField(choices=ATURAN_PK, verbose_name="Aturan Pakai")
+    lama_pengobatan = models.PositiveSmallIntegerField(verbose_name="Lama Pengobatan (hari)")
     
     def __str__(self):
         return str(self.nama_obat.nama_obat.nama_obat)

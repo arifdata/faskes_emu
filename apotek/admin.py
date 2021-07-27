@@ -5,14 +5,19 @@ from .models import DataObat, StokObat, Resep
 @admin.register(StokObat)
 class StokObatAdmin(admin.ModelAdmin):
     search_fields = ['nama_obat__nama_obat']
+    list_filter = ['tgl_kadaluarsa']
     autocomplete_fields = ['nama_obat']
     list_display = ('nama_obat', 'jml', 'tgl_kadaluarsa')
-    ordering = ['nama_obat']
+    ordering = ['nama_obat__nama_obat']
     list_per_page = 50
+    def log_addition(self, *args):
+        return
     
 @admin.register(DataObat)
 class DataObatAdmin(admin.ModelAdmin):
     search_fields = ['nama_obat']
+    def log_addition(self, *args):
+        return
     def has_module_permission(self, request):
         return {}
 
@@ -20,10 +25,14 @@ class DataObatAdmin(admin.ModelAdmin):
 class ResepAdmin(admin.ModelAdmin):
     search_fields = ['nama_obat']
     autocomplete_fields = ['nama_obat']
-    list_display = ('nama_obat', 'jumlah')
+    list_display = ('nama_obat', 'jumlah', 'aturan_pakai', 'lama_pengobatan')
     ordering = ['id']
     list_per_page = 50
     actions = ['delete_selected']
+    def log_addition(self, *args):
+        return
+    def has_module_permission(self, request):
+        return {}
     
     @admin.action(description='Hapus dan kembalikan jumlah stok')
     def delete_selected(modeladmin, request, queryset):

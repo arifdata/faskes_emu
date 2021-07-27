@@ -1,4 +1,5 @@
 from django.db import models
+from pendaftaran.models import DataPasien
 
 # Create your models here.
 class DataPeresep(models.Model):
@@ -16,3 +17,15 @@ class Diagnosa(models.Model):
 		return str(self.diagnosa)
 	class Meta:
 		verbose_name_plural = "Diagnosa"
+
+class DataKunjungan(models.Model):
+	nama_pasien = models.ForeignKey(DataPasien, on_delete=models.CASCADE)
+	tgl_kunjungan = models.DateField()
+	no_resep = models.PositiveSmallIntegerField()
+	penulis_resep = models.ForeignKey(DataPeresep, on_delete=models.CASCADE)
+	diagnosa = models.ManyToManyField(Diagnosa)
+
+	def __str__(self):
+		return str(self.nama_pasien)
+	class Meta:
+		verbose_name_plural = "Data Kunjungan Pasien"
