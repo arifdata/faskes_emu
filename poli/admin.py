@@ -22,6 +22,5 @@ class ResepInline(admin.TabularInline):
 class DataKunjunganAdmin(admin.ModelAdmin):
 	inlines = [ResepInline,]
 	autocomplete_fields = ['nama_pasien']
+	list_display = ('nama_pasien', 'tgl_kunjungan', 'no_resep')
 	list_per_page = 20
-	def log_addition(self, *args):
-		return

@@ -10,8 +10,6 @@ class StokObatAdmin(admin.ModelAdmin):
     list_display = ('nama_obat', 'jml', 'tgl_kadaluarsa')
     ordering = ['nama_obat__nama_obat']
     list_per_page = 50
-    def log_addition(self, *args):
-        return
     
 @admin.register(DataObat)
 class DataObatAdmin(admin.ModelAdmin):
@@ -29,8 +27,6 @@ class ResepAdmin(admin.ModelAdmin):
     ordering = ['id']
     list_per_page = 50
     actions = ['delete_selected']
-    def log_addition(self, *args):
-        return
     def has_module_permission(self, request):
         return {}
     

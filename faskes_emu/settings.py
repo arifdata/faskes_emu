@@ -102,6 +102,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+JAZZMIN_SETTINGS = {
+    "changeform_format": "single",
+    "copyright": "apt. Pratama",
+    "welcome_sign": "Masukkan Login",
+    "site_header": "Faskes Emulator",
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
