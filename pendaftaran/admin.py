@@ -1,0 +1,15 @@
+from django.contrib import admin
+from .models import DataPasien
+from django.contrib.auth.models import User, Group
+
+# Register your models here.
+class DataPasienAdmin(admin.ModelAdmin):
+    search_fields = ['nama_pasien', 'no_hp', 'no_kartu', 'alamat']
+    list_display = ('nama_pasien', 'umur', 'alamat', 'no_hp')
+    ordering = ['nama_pasien']
+    list_per_page = 50
+
+admin.site.register(DataPasien, DataPasienAdmin)
+
+admin.site.unregister(User)
+admin.site.unregister(Group)
