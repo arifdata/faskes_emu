@@ -1,11 +1,14 @@
 from django.contrib import admin
 from .models import DataObat, StokObat, Resep
+from rangefilter.filters import DateRangeFilter
 
 # Register your models here.
 @admin.register(StokObat)
 class StokObatAdmin(admin.ModelAdmin):
     search_fields = ['nama_obat__nama_obat']
-    list_filter = ['tgl_kadaluarsa']
+    list_filter = (
+            ('tgl_kadaluarsa', DateRangeFilter),
+        )
     autocomplete_fields = ['nama_obat']
     list_display = ('nama_obat', 'jml', 'tgl_kadaluarsa')
     ordering = ['nama_obat__nama_obat']
