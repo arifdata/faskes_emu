@@ -14,7 +14,7 @@ class DataPasien(models.Model):
         return  str(self.nama_pasien) + " (" + u + ") " + ", " + str(self.alamat[:30])
     def umur(self):
         usianya = datetime.now().year - self.usia.year
-        rendering = "{} tahun".format(usianya)
+        rendering = "{}".format(usianya)
         return str(rendering)
     umur.short_description = 'Usia'
     

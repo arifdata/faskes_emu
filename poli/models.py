@@ -20,7 +20,7 @@ class Diagnosa(models.Model):
 
 class DataKunjungan(models.Model):
 	nama_pasien = models.ForeignKey(DataPasien, on_delete=models.CASCADE)
-	tgl_kunjungan = models.DateField()
+	tgl_kunjungan = models.DateField(verbose_name="Tanggal Kunjungan")
 	no_resep = models.PositiveSmallIntegerField()
 	penulis_resep = models.ForeignKey(DataPeresep, on_delete=models.CASCADE)
 	diagnosa = models.ManyToManyField(Diagnosa)

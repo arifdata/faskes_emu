@@ -1,4 +1,5 @@
 from django.contrib import admin
+from rangefilter.filters import DateRangeFilter
 from .models import DataPeresep, Diagnosa, DataKunjungan
 from apotek.models import Resep
 
@@ -12,6 +13,7 @@ class DataPeresepAdmin(admin.ModelAdmin):
 
 @admin.register(Diagnosa)
 class DiagnosaAdmin(admin.ModelAdmin):
+	search_fields = ['diagnosa']
 	def has_module_permission(self, request):
 		return {}
 	def log_addition(self, *args):
@@ -25,7 +27,11 @@ class ResepInline(admin.TabularInline):
 @admin.register(DataKunjungan)
 class DataKunjunganAdmin(admin.ModelAdmin):
 	inlines = [ResepInline,]
-	autocomplete_fields = ['nama_pasien']
+	autocomplete_fields = ['nama_pasien', 'diagnosa']
 	list_display = ('nama_pasien', 'tgl_kunjungan', 'no_resep')
 	list_per_page = 20
-	filter_horizontal = ('diagnosa',)
+	list_filter = (
+            ('tgl_kunjungan', DateRangeFilter),
+            ('penulis_resep'),
+            ('diagnosa'),
+        )
