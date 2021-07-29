@@ -25,6 +25,7 @@ class DataKunjungan(models.Model):
 	penulis_resep = models.ForeignKey(DataPeresep, on_delete=models.CASCADE)
 	diagnosa = models.ManyToManyField(Diagnosa)
 	notes = models.TextField(blank=True)
+	file_up = models.FileField(blank=True, upload_to='docs/%Y/%m/%d')
 
 	def __str__(self):
 		return str(self.nama_pasien)
