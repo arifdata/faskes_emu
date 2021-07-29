@@ -24,6 +24,7 @@ class DataKunjungan(models.Model):
 	no_resep = models.PositiveSmallIntegerField()
 	penulis_resep = models.ForeignKey(DataPeresep, on_delete=models.CASCADE)
 	diagnosa = models.ManyToManyField(Diagnosa)
+	notes = models.TextField(blank=True)
 
 	def __str__(self):
 		return str(self.nama_pasien)

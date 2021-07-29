@@ -28,7 +28,7 @@ class ResepInline(admin.TabularInline):
 class DataKunjunganAdmin(admin.ModelAdmin):
 	inlines = [ResepInline,]
 	autocomplete_fields = ['nama_pasien', 'diagnosa']
-	list_display = ('nama_pasien', 'tgl_kunjungan', 'no_resep')
+	list_display = ('nama_pasien', 'tgl_kunjungan', 'no_resep', 'notes')
 	list_per_page = 20
 	ordering = ['-tgl_kunjungan']
 	list_filter = (
