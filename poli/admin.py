@@ -11,6 +11,10 @@ class DataPeresepAdmin(admin.ModelAdmin):
 		return {}
 	def log_addition(self, *args):
 		return
+	def log_change(self, *args):
+		return
+	def log_deletion(self, *args):
+		return
 
 @admin.register(Diagnosa)
 class DiagnosaAdmin(admin.ModelAdmin):
@@ -18,6 +22,10 @@ class DiagnosaAdmin(admin.ModelAdmin):
 	def has_module_permission(self, request):
 		return {}
 	def log_addition(self, *args):
+		return
+	def log_change(self, *args):
+		return
+	def log_deletion(self, *args):
 		return
 
 class ResepInline(admin.TabularInline):
@@ -27,6 +35,13 @@ class ResepInline(admin.TabularInline):
 
 @admin.register(DataKunjungan)
 class DataKunjunganAdmin(admin.ModelAdmin):
+	def log_addition(self, *args):
+		return
+	def log_change(self, *args):
+		return
+	def log_deletion(self, *args):
+		return
+
 	inlines = [ResepInline,]
 	autocomplete_fields = ['nama_pasien', 'diagnosa', 'penulis_resep']
 	list_display = ('nama_pasien', 'tgl_kunjungan', 'no_resep')

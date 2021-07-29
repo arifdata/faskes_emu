@@ -5,6 +5,12 @@ from rangefilter.filters import DateRangeFilter
 # Register your models here.
 @admin.register(StokObat)
 class StokObatAdmin(admin.ModelAdmin):
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
     search_fields = ['nama_obat__nama_obat']
     list_filter = (
             ('tgl_kadaluarsa', DateRangeFilter),
@@ -19,6 +25,10 @@ class DataObatAdmin(admin.ModelAdmin):
     search_fields = ['nama_obat']
     def log_addition(self, *args):
         return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
     def has_module_permission(self, request):
         return {}
 
@@ -30,6 +40,12 @@ class ResepAdmin(admin.ModelAdmin):
     ordering = ['id']
     list_per_page = 50
     actions = ['delete_selected']
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
     def has_module_permission(self, request):
         return {}
     
