@@ -39,7 +39,7 @@ class ResepAdmin(admin.ModelAdmin):
     list_display = ('nama_obat', 'jumlah', 'get_nama', 'get_alamat')
     ordering = ['id']
     list_per_page = 50
-    actions = ['delete_selected']
+    actions = ['delete_selected', 'download_csv']
     list_filter = (
             ('kunjungan_pasien__tgl_kunjungan', DateRangeFilter),
         )
@@ -65,3 +65,18 @@ class ResepAdmin(admin.ModelAdmin):
     def delete_selected(modeladmin, request, queryset):
         for o in queryset.all():
             o.delete()
+
+    @admin.action(description='Download CSV')
+    def download_csv(modeladmin, request, queryset):
+        import csv
+        from django.http import HttpResponse
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="nganu.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(['Nama', 'Jumlah'])
+        for o in queryset.all():
+            writer.writerow([o.nama_obat, o.jumlah])
+        return response
