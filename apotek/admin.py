@@ -36,10 +36,22 @@ class DataObatAdmin(admin.ModelAdmin):
 class ResepAdmin(admin.ModelAdmin):
     search_fields = ['nama_obat']
     autocomplete_fields = ['nama_obat']
-    list_display = ('nama_obat', 'jumlah', 'aturan_pakai', 'lama_pengobatan')
+    list_display = ('nama_obat', 'jumlah', 'get_nama', 'get_alamat')
     ordering = ['id']
     list_per_page = 50
     actions = ['delete_selected']
+    list_filter = (
+            ('kunjungan_pasien__tgl_kunjungan', DateRangeFilter),
+        )
+
+    def get_nama(self, obj):
+        return "{} ({} tahun)".format(obj.kunjungan_pasien.nama_pasien.nama_pasien, obj.kunjungan_pasien.nama_pasien.umur())
+    get_nama.short_description = "Penerima Obat"
+
+    def get_alamat(self, obj):
+        return "{}".format(obj.kunjungan_pasien.nama_pasien.alamat)
+    get_nama.short_description = "Alamat"
+
     def log_addition(self, *args):
         return
     def log_change(self, *args):
@@ -49,7 +61,7 @@ class ResepAdmin(admin.ModelAdmin):
     def has_module_permission(self, request):
         return {}
     
-    @admin.action(description='Hapus dan kembalikan jumlah stok')
+    @admin.action(description='Hapus & kembalikan stok')
     def delete_selected(modeladmin, request, queryset):
         for o in queryset.all():
             o.delete()

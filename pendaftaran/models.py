@@ -16,7 +16,7 @@ class DataPasien(models.Model):
         usianya = datetime.now().year - self.usia.year
         rendering = "{}".format(usianya)
         return str(rendering)
-    umur.short_description = 'Usia'
+    umur.short_description = 'Usia (tahun)'
     
     def save(self, *args, **kwargs):
         self.nama_pasien = self.nama_pasien.upper()

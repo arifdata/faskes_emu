@@ -6,9 +6,9 @@ from django.contrib.auth.models import User, Group
 @admin.register(DataPasien)
 class DataPasienAdmin(admin.ModelAdmin):
     search_fields = ['nama_pasien', 'no_hp', 'no_kartu', 'alamat']
-    list_display = ('nama_pasien', 'umur', 'alamat', 'no_hp')
+    list_display = ('nama_pasien', 'umur', 'alamat')
     ordering = ['nama_pasien']
-    list_per_page = 50
+    list_per_page = 30
     
     def log_addition(self, *args):
         return
