@@ -28,6 +28,7 @@
 
       <div id="kunjunganChart"></div>
       <div id="penyakitPieChart"></div>
+      <div id="obatBarChart"></div>
 
     </div>
 
@@ -43,7 +44,7 @@
     }
 
     const kunjunganChart = new frappe.Chart("#kunjunganChart", {
-          title: "Jumlah Kunjungan Bulan ini",
+          title: "Kunjungan-{{bln}}-{{thn}}",
           data: data_kunjungan,
           type: 'line', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 250,
@@ -61,11 +62,32 @@
     }
 
     const penyakitChart = new frappe.Chart("#penyakitPieChart", {
-          title: "Penyakit Bulan ini",
+          title: "Penyakit-{{bln}}-{{thn}}",
           data: data_penyakit,
           type: 'pie', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 350,
           colors: ['violet', 'red', 'orange', 'yellow', 'green', 'light-green', 'purple', 'magenta', 'light-grey', 'dark-grey']
+      })
+
+    const data_obat = {
+    labels: {{ labels_obat_terbanyak|safe }},
+    datasets: [
+        {
+            name: "obat", type: "line",
+            values: {{ data_obat_terbanyak|safe }}
+        }
+      ]
+    }
+
+    const obatBarChart = new frappe.Chart("#obatBarChart", {
+          title: "Obat-Terbanyak-{{bln}}-{{thn}}",
+          data: data_obat,
+          type: 'bar', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
+          height: 250,
+          colors: ['orange'],
+          axisOptions: {
+              xAxisMode: 'tick' // default: 'span'
+          },
       })
 
   </script>
