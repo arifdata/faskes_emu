@@ -26,31 +26,28 @@
         {{nama}}
       </div>
 
-      <div id="chart"></div>
+      <div id="kunjunganChart"></div>
 
     </div>
 
   <script type="text/javascript">
     const data = {
-    labels: ["12am-3am", "3am-6pm", "6am-9am", "9am-12am",
-        "12pm-3pm", "3pm-6pm", "6pm-9pm", "9am-12am"
-    ],
+    labels: {{ labels|safe }},
     datasets: [
         {
-            name: "Some Data", type: "line",
-            values: {{ data }}
+            name: "kunjungan", type: "line",
+            values: {{ data|safe }}
         }
       ]
     }
 
-    const chart = new frappe.Chart("#chart", {  // or a DOM element,
-                                                // new Chart() in case of ES6 module with above usage
-        title: "My Awesome Chart",
-        data: data,
-        type: 'line', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
-        height: 250,
-        colors: ['#7cd6fd', '#743ee2']
-    })
+    const chart = new frappe.Chart("#kunjunganChart", {
+          title: "Jumlah Resep Masuk Bulan ini",
+          data: data,
+          type: 'line', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
+          height: 250,
+          colors: ['#743ee2']
+      })
 
   </script>
   </body>
