@@ -27,26 +27,45 @@
       </div>
 
       <div id="kunjunganChart"></div>
+      <div id="penyakitPieChart"></div>
 
     </div>
 
   <script type="text/javascript">
-    const data = {
-    labels: {{ labels|safe }},
+    const data_kunjungan = {
+    labels: {{ labels_kunjungan|safe }},
     datasets: [
         {
             name: "kunjungan", type: "line",
-            values: {{ data|safe }}
+            values: {{ data_kunjungan|safe }}
         }
       ]
     }
 
-    const chart = new frappe.Chart("#kunjunganChart", {
-          title: "Jumlah Resep Masuk Bulan ini",
-          data: data,
+    const kunjunganChart = new frappe.Chart("#kunjunganChart", {
+          title: "Jumlah Kunjungan Bulan ini",
+          data: data_kunjungan,
           type: 'line', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 250,
-          colors: ['#743ee2']
+          colors: ['blue'],
+      })
+
+    const data_penyakit = {
+    labels: {{ labels_penyakit|safe }},
+    datasets: [
+        {
+            name: "penyakit", type: "line",
+            values: {{ data_penyakit|safe }}
+        }
+      ]
+    }
+
+    const penyakitChart = new frappe.Chart("#penyakitPieChart", {
+          title: "Penyakit Bulan ini",
+          data: data_penyakit,
+          type: 'pie', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
+          height: 350,
+          colors: ['violet', 'red', 'orange', 'yellow', 'green', 'light-green', 'purple', 'magenta', 'light-grey', 'dark-grey']
       })
 
   </script>
