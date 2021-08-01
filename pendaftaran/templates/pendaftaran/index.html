@@ -19,20 +19,33 @@
           <h1 id="site-name"><a href="/app/">Faskes Emu</a></h1>
         </div>
         <div id="user-tools">
-          <a href="app/"><strong>Login Ke App</strong></a>
+          <a href="app/"><strong>Masuk Ke App</strong></a>
         </div>
       </div>
       <div class="breadcrumbs">
         {{nama}}
       </div>
 
+      {% if labels_kunjungan and data_kunjungan %}
       <div id="kunjunganChart"></div>
+      {% else %}
+      <div><h3 align="center">Belum ada data kunjungan bulan {{bln}} {{thn}}.</h3></div>
+      {% endif %}
+      {% if labels_penyakit and data_penyakit %}
       <div id="penyakitPieChart"></div>
+      {% else %}
+      <div><h3 align="center">Belum ada data penyakit bulan {{bln}} {{thn}}.</h3></div>
+      {% endif %}
+      {% if labels_obat_terbanyak and data_obat_terbanyak %}
       <div id="obatBarChart"></div>
+      {% else %}
+      <div><h3 align="center">Belum ada data obat bulan {{bln}} {{thn}}.</h3></div>
+      {% endif %}
 
     </div>
 
   <script type="text/javascript">
+    {% if labels_kunjungan and data_kunjungan %}
     const data_kunjungan = {
     labels: {{ labels_kunjungan|safe }},
     datasets: [
@@ -50,7 +63,11 @@
           height: 250,
           colors: ['blue'],
       })
+    {% else %}
+    // belum ada data kunjungan
+    {% endif %}
 
+    {% if labels_penyakit and data_penyakit %}
     const data_penyakit = {
     labels: {{ labels_penyakit|safe }},
     datasets: [
@@ -68,7 +85,11 @@
           height: 350,
           colors: ['violet', 'red', 'orange', 'yellow', 'green', 'light-green', 'purple', 'magenta', 'light-grey', 'dark-grey']
       })
+    {% else %}
+    // belum ada data penyakit
+    {% endif %}
 
+    {% if labels_obat_terbanyak and data_obat_terbanyak %}
     const data_obat = {
     labels: {{ labels_obat_terbanyak|safe }},
     datasets: [
@@ -89,6 +110,9 @@
               xAxisMode: 'tick' // default: 'span'
           },
       })
+    {% else %}
+    //belum ada data obat terbanyak
+    {% endif %}
 
   </script>
   </body>
