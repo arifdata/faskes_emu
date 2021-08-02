@@ -46,7 +46,7 @@ class DataKunjunganAdmin(admin.ModelAdmin):
 	autocomplete_fields = ['nama_pasien', 'diagnosa', 'penulis_resep']
 	list_display = ('nama_pasien', 'tgl_kunjungan', 'no_resep')
 	list_per_page = 20
-	ordering = ['-tgl_kunjungan']
+	ordering = ['-tgl_kunjungan', '-no_resep']
 	actions = ['delete_selected']
 	list_filter = (
             ('tgl_kunjungan', DateRangeFilter),
