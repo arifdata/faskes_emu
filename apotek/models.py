@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import F
-from poli.models import DataKunjungan
+#from poli.models import DataKunjungan
 
 # Create your models here.
 class DataObat(models.Model):
@@ -28,7 +28,7 @@ class DataObat(models.Model):
         verbose_name_plural = "Data Obat"
         
 class StokObat(models.Model):
-    nama_obat = models.ForeignKey('DataObat', on_delete=models.CASCADE)
+    nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
     jml = models.SmallIntegerField(verbose_name="Jumlah")
     tgl_kadaluarsa = models.DateField(verbose_name="Tanggal Kadaluarsa")
     
@@ -38,8 +38,8 @@ class StokObat(models.Model):
         verbose_name_plural = "Stok Obat"
         
 class Resep(models.Model):
-    kunjungan_pasien = models.ForeignKey(DataKunjungan, on_delete=models.CASCADE)
-    nama_obat = models.ForeignKey('StokObat', on_delete=models.CASCADE)
+    kunjungan_pasien = models.ForeignKey('poli.DataKunjungan', on_delete=models.CASCADE)
+    nama_obat = models.ForeignKey('apotek.StokObat', on_delete=models.CASCADE)
     jumlah = models.PositiveSmallIntegerField(blank=False, verbose_name="Jumlah")
     ATURAN_PK = (
         (0, '3x1'),

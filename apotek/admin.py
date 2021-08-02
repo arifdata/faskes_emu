@@ -23,6 +23,7 @@ class StokObatAdmin(admin.ModelAdmin):
 @admin.register(DataObat)
 class DataObatAdmin(admin.ModelAdmin):
     search_fields = ['nama_obat']
+    ordering = ['nama_obat']
     def log_addition(self, *args):
         return
     def log_change(self, *args):

@@ -1,5 +1,6 @@
 from django.db import models
-from pendaftaran.models import DataPasien
+#from pendaftaran.models import DataPasien
+from apotek.models import Resep
 
 # Create your models here.
 class DataPeresep(models.Model):
@@ -19,13 +20,19 @@ class Diagnosa(models.Model):
 		verbose_name_plural = "Diagnosa"
 
 class DataKunjungan(models.Model):
-	nama_pasien = models.ForeignKey(DataPasien, on_delete=models.CASCADE)
+	nama_pasien = models.ForeignKey('pendaftaran.DataPasien', on_delete=models.CASCADE)
 	tgl_kunjungan = models.DateField(verbose_name="Tanggal Kunjungan")
 	no_resep = models.PositiveSmallIntegerField()
-	penulis_resep = models.ForeignKey(DataPeresep, on_delete=models.CASCADE)
-	diagnosa = models.ManyToManyField(Diagnosa)
+	penulis_resep = models.ForeignKey('poli.DataPeresep', on_delete=models.CASCADE)
+	diagnosa = models.ManyToManyField('poli.Diagnosa')
 	notes = models.TextField(blank=True)
 	file_up = models.FileField(blank=True, upload_to='docs/%Y/%m/%d')
+
+	def delete(self, *args, **kwargs):
+		query_obat = Resep.objects.filter(kunjungan_pasien_id=self.id)
+		for data in query_obat:
+			data.delete()
+		super(DataKunjungan, self).delete(*args, **kwargs)
 
 	def __str__(self):
 		return str(self.nama_pasien)
