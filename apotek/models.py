@@ -52,6 +52,7 @@ class Resep(models.Model):
     aturan_pakai = models.PositiveSmallIntegerField(choices=ATURAN_PK, verbose_name="Aturan Pakai")
     lama_pengobatan = models.PositiveSmallIntegerField(verbose_name="Lama Pengobatan (hari)")
     prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
+    after_pengurangan_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
     
     def __str__(self):
         return str(self.nama_obat.nama_obat.nama_obat)
@@ -60,6 +61,7 @@ class Resep(models.Model):
         reference = self.nama_obat.id
         stock = StokObat.objects.get(pk=reference)
         self.prev_saldo = stock.jml
+        self.after_pengurangan_saldo = stock.jml - self.jumlah
         stock.jml = F('jml') - self.jumlah
         stock.save()
         return super(Resep, self).save(*args, **kwargs)
