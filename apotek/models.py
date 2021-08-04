@@ -75,3 +75,27 @@ class Resep(models.Model):
 
     class Meta:
         verbose_name_plural = "Resep"
+
+class Penerimaan(models.Model):
+    terima_barang = models.ForeignKey('apotek.BukuPenerimaan', on_delete=models.CASCADE)
+    nama_barang = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
+    jumlah = models.PositiveSmallIntegerField(blank=False, verbose_name="Jumlah")
+    tgl_kadaluarsa = models.DateField(null=True, blank=True)
+    prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
+    after_pengurangan_saldo = models.SmallIntegerField(default=0, editable=False)
+
+class SumberTerima(models.Model):
+    nama = models.CharField(max_length=20)
+    def __str__(self):
+        return self.nama
+    class Meta:
+        verbose_name_plural = "Sumber Penerimaan"
+
+class BukuPenerimaan(models.Model):
+    tgl_terima = models.DateField(verbose_name="Tanggal Terima")
+    sumber = models.ForeignKey('apotek.SumberTerima', on_delete=models.CASCADE)
+    notes = models.TextField(blank=True)
+    file_up = models.FileField(blank=True, upload_to='docs/%Y/%m/%d')
+
+    class Meta:
+        verbose_name_plural = "Buku Terima"

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DataObat, StokObat, Resep
+from .models import DataObat, StokObat, Resep, Penerimaan, BukuPenerimaan, SumberTerima
 from rangefilter.filters import DateRangeFilter
 
 # Register your models here.
@@ -81,3 +81,21 @@ class ResepAdmin(admin.ModelAdmin):
         for o in queryset.all():
             writer.writerow([o.nama_obat, o.jumlah])
         return response
+
+@admin.register(SumberTerima)
+class SumberTerimaAdmin(admin.ModelAdmin):
+    def has_module_permission(self, request):
+        return {}
+
+class PenerimaanInline(admin.TabularInline):
+    model = Penerimaan
+    autocomplete_fields = ['nama_barang']
+    extra = 5
+
+@admin.register(Penerimaan)
+class PenerimaanAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(BukuPenerimaan)
+class BukuPenerimaanAdmin(admin.ModelAdmin):
+    inlines = [PenerimaanInline,]
