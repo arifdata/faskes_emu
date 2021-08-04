@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from pendaftaran.views import index_page
+from laporan.views import index_page
 
 urlpatterns = [
     path('app/', admin.site.urls),

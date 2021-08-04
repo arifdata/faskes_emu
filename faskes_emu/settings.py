@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'pendaftaran',
     'apotek',
     'poli',
+    'laporan',
 ]
 
 MIDDLEWARE = [
