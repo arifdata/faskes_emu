@@ -84,6 +84,13 @@ class Penerimaan(models.Model):
     prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
     after_pengurangan_saldo = models.SmallIntegerField(default=0, editable=False)
 
+    def save(self, *args, **kwargs):
+        reference = str(self.nama_barang_id)
+        stock = StokObat.objects.get(nama_obat_id=reference)
+        stock.jml = F('jml') + self.jumlah
+        stock.save()
+        super(Penerimaan, self).save(*args, **kwargs)
+
 class SumberTerima(models.Model):
     nama = models.CharField(max_length=20)
     def __str__(self):
@@ -96,6 +103,9 @@ class BukuPenerimaan(models.Model):
     sumber = models.ForeignKey('apotek.SumberTerima', on_delete=models.CASCADE)
     notes = models.TextField(blank=True)
     file_up = models.FileField(blank=True, upload_to='docs/%Y/%m/%d')
+
+    def __str__(self):
+        return str(self.tgl_terima.strftime('%d/%m/%Y'))
 
     class Meta:
         verbose_name_plural = "Buku Terima"
