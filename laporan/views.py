@@ -68,3 +68,6 @@ def index_page(request):
     }
 
     return render(request, 'laporan/index.html', context)
+
+def laporan_page(request):
+    return render(request, 'laporan/laporan_generator.html')

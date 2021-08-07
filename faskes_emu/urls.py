@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from laporan.views import index_page
+from laporan.views import index_page, laporan_page
 
 urlpatterns = [
     path('app/', admin.site.urls),
-    path('', index_page),
+    path('', index_page, name='index_page'),
+    path('laporan/', laporan_page, name='laporan_page'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

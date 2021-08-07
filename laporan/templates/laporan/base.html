@@ -20,8 +20,9 @@
         </div>
       </div>
       <div class="breadcrumbs">
-        <a href="/">Home</a> |
-        <a href="app/">Masuk Ke App</a>
+        <a href="{% url 'index_page' %}">Home</a> |
+        <a href="/app">Masuk Ke App</a> |
+        <a href="{% url 'laporan_page' %}">Laporan Generator</a> |
       </div>
       {% block content %}
       {% endblock %}
