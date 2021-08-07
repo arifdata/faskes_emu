@@ -1,0 +1,29 @@
+{% load static %}
+<html lang="en">
+  <!-- The language defaults to English - update accordingly if necessary -->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Faskes Emu App</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
+    <script src="{% static 'js/frappe-charts.min.iife.js' %}"></script>
+  </head>
+  <body>
+    <div id="container">
+
+      <div id="header">
+        <div id="branding">
+          <strong>Faskes Emu</strong>
+        </div>
+      </div>
+      <div class="breadcrumbs">
+        <a href="/">Home</a> |
+        <a href="app/">Masuk Ke App</a>
+      </div>
+      {% block content %}
+      {% endblock %}
+  </body>
+</html>

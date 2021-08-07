@@ -1,31 +1,5 @@
-{% load static %}
-<html lang="en">
-  <!-- The language defaults to English - update accordingly if necessary -->
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Faskes Emu App</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
-    <script src="{% static 'js/frappe-charts.min.iife.js' %}"></script>
-  </head>
-  <body>
-    <div id="container">
-
-      <div id="header">
-        <div id="branding">
-          <h1 id="site-name"><a href="/app/">Faskes Emu</a></h1>
-        </div>
-        <div id="user-tools">
-          <a href="app/"><strong>Masuk Ke App</strong></a>
-        </div>
-      </div>
-      <div class="breadcrumbs">
-        {{nama}}
-      </div>
-
+{% extends 'laporan/base.html' %}
+{% block content %}
       {% if labels_kunjungan and data_kunjungan %}
       <div id="kunjunganChart"></div>
       {% else %}
@@ -115,5 +89,4 @@
     {% endif %}
 
   </script>
-  </body>
-</html>
+{% endblock %}
