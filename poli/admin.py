@@ -47,7 +47,7 @@ class DataKunjunganAdmin(admin.ModelAdmin):
 	list_display = ('nama_pasien', 'tgl_kunjungan', 'no_resep')
 	list_per_page = 20
 	ordering = ['-tgl_kunjungan', '-no_resep']
-	actions = ['delete_selected']
+	#actions = ['delete_selected']
 	list_filter = (
             ('tgl_kunjungan', DateRangeFilter),
             ('penulis_resep'),
@@ -59,6 +59,9 @@ class DataKunjunganAdmin(admin.ModelAdmin):
 		('Data Tambahan', {'fields': ['notes', 'file_up'], 'classes': ('collapse',)}),
 	]
 
+	'''
+	Deprecated
+	
 	@admin.action(description='Hapus Kunjungan & kembalikan stok')
 	def delete_selected(modeladmin, request, queryset):
 		for o in queryset.all():
@@ -66,3 +69,4 @@ class DataKunjunganAdmin(admin.ModelAdmin):
 			for obat in ref:
 				obat.delete()
 			o.delete()
+	'''
