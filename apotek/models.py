@@ -21,22 +21,23 @@ class DataObat(models.Model):
     ab = models.BooleanField(help_text="Check jika termasuk antibiotik", verbose_name="Antibiotik?")
     okt = models.BooleanField(help_text="Check jika termasuk narko/psiko", verbose_name="Narkotik / Psikotropik")
     is_alkes = models.BooleanField(help_text="Check jika bukan obat konsumsi / alkes", verbose_name="Alkes?")
+    is_jkn = models.BooleanField(help_text="Check jika obat beli dari dana JKN", verbose_name="Obat beli dari dana JKN?")
 
     def __str__(self):
         return str(self.nama_obat)
     class Meta:
         verbose_name_plural = "Data Obat"
-        
+
 class StokObat(models.Model):
     nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
     jml = models.SmallIntegerField(verbose_name="Jumlah")
     tgl_kadaluarsa = models.DateField(verbose_name="Tanggal Kadaluarsa")
-    
+
     def __str__(self):
         return self.nama_obat.nama_obat
     class Meta:
         verbose_name_plural = "Stok Obat"
-        
+
 class Resep(models.Model):
     kunjungan_pasien = models.ForeignKey('poli.DataKunjungan', on_delete=models.CASCADE)
     nama_obat = models.ForeignKey('apotek.StokObat', on_delete=models.CASCADE)
@@ -53,10 +54,10 @@ class Resep(models.Model):
     lama_pengobatan = models.PositiveSmallIntegerField(verbose_name="Lama Pengobatan (hari)")
     prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
     after_pengurangan_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
-    
+
     def __str__(self):
         return str(self.nama_obat.nama_obat.nama_obat)
-        
+
     def save(self, *args, **kwargs):
         reference = self.nama_obat.id
         stock = StokObat.objects.get(pk=reference)
@@ -65,7 +66,7 @@ class Resep(models.Model):
         stock.jml = F('jml') - self.jumlah
         stock.save()
         return super(Resep, self).save(*args, **kwargs)
-        
+
     def delete(self, *args, **kwargs):
         reference = str(self.nama_obat.id)
         stock = StokObat.objects.get(pk=reference)
@@ -86,10 +87,15 @@ class Penerimaan(models.Model):
 
     def save(self, *args, **kwargs):
         reference = str(self.nama_barang_id)
-        stock = StokObat.objects.get(nama_obat_id=reference)
-        stock.jml = F('jml') + self.jumlah
-        stock.save()
-        super(Penerimaan, self).save(*args, **kwargs)
+        try:
+            stock = StokObat.objects.get(nama_obat_id=reference)
+            stock.jml = F('jml') + self.jumlah
+            stock.save()
+            super(Penerimaan, self).save(*args, **kwargs)
+        except StokObat.DoesNotExist:
+            new_item = StokObat(nama_obat=self.nama_barang, jml=self.jumlah, tgl_kadaluarsa=self.tgl_kadaluarsa)
+            new_item.save()
+            super(Penerimaan, self).save(*args, **kwargs)
 
 class SumberTerima(models.Model):
     nama = models.CharField(max_length=20)
