@@ -65,7 +65,7 @@ class Resep(models.Model):
         self.after_pengurangan_saldo = stock.jml - self.jumlah
         stock.jml = F('jml') - self.jumlah
         stock.save()
-        return super(Resep, self).save(*args, **kwargs)
+        super(Resep, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         reference = str(self.nama_obat.id)
@@ -84,6 +84,9 @@ class Penerimaan(models.Model):
     tgl_kadaluarsa = models.DateField(null=True, blank=True)
     prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
     after_pengurangan_saldo = models.SmallIntegerField(default=0, editable=False)
+    
+    def __str__(self):
+        return self.nama_barang.nama_obat
 
     def save(self, *args, **kwargs):
         reference = str(self.nama_barang_id)
@@ -96,6 +99,13 @@ class Penerimaan(models.Model):
             new_item = StokObat(nama_obat=self.nama_barang, jml=self.jumlah, tgl_kadaluarsa=self.tgl_kadaluarsa)
             new_item.save()
             super(Penerimaan, self).save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        reference = str(self.nama_barang_id)
+        stock = StokObat.objects.get(nama_obat_id=reference)
+        stock.jml = F('jml') - self.jumlah
+        stock.save()
+        super(Penerimaan, self).delete(*args, **kwargs)
 
 class SumberTerima(models.Model):
     nama = models.CharField(max_length=20)
