@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import F
+from django.core.exceptions import ValidationError
 #from poli.models import DataKunjungan
 
 # Create your models here.
@@ -58,6 +59,12 @@ class Resep(models.Model):
     def __str__(self):
         return str(self.nama_obat.nama_obat.nama_obat)
 
+    def clean(self):
+        reference = self.nama_obat.id
+        stock = StokObat.objects.get(pk=reference)
+        if self.jumlah > stock.jml:
+            raise ValidationError({'jumlah': 'Stok tidak mencukupi.'})
+
     def save(self, *args, **kwargs):
         reference = self.nama_obat.id
         stock = StokObat.objects.get(pk=reference)
@@ -84,9 +91,13 @@ class Penerimaan(models.Model):
     tgl_kadaluarsa = models.DateField(null=True, blank=True)
     prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
     after_pengurangan_saldo = models.SmallIntegerField(default=0, editable=False)
-    
+
     def __str__(self):
         return self.nama_barang.nama_obat
+
+    #def clean(self):
+    #    if self.jumlah < 10:
+    #        raise ValidationError({'jumlah': 'jumlah dibawah 10'})
 
     def save(self, *args, **kwargs):
         reference = str(self.nama_barang_id)
@@ -99,7 +110,7 @@ class Penerimaan(models.Model):
             new_item = StokObat(nama_obat=self.nama_barang, jml=self.jumlah, tgl_kadaluarsa=self.tgl_kadaluarsa)
             new_item.save()
             super(Penerimaan, self).save(*args, **kwargs)
-    
+
     def delete(self, *args, **kwargs):
         reference = str(self.nama_barang_id)
         stock = StokObat.objects.get(nama_obat_id=reference)
