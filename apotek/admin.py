@@ -1,16 +1,20 @@
 from django.contrib import admin
-from .models import DataObat, StokObat, Resep, Penerimaan, BukuPenerimaan, SumberTerima
+from .models import DataObat, StokObatGudang, Resep, Penerimaan, BukuPenerimaan, SumberTerima, StokObatApotek, Pengeluaran, BukuPengeluaran, TujuanKeluar
 from rangefilter.filters import DateRangeFilter
 
 # Register your models here.
-@admin.register(StokObat)
-class StokObatAdmin(admin.ModelAdmin):
+@admin.register(StokObatGudang)
+class StokObatGudangAdmin(admin.ModelAdmin):
     def log_addition(self, *args):
         return
     def log_change(self, *args):
         return
     def log_deletion(self, *args):
         return
+    def has_add_permission(self, request, obj=None):
+        return False
+    def has_change_permission(self, request, obj=None):
+        return False
     search_fields = ['nama_obat__nama_obat']
     list_filter = (
             ('tgl_kadaluarsa', DateRangeFilter),
@@ -19,6 +23,27 @@ class StokObatAdmin(admin.ModelAdmin):
     list_display = ('nama_obat', 'jml', 'tgl_kadaluarsa')
     ordering = ['nama_obat__nama_obat']
     list_per_page = 50
+
+@admin.register(StokObatApotek)
+class StokObatApotekAdmin(admin.ModelAdmin):
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
+    def has_add_permission(self, request, obj=None):
+        return False
+    def has_change_permission(self, request):
+        return False
+    search_fields = ['nama_obat__nama_obat']
+    list_filter = (
+            ('tgl_kadaluarsa', DateRangeFilter),
+        )
+    autocomplete_fields = ['nama_obat']
+    list_display = ('nama_obat', 'jml', 'tgl_kadaluarsa')
+    ordering = ['nama_obat__nama_obat']
+    list_per_page = 50    
     
 @admin.register(DataObat)
 class DataObatAdmin(admin.ModelAdmin):
@@ -92,10 +117,43 @@ class PenerimaanInline(admin.TabularInline):
     autocomplete_fields = ['nama_barang']
     extra = 5
 
+class PengeluaranInline(admin.TabularInline):
+    model = Pengeluaran
+    autocomplete_fields = ['nama_barang']
+    extra = 5
+
 @admin.register(Penerimaan)
 class PenerimaanAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('nama_barang', 'terima_barang', 'jumlah', 'tgl_kadaluarsa')
+    def has_module_permission(self, request):
+        return {}
 
 @admin.register(BukuPenerimaan)
 class BukuPenerimaanAdmin(admin.ModelAdmin):
     inlines = [PenerimaanInline,]
+    def has_change_permission(self, request, obj=None):
+        return False
+
+@admin.register(TujuanKeluar)
+class TujuanKeluarAdmin(admin.ModelAdmin):
+    def has_module_permission(self, request):
+        return {}
+
+@admin.register(BukuPengeluaran)
+class BukuPengeluaranAdmin(admin.ModelAdmin):
+    inlines = [PengeluaranInline,]
+    def has_change_permission(self, request, obj=None):
+        return False
+
+@admin.register(Pengeluaran)
+class PengeluaranAdmin(admin.ModelAdmin):
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
+    def has_module_permission(self, request):
+        return {}
+    def has_change_permission(self, request, obj=None):
+        return False

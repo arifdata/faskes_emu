@@ -41,6 +41,8 @@ class DataKunjunganAdmin(admin.ModelAdmin):
 		return
 	def log_deletion(self, *args):
 		return
+	def has_change_permission(self, request, obj=None):
+	    return False
 
 	inlines = [ResepInline,]
 	autocomplete_fields = ['nama_pasien', 'diagnosa', 'penulis_resep']
