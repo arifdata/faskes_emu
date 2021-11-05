@@ -148,7 +148,8 @@ class BukuPenerimaanAdmin(admin.ModelAdmin):
             ('tgl_terima', DateRangeFilter),
         )
     inlines = [PenerimaanInline,]
-    list_display = ('tgl_terima', 'sumber')
+    list_display = ('tgl_terima', 'sumber', 'notes')
+    search_fields = ['sumber__nama', 'notes']
     def log_addition(self, *args):
         return
     def log_change(self, *args):

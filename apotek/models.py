@@ -27,6 +27,9 @@ class DataObat(models.Model):
 
     def __str__(self):
         return str(self.nama_obat)
+    def save(self, *args, **kwargs):
+        self.nama_obat = self.nama_obat.upper()
+        return super(DataObat, self).save(*args, **kwargs)
     class Meta:
         verbose_name_plural = "Data Obat"
 
@@ -127,6 +130,9 @@ class Penerimaan(models.Model):
         stock.save()
         super(Penerimaan, self).delete(*args, **kwargs)
 
+    class Meta:
+        verbose_name_plural = "Item Penerimaan"
+
 class SumberTerima(models.Model):
     nama = models.CharField(max_length=20)
     def __str__(self):
@@ -145,7 +151,7 @@ class BukuPenerimaan(models.Model):
     file_up = models.FileField(blank=True, upload_to='docs/%Y/%m/%d')
 
     def __str__(self):
-        return str(self.tgl_terima.strftime('%d/%m/%Y'))
+        return str(self.tgl_terima.strftime('%d %B %Y'))
 
     class Meta:
         verbose_name_plural = "Buku Terima Gudang"
@@ -154,6 +160,9 @@ class TujuanKeluar(models.Model):
     nama = models.CharField(max_length=30)
     def __str__(self):
         return self.nama
+    def save(self, *args, **kwargs):
+        self.nama = self.nama.upper()
+        return super(TujuanKeluar, self).save(*args, **args)
     class Meta:
         verbose_name_plural = "Tujuan Keluar"
 
