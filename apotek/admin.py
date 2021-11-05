@@ -49,6 +49,8 @@ class StokObatApotekAdmin(admin.ModelAdmin):
 class DataObatAdmin(admin.ModelAdmin):
     search_fields = ['nama_obat']
     ordering = ['nama_obat']
+    list_display = ('nama_obat', 'satuan', 'is_non_generik', 'is_ab', 'is_okt', 'is_alkes', 'is_jkn')
+    list_filter = ('satuan', 'is_non_generik', 'is_ab', 'is_okt', 'is_alkes', 'is_jkn',)
     def log_addition(self, *args):
         return
     def log_change(self, *args):
@@ -161,11 +163,20 @@ class BukuPenerimaanAdmin(admin.ModelAdmin):
 
 @admin.register(TujuanKeluar)
 class TujuanKeluarAdmin(admin.ModelAdmin):
+    search_fields = ['nama']
     def has_module_permission(self, request):
         return {}
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
 
 @admin.register(BukuPengeluaran)
 class BukuPengeluaranAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['tujuan']
+    list_display = ('tgl_keluar', 'tujuan', 'notes')
     inlines = [PengeluaranInline,]
     def has_change_permission(self, request, obj=None):
         return False

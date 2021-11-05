@@ -23,7 +23,7 @@ class DataObat(models.Model):
     is_okt = models.BooleanField(help_text="Check jika termasuk narko/psiko", verbose_name="Narkotik / Psikotropik?")
     is_non_generik = models.BooleanField(help_text="Check jika termasuk obat non generik", verbose_name="Non Generik?")
     is_alkes = models.BooleanField(help_text="Check jika bukan obat konsumsi / alkes", verbose_name="Alkes?")
-    is_jkn = models.BooleanField(help_text="Check jika obat beli dari dana JKN", verbose_name="Obat beli dari dana JKN?")
+    is_jkn = models.BooleanField(help_text="Check jika obat beli dari dana JKN", verbose_name="Dari dana JKN?")
 
     def __str__(self):
         return str(self.nama_obat)
@@ -162,7 +162,7 @@ class TujuanKeluar(models.Model):
         return self.nama
     def save(self, *args, **kwargs):
         self.nama = self.nama.upper()
-        return super(TujuanKeluar, self).save(*args, **args)
+        return super(TujuanKeluar, self).save(*args, **kwargs)
     class Meta:
         verbose_name_plural = "Tujuan Keluar"
 
@@ -173,10 +173,19 @@ class BukuPengeluaran(models.Model):
     file_up = models.FileField(blank=True, upload_to='docs/%Y/%m/%d')
 
     def __str__(self):
-        return str(self.tgl_keluar.strftime('%d/%m/%Y'))
+        return str(self.tgl_keluar.strftime('%d %B %Y'))
 
     class Meta:
         verbose_name_plural = "Buku Pengeluaran Gudang"
+
+    def save(self, *args, **kwargs):
+        to_apt = TujuanKeluar.objects.get(nama='APOTEK')
+        if self.tujuan == to_apt:
+            print('stok pindah ke apotek')
+            super(BukuPengeluaran, self).save(*args, **kwargs)
+        else:
+            print('pindah bukan ke apotek')
+            super(BukuPengeluaran, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         query_obat = Pengeluaran.objects.filter(keluar_barang_id=self.id)
@@ -194,6 +203,12 @@ class Pengeluaran(models.Model):
     def __str__(self):
         return self.nama_barang.nama_obat.nama_obat
 
+    def clean(self):
+        reference = str(self.nama_barang_id)
+        stock = StokObatGudang.objects.get(nama_obat_id=reference)
+        if self.jumlah > stock.jml:
+            raise ValidationError({'jumlah': 'Stok tidak mencukupi.'})
+            
     def save(self, *args, **kwargs):
         reference = str(self.nama_barang_id)
         stock = StokObatGudang.objects.get(nama_obat_id=reference)
@@ -207,3 +222,5 @@ class Pengeluaran(models.Model):
         stock.jml = F('jml') + self.jumlah
         stock.save()
         super(Pengeluaran, self).delete(*args, **kwargs)
+    class Meta:
+        verbose_name_plural = "Item Keluar"
