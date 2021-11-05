@@ -131,6 +131,10 @@ class SumberTerima(models.Model):
     nama = models.CharField(max_length=20)
     def __str__(self):
         return self.nama
+        
+    def save(self, *args, **kwargs):
+        self.nama = self.nama.upper()
+        return super(SumberTerima, self).save(*args, **kwargs)
     class Meta:
         verbose_name_plural = "Sumber Penerimaan"
 

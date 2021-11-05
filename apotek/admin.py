@@ -111,6 +111,13 @@ class ResepAdmin(admin.ModelAdmin):
 class SumberTerimaAdmin(admin.ModelAdmin):
     def has_module_permission(self, request):
         return {}
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
+
 
 class PenerimaanInline(admin.TabularInline):
     model = Penerimaan
@@ -124,13 +131,30 @@ class PengeluaranInline(admin.TabularInline):
 
 @admin.register(Penerimaan)
 class PenerimaanAdmin(admin.ModelAdmin):
+    search_fields = ['nama_barang__nama_obat']
     list_display = ('nama_barang', 'terima_barang', 'jumlah', 'tgl_kadaluarsa')
     def has_module_permission(self, request):
         return {}
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
 
 @admin.register(BukuPenerimaan)
 class BukuPenerimaanAdmin(admin.ModelAdmin):
+    list_filter = (
+            ('tgl_terima', DateRangeFilter),
+        )
     inlines = [PenerimaanInline,]
+    list_display = ('tgl_terima', 'sumber')
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
     def has_change_permission(self, request, obj=None):
         return False
 
