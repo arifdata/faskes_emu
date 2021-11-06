@@ -111,6 +111,7 @@ class ResepAdmin(admin.ModelAdmin):
 
 @admin.register(SumberTerima)
 class SumberTerimaAdmin(admin.ModelAdmin):
+    search_fields = ['nama']
     def has_module_permission(self, request):
         return {}
     def log_addition(self, *args):
@@ -146,11 +147,12 @@ class PenerimaanAdmin(admin.ModelAdmin):
 
 @admin.register(BukuPenerimaan)
 class BukuPenerimaanAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['sumber']
     list_filter = (
             ('tgl_terima', DateRangeFilter),
         )
     inlines = [PenerimaanInline,]
-    list_display = ('tgl_terima', 'sumber', 'notes')
+    list_display = ('tgl_terima', 'sumber', 'notes', 'file_up')
     search_fields = ['sumber__nama', 'notes']
     def log_addition(self, *args):
         return
