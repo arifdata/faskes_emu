@@ -37,11 +37,8 @@ class StokObatApotekAdmin(admin.ModelAdmin):
     def has_change_permission(self, request):
         return False
     search_fields = ['nama_obat__nama_obat']
-    list_filter = (
-            ('tgl_kadaluarsa', DateRangeFilter),
-        )
     autocomplete_fields = ['nama_obat']
-    list_display = ('nama_obat', 'jml', 'tgl_kadaluarsa')
+    list_display = ('nama_obat', 'jml')
     ordering = ['nama_obat__nama_obat']
     list_per_page = 50    
     

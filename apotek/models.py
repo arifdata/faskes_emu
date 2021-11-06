@@ -45,7 +45,14 @@ class StokObatGudang(models.Model):
     class Meta:
         verbose_name_plural = "Stok Obat Gudang"
 
-class StokObatApotek(StokObatGudang):
+class StokObatApotek(models.Model):
+    nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
+    jml = models.SmallIntegerField(verbose_name="Jumlah")
+    prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
+    after_pengurangan_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
+
+    def __str__(self):
+        return self.nama_obat.nama_obat
     class Meta:
         verbose_name_plural = "Stok Obat Apotek"
 
@@ -180,23 +187,6 @@ class BukuPengeluaran(models.Model):
     class Meta:
         verbose_name_plural = "Buku Pengeluaran Gudang"
 
-    def save(self, *args, **kwargs):
-        try:
-            to_apt = TujuanKeluar.objects.get(nama='APOTEK')
-            if self.tujuan == to_apt:
-                #try:
-                #ref_item_keluar = Pengeluaran.objects.get(keluar_barang_id=self.id)
-                print('stok pindah ke apotek')
-                #print(self.id)
-                super(BukuPengeluaran, self).save(*args, **kwargs)
-                #except:
-                #    pass
-            else:
-                print('pindah bukan ke apotek')
-                super(BukuPengeluaran, self).save(*args, **kwargs)
-        except TujuanKeluar.DoesNotExist:
-            super(BukuPengeluaran, self).save(*args, **kwargs)
-
     def delete(self, *args, **kwargs):
         query_obat = Pengeluaran.objects.filter(keluar_barang_id=self.id)
         for data in query_obat:
@@ -224,8 +214,22 @@ class Pengeluaran(models.Model):
         stock = StokObatGudang.objects.get(nama_obat_id=reference)
         stock.jml = F('jml') - self.jumlah
         stock.save()
+        if self.keluar_barang.tujuan.nama == "APOTEK":
+            #print("barang ke apotek
+            ref_obat = self.nama_barang.nama_obat
+            try:
+                stok_apt = StokObatApotek.objects.get(nama_obat=ref_obat)
+                stok_apt.jml = F('jml') + self.jumlah
+                stok_apt.save()
+                super(Pengeluaran, self).save(*args, **kwargs)
+            except StokObatApotek.DoesNotExist:
+                new_item = StokObatApotek(nama_obat=ref_obat, jml=self.jumlah)
+                new_item.save()
+                super(Pengeluaran, self).save(*args, **kwargs)
+        else:
+            #print("barang ke selain apotek")
+            pass
         super(Pengeluaran, self).save(*args, **kwargs)
-        print(self.keluar_barang.id)
 
     def delete(self, *args, **kwargs):
         reference = str(self.nama_barang_id)
@@ -233,6 +237,6 @@ class Pengeluaran(models.Model):
         stock.jml = F('jml') + self.jumlah
         stock.save()
         super(Pengeluaran, self).delete(*args, **kwargs)
-        print(self.keluar_barang.id)
+        #print(self.keluar_barang.id)
     class Meta:
         verbose_name_plural = "Item Keluar"
