@@ -73,7 +73,7 @@ class Resep(models.Model):
         reference = self.nama_obat.id
         stock = StokObatApotek.objects.get(pk=reference)
         if self.jumlah > stock.jml:
-            raise ValidationError({'jumlah': 'Stok tidak mencukupi.'})
+            raise ValidationError({'jumlah': 'Stok di apotek tidak mencukupi.'})
 
     def save(self, *args, **kwargs):
         reference = self.nama_obat.id
@@ -114,7 +114,9 @@ class Penerimaan(models.Model):
         try:
             stock = StokObatGudang.objects.get(nama_obat_id=reference)
             stock.jml = F('jml') + self.jumlah
-            if self.tgl_kadaluarsa < stock.tgl_kadaluarsa:
+            if self.tgl_kadaluarsa == None:
+                self.tgl_kadaluarsa = stock.tgl_kadaluarsa
+            elif self.tgl_kadaluarsa < stock.tgl_kadaluarsa:
                 stock.tgl_kadaluarsa = self.tgl_kadaluarsa
             stock.save()
             super(Penerimaan, self).save(*args, **kwargs)
@@ -179,12 +181,20 @@ class BukuPengeluaran(models.Model):
         verbose_name_plural = "Buku Pengeluaran Gudang"
 
     def save(self, *args, **kwargs):
-        to_apt = TujuanKeluar.objects.get(nama='APOTEK')
-        if self.tujuan == to_apt:
-            print('stok pindah ke apotek')
-            super(BukuPengeluaran, self).save(*args, **kwargs)
-        else:
-            print('pindah bukan ke apotek')
+        try:
+            to_apt = TujuanKeluar.objects.get(nama='APOTEK')
+            if self.tujuan == to_apt:
+                #try:
+                #ref_item_keluar = Pengeluaran.objects.get(keluar_barang_id=self.id)
+                print('stok pindah ke apotek')
+                #print(self.id)
+                super(BukuPengeluaran, self).save(*args, **kwargs)
+                #except:
+                #    pass
+            else:
+                print('pindah bukan ke apotek')
+                super(BukuPengeluaran, self).save(*args, **kwargs)
+        except TujuanKeluar.DoesNotExist:
             super(BukuPengeluaran, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -207,7 +217,7 @@ class Pengeluaran(models.Model):
         reference = str(self.nama_barang_id)
         stock = StokObatGudang.objects.get(nama_obat_id=reference)
         if self.jumlah > stock.jml:
-            raise ValidationError({'jumlah': 'Stok tidak mencukupi.'})
+            raise ValidationError({'jumlah': 'Stok di gudang tidak mencukupi.'})
             
     def save(self, *args, **kwargs):
         reference = str(self.nama_barang_id)
@@ -215,6 +225,7 @@ class Pengeluaran(models.Model):
         stock.jml = F('jml') - self.jumlah
         stock.save()
         super(Pengeluaran, self).save(*args, **kwargs)
+        print(self.keluar_barang.id)
 
     def delete(self, *args, **kwargs):
         reference = str(self.nama_barang_id)
@@ -222,5 +233,6 @@ class Pengeluaran(models.Model):
         stock.jml = F('jml') + self.jumlah
         stock.save()
         super(Pengeluaran, self).delete(*args, **kwargs)
+        print(self.keluar_barang.id)
     class Meta:
         verbose_name_plural = "Item Keluar"

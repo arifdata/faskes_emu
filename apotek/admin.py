@@ -178,7 +178,11 @@ class TujuanKeluarAdmin(admin.ModelAdmin):
 @admin.register(BukuPengeluaran)
 class BukuPengeluaranAdmin(admin.ModelAdmin):
     autocomplete_fields = ['tujuan']
-    list_display = ('tgl_keluar', 'tujuan', 'notes')
+    list_display = ('tgl_keluar', 'tujuan', 'notes', 'file_up')
+    list_filter = (
+            ('tgl_keluar', DateRangeFilter),
+            'tujuan'
+        )
     inlines = [PengeluaranInline,]
     def has_change_permission(self, request, obj=None):
         return False
