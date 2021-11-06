@@ -15,6 +15,8 @@ class StokObatGudangAdmin(admin.ModelAdmin):
         return False
     def has_change_permission(self, request, obj=None):
         return False
+    def has_delete_permission(self, request, obj=None):
+        return False
     search_fields = ['nama_obat__nama_obat']
     list_filter = (
             ('tgl_kadaluarsa', DateRangeFilter),
@@ -34,13 +36,15 @@ class StokObatApotekAdmin(admin.ModelAdmin):
         return
     def has_add_permission(self, request, obj=None):
         return False
-    def has_change_permission(self, request):
+    def has_change_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
         return False
     search_fields = ['nama_obat__nama_obat']
     autocomplete_fields = ['nama_obat']
     list_display = ('nama_obat', 'jml')
     ordering = ['nama_obat__nama_obat']
-    list_per_page = 50    
+    list_per_page = 50
     
 @admin.register(DataObat)
 class DataObatAdmin(admin.ModelAdmin):
@@ -56,6 +60,8 @@ class DataObatAdmin(admin.ModelAdmin):
         return
     def has_module_permission(self, request):
         return {}
+    def has_change_permission(self, request, obj=None):
+        return False
 
 @admin.register(Resep)    
 class ResepAdmin(admin.ModelAdmin):
@@ -85,6 +91,8 @@ class ResepAdmin(admin.ModelAdmin):
         return
     def has_module_permission(self, request):
         return {}
+    def has_change_permission(self, request, obj=None):
+        return False
     
     @admin.action(description='Hapus & kembalikan stok')
     def delete_selected(modeladmin, request, queryset):
@@ -117,6 +125,10 @@ class SumberTerimaAdmin(admin.ModelAdmin):
         return
     def log_deletion(self, *args):
         return
+    def has_change_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class PenerimaanInline(admin.TabularInline):
@@ -141,6 +153,10 @@ class PenerimaanAdmin(admin.ModelAdmin):
         return
     def log_deletion(self, *args):
         return
+    def has_change_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 @admin.register(BukuPenerimaan)
 class BukuPenerimaanAdmin(admin.ModelAdmin):
@@ -159,6 +175,8 @@ class BukuPenerimaanAdmin(admin.ModelAdmin):
         return
     def has_change_permission(self, request, obj=None):
         return False
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 @admin.register(TujuanKeluar)
 class TujuanKeluarAdmin(admin.ModelAdmin):
@@ -171,6 +189,10 @@ class TujuanKeluarAdmin(admin.ModelAdmin):
         return
     def log_deletion(self, *args):
         return
+    def has_delete_permission(self, request, obj=None):
+        return False
+    def has_change_permission(self, request, obj=None):
+        return False
 
 @admin.register(BukuPengeluaran)
 class BukuPengeluaranAdmin(admin.ModelAdmin):
@@ -182,6 +204,8 @@ class BukuPengeluaranAdmin(admin.ModelAdmin):
         )
     inlines = [PengeluaranInline,]
     def has_change_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
         return False
 
 @admin.register(Pengeluaran)
@@ -195,4 +219,6 @@ class PengeluaranAdmin(admin.ModelAdmin):
     def has_module_permission(self, request):
         return {}
     def has_change_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
         return False
