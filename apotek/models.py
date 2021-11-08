@@ -4,6 +4,37 @@ from django.core.exceptions import ValidationError
 #from poli.models import DataKunjungan
 
 # Create your models here.
+
+class KartuStokGudang(models.Model):
+    nama_obat = models.CharField(max_length=100)
+    tgl = models.DateField()
+    unit = models.CharField(max_length=20)
+    stok_awal = models.PositiveSmallIntegerField(default=0)
+    stok_terima = models.PositiveSmallIntegerField(default=0)
+    stok_keluar = models.PositiveSmallIntegerField(default=0)
+    sisa_stok = models.PositiveSmallIntegerField()
+    ket = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nama_obat
+    class Meta:
+        verbose_name_plural = "Kartu Stok Gudang"
+
+class KartuStokApotek(models.Model):
+    nama_obat = models.CharField(max_length=100)
+    tgl = models.DateField()
+    unit = models.CharField(max_length=20)
+    stok_awal = models.PositiveSmallIntegerField(default=0)
+    stok_terima = models.PositiveSmallIntegerField(default=0)
+    stok_keluar = models.PositiveSmallIntegerField(default=0)
+    sisa_stok = models.PositiveSmallIntegerField()
+    ket = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nama_obat
+    class Meta:
+        verbose_name_plural = "Kartu Stok Apotek"
+    
 class DataObat(models.Model):
     nama_obat = models.CharField(max_length=100, help_text="Tulis nama obat dan dosisnya", blank=False)
     SAT = (
@@ -37,9 +68,7 @@ class StokObatGudang(models.Model):
     nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
     jml = models.SmallIntegerField(verbose_name="Jumlah")
     tgl_kadaluarsa = models.DateField(verbose_name="Tanggal Kadaluarsa")
-    prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
-    after_pengurangan_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
-
+    
     def __str__(self):
         return self.nama_obat.nama_obat
     class Meta:
@@ -48,9 +77,7 @@ class StokObatGudang(models.Model):
 class StokObatApotek(models.Model):
     nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
     jml = models.SmallIntegerField(verbose_name="Jumlah")
-    prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
-    after_pengurangan_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
-
+    
     def __str__(self):
         return self.nama_obat.nama_obat
     class Meta:
@@ -70,9 +97,7 @@ class Resep(models.Model):
         )
     aturan_pakai = models.PositiveSmallIntegerField(choices=ATURAN_PK, verbose_name="Aturan Pakai")
     lama_pengobatan = models.PositiveSmallIntegerField(verbose_name="Lama Pengobatan (hari)")
-    prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
-    after_pengurangan_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
-
+    
     def __str__(self):
         return str(self.nama_obat.nama_obat.nama_obat)
 
@@ -85,8 +110,6 @@ class Resep(models.Model):
     def save(self, *args, **kwargs):
         reference = self.nama_obat.id
         stock = StokObatApotek.objects.get(pk=reference)
-        self.prev_saldo = stock.jml
-        self.after_pengurangan_saldo = stock.jml - self.jumlah
         stock.jml = F('jml') - self.jumlah
         stock.save()
         super(Resep, self).save(*args, **kwargs)
@@ -106,9 +129,7 @@ class Penerimaan(models.Model):
     nama_barang = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
     jumlah = models.PositiveSmallIntegerField(blank=False, verbose_name="Jumlah")
     tgl_kadaluarsa = models.DateField(null=True, blank=True)
-    prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
-    after_pengurangan_saldo = models.SmallIntegerField(default=0, editable=False)
-
+    
     def __str__(self):
         return self.nama_barang.nama_obat
 
@@ -197,9 +218,7 @@ class Pengeluaran(models.Model):
     keluar_barang = models.ForeignKey('apotek.BukuPengeluaran', on_delete=models.CASCADE)
     nama_barang = models.ForeignKey('apotek.StokObatGudang', on_delete=models.CASCADE)
     jumlah = models.PositiveSmallIntegerField(blank=False, verbose_name="Jumlah")
-    prev_saldo = models.PositiveSmallIntegerField(default=0, editable=False)
-    after_pengurangan_saldo = models.SmallIntegerField(default=0, editable=False)
-
+    
     def __str__(self):
         return self.nama_barang.nama_obat.nama_obat
 
