@@ -46,7 +46,7 @@ class DataKunjunganAdmin(admin.ModelAdmin):
 
 	inlines = [ResepInline,]
 	autocomplete_fields = ['nama_pasien', 'diagnosa', 'penulis_resep']
-	list_display = ('nama_pasien', 'tgl_kunjungan', 'no_resep')
+	list_display = ('nama_pasien', 'tgl_kunjungan')
 	list_per_page = 20
 	ordering = ['-tgl_kunjungan', '-no_resep']
 	#actions = ['delete_selected']
@@ -57,7 +57,7 @@ class DataKunjunganAdmin(admin.ModelAdmin):
         )
 	fieldsets = [
 		('Data Kunjungan', {'fields': ['nama_pasien', 'tgl_kunjungan']}),
-		('Data Resep', {'fields': ['penulis_resep', 'no_resep', 'diagnosa']}),
+		('Data Resep', {'fields': ['penulis_resep', 'diagnosa']}),
 		('Data Tambahan', {'fields': ['notes', 'file_up'], 'classes': ('collapse',)}),
 	]
 

@@ -16,17 +16,29 @@ class Diagnosa(models.Model):
 
 	def __str__(self):
 		return str(self.diagnosa)
+	def save(self, *args, **kwargs):
+	    self.diagnosa = self.diagnosa.upper()
+	    super(Diagnosa, self).save(*args, **kwargs)
 	class Meta:
 		verbose_name_plural = "Diagnosa"
 
 class DataKunjungan(models.Model):
 	nama_pasien = models.ForeignKey('pendaftaran.DataPasien', on_delete=models.CASCADE)
 	tgl_kunjungan = models.DateField(verbose_name="Tanggal Kunjungan")
-	no_resep = models.PositiveSmallIntegerField()
+	no_resep = models.PositiveSmallIntegerField(default=0, editable=False)
 	penulis_resep = models.ForeignKey('poli.DataPeresep', on_delete=models.CASCADE)
 	diagnosa = models.ManyToManyField('poli.Diagnosa')
 	notes = models.TextField(blank=True)
 	file_up = models.FileField(blank=True, upload_to='docs/%Y/%m/%d')
+
+	def save(self, *args, **kwargs):
+	    try:
+	        q = DataKunjungan.objects.filter(tgl_kunjungan=self.tgl_kunjungan)
+	        self.no_resep = len(q) + 1
+	        super(DataKunjungan, self).save(*args, **kwargs)
+	    except DataKunjungan.DoesNotExist:
+	        self.no_resep = 1
+	        super(DataKunjungan, self).save(*args, **kwargs)
 
 	def delete(self, *args, **kwargs):
 		query_obat = Resep.objects.filter(kunjungan_pasien_id=self.id)
