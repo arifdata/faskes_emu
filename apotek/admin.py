@@ -1,8 +1,14 @@
 from django.contrib import admin
-from .models import DataObat, StokObatGudang, Resep, Penerimaan, BukuPenerimaan, SumberTerima, StokObatApotek, Pengeluaran, BukuPengeluaran, TujuanKeluar
+from .models import DataObat, StokObatGudang, Resep, Penerimaan, BukuPenerimaan, SumberTerima, StokObatApotek, Pengeluaran, BukuPengeluaran, TujuanKeluar, KartuStokGudang
 from rangefilter.filters import DateRangeFilter
 
 # Register your models here.
+
+@admin.register(KartuStokGudang)
+class KartuStokGudangAdmin(admin.ModelAdmin):
+    list_display = ('nama_obat', 'tgl', 'unit', 'stok_terima', 'stok_keluar', 'sisa_stok', 'ket')
+    ordering = ['-tgl', 'id']
+    
 @admin.register(StokObatGudang)
 class StokObatGudangAdmin(admin.ModelAdmin):
     def log_addition(self, *args):
