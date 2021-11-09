@@ -1,39 +1,24 @@
 from django.db import models
 from django.db.models import F
 from django.core.exceptions import ValidationError
+import datetime
 #from poli.models import DataKunjungan
 
 # Create your models here.
 
 class KartuStokGudang(models.Model):
-    nama_obat = models.CharField(max_length=100)
-    tgl = models.DateField()
-    unit = models.CharField(max_length=20)
-    stok_awal = models.PositiveSmallIntegerField(default=0)
+    nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
+    tgl = models.DateField(default=datetime.date(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day))
+    unit = models.ForeignKey('apotek.SumberTerima', on_delete=models.CASCADE)
     stok_terima = models.PositiveSmallIntegerField(default=0)
     stok_keluar = models.PositiveSmallIntegerField(default=0)
-    sisa_stok = models.PositiveSmallIntegerField()
-    ket = models.CharField(max_length=20)
+    sisa_stok = models.PositiveSmallIntegerField(default=0)
+    ket = models.CharField(max_length=20, default='-')
 
     def __str__(self):
-        return self.nama_obat
+        return self.nama_obat.nama_obat
     class Meta:
         verbose_name_plural = "Kartu Stok Gudang"
-
-class KartuStokApotek(models.Model):
-    nama_obat = models.CharField(max_length=100)
-    tgl = models.DateField()
-    unit = models.CharField(max_length=20)
-    stok_awal = models.PositiveSmallIntegerField(default=0)
-    stok_terima = models.PositiveSmallIntegerField(default=0)
-    stok_keluar = models.PositiveSmallIntegerField(default=0)
-    sisa_stok = models.PositiveSmallIntegerField()
-    ket = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.nama_obat
-    class Meta:
-        verbose_name_plural = "Kartu Stok Apotek"
     
 class DataObat(models.Model):
     nama_obat = models.CharField(max_length=100, help_text="Tulis nama obat dan dosisnya", blank=False)
@@ -141,6 +126,11 @@ class Penerimaan(models.Model):
         reference = str(self.nama_barang_id)
         try:
             stock = StokObatGudang.objects.get(nama_obat_id=reference)
+            query_stock_sebelum = KartuStokGudang.objects.filter(nama_obat=self.nama_barang)
+            stock_sebelum = query_stock_sebelum[len(query_stock_sebelum)-1]
+            sisa = stock_sebelum.sisa_stok + self.jumlah
+            kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang, tgl=self.terima_barang.tgl_terima, unit=self.terima_barang.sumber, stok_terima=self.jumlah, sisa_stok=sisa, ket=self.terima_barang.notes[0:20])
+            kartu_stok_input.save()
             stock.jml = F('jml') + self.jumlah
             if self.tgl_kadaluarsa == None:
                 self.tgl_kadaluarsa = stock.tgl_kadaluarsa
@@ -151,7 +141,13 @@ class Penerimaan(models.Model):
         except StokObatGudang.DoesNotExist:
             new_item = StokObatGudang(nama_obat=self.nama_barang, jml=self.jumlah, tgl_kadaluarsa=self.tgl_kadaluarsa)
             new_item.save()
+            kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang, tgl=self.terima_barang.tgl_terima, unit=self.terima_barang.sumber, stok_terima=self.jumlah, sisa_stok=self.jumlah, ket=self.terima_barang.notes[0:20])
+            kartu_stok_input.save()
             super(Penerimaan, self).save(*args, **kwargs)
+       # except KartuStokGudang.DoesNotExist:
+       #     kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang, tgl=self.terima_barang.tgl_terima, unit=self.terima_barang.sumber, stok_terima=self.jumlah, sisa_stok=self.jumlah, ket=self.terima_barang.notes[0:20])
+       #     kartu_stok_input.save()
+       #     super(Penerimaan, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         reference = str(self.nama_barang_id)
@@ -234,7 +230,6 @@ class Pengeluaran(models.Model):
         stock.jml = F('jml') - self.jumlah
         stock.save()
         if self.keluar_barang.tujuan.nama == "APOTEK":
-            #print("barang ke apotek
             ref_obat = self.nama_barang.nama_obat
             try:
                 stok_apt = StokObatApotek.objects.get(nama_obat=ref_obat)
