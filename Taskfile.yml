@@ -1,0 +1,27 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  default:
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
+
+  resdb:
+    desc: Reset dbsqlite dan semua migrasi
+    ignore_error: true
+    cmds:
+      - rm db.sqlite3
+      - rm -rfv apotek/migrations/*
+      - touch apotek/migrations/__init__.py
+      - rm -rfv poli/migrations/*
+      - touch poli/migrations/__init__.py
+      - rm -rfv pendaftaran/migrations/*
+      - touch pendaftaran/migrations/__init__.py
+      - python manage.py makemigrations
+      - python manage.py migrate
+      - python manage.py createsuperuser
