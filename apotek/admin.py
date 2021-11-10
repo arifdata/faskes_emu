@@ -8,6 +8,7 @@ from rangefilter.filters import DateRangeFilter
 class KartuStokGudangAdmin(admin.ModelAdmin):
     list_display = ('nama_obat', 'tgl', 'unit', 'stok_terima', 'stok_keluar', 'sisa_stok', 'ket')
     ordering = ['-tgl', 'id']
+    search_fields = ['nama_obat__nama_obat']
     
 @admin.register(StokObatGudang)
 class StokObatGudangAdmin(admin.ModelAdmin):
