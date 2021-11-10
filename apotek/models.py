@@ -9,7 +9,7 @@ import datetime
 class KartuStokGudang(models.Model):
     nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
     tgl = models.DateField(default=datetime.date(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day))
-    unit = models.ForeignKey('apotek.SumberTerima', on_delete=models.CASCADE)
+    unit = models.CharField(max_length=20, default="")
     stok_terima = models.PositiveSmallIntegerField(default=0)
     stok_keluar = models.PositiveSmallIntegerField(default=0)
     sisa_stok = models.PositiveSmallIntegerField(default=0)
@@ -129,7 +129,7 @@ class Penerimaan(models.Model):
             query_stock_sebelum = KartuStokGudang.objects.filter(nama_obat=self.nama_barang)
             stock_sebelum = query_stock_sebelum[len(query_stock_sebelum)-1]
             sisa = stock_sebelum.sisa_stok + self.jumlah
-            kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang, tgl=self.terima_barang.tgl_terima, unit=self.terima_barang.sumber, stok_terima=self.jumlah, sisa_stok=sisa, ket=self.terima_barang.notes[0:20])
+            kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang, tgl=self.terima_barang.tgl_terima, unit=self.terima_barang.sumber.nama, stok_terima=self.jumlah, sisa_stok=sisa, ket=self.terima_barang.notes[0:20])
             kartu_stok_input.save()
             stock.jml = F('jml') + self.jumlah
             if self.tgl_kadaluarsa == None:
@@ -233,12 +233,22 @@ class Pengeluaran(models.Model):
             ref_obat = self.nama_barang.nama_obat
             try:
                 stok_apt = StokObatApotek.objects.get(nama_obat=ref_obat)
+                query_stock_sebelum = KartuStokGudang.objects.filter(nama_obat=self.nama_barang.nama_obat)
+                stock_sebelum = query_stock_sebelum[len(query_stock_sebelum)-1]
+                sisa = stock_sebelum.sisa_stok -self.jumlah
+                kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_keluar=self.jumlah, sisa_stok=sisa, ket=self.keluar_barang.notes[0:20])
+                kartu_stok_input.save()
                 stok_apt.jml = F('jml') + self.jumlah
                 stok_apt.save()
                 super(Pengeluaran, self).save(*args, **kwargs)
             except StokObatApotek.DoesNotExist:
                 new_item = StokObatApotek(nama_obat=ref_obat, jml=self.jumlah)
                 new_item.save()
+                query_stock_sebelum = KartuStokGudang.objects.filter(nama_obat=self.nama_barang.nama_obat)
+                stock_sebelum = query_stock_sebelum[len(query_stock_sebelum)-1]
+                sisa = stock_sebelum.sisa_stok -self.jumlah
+                kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_keluar=self.jumlah, sisa_stok=sisa, ket=self.keluar_barang.notes[0:20])
+                kartu_stok_input.save()
                 super(Pengeluaran, self).save(*args, **kwargs)
         else:
             #print("barang ke selain apotek")
