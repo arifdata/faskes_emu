@@ -251,8 +251,11 @@ class Pengeluaran(models.Model):
                 kartu_stok_input.save()
                 super(Pengeluaran, self).save(*args, **kwargs)
         else:
-            #print("barang ke selain apotek")
-            pass
+            query_stock_sebelum = KartuStokGudang.objects.filter(nama_obat=self.nama_barang.nama_obat)
+            stock_sebelum = query_stock_sebelum[len(query_stock_sebelum)-1]
+            sisa = stock_sebelum.sisa_stok -self.jumlah
+            kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_keluar=self.jumlah, sisa_stok=sisa, ket=self.keluar_barang.notes[0:20])
+            kartu_stok_input.save()
         super(Pengeluaran, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
