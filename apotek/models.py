@@ -8,7 +8,7 @@ import datetime
 
 class KartuStokGudang(models.Model):
     nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
-    tgl = models.DateField(default=datetime.date(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day))
+    tgl = models.DateField(default=datetime.date.today)
     unit = models.CharField(max_length=20, default="")
     stok_terima = models.PositiveSmallIntegerField(default=0)
     stok_keluar = models.PositiveSmallIntegerField(default=0)
@@ -19,6 +19,20 @@ class KartuStokGudang(models.Model):
         return self.nama_obat.nama_obat
     class Meta:
         verbose_name_plural = "Kartu Stok Gudang"
+
+class KartuStokApotek(models.Model):
+    nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
+    tgl = models.DateField(default=datetime.date.today)
+    unit = models.CharField(max_length=20, default="")
+    stok_terima = models.PositiveSmallIntegerField(default=0)
+    stok_keluar = models.PositiveSmallIntegerField(default=0)
+    sisa_stok = models.PositiveSmallIntegerField(default=0)
+    ket = models.CharField(max_length=20, default='-')
+
+    def __str__(self):
+        return self.nama_obat.nama_obat
+    class Meta:
+        verbose_name_plural = "Kartu Stok Apotek"
     
 class DataObat(models.Model):
     nama_obat = models.CharField(max_length=100, help_text="Tulis nama obat dan dosisnya", blank=False)
@@ -180,7 +194,7 @@ class BukuPenerimaan(models.Model):
         return str(self.tgl_terima.strftime('%d %B %Y'))
 
     class Meta:
-        verbose_name_plural = "Buku Terima Gudang"
+        verbose_name_plural = "Buku Penerimaan Gudang"
 
 class TujuanKeluar(models.Model):
     nama = models.CharField(max_length=30)
@@ -233,11 +247,21 @@ class Pengeluaran(models.Model):
             ref_obat = self.nama_barang.nama_obat
             try:
                 stok_apt = StokObatApotek.objects.get(nama_obat=ref_obat)
+
+                # Query Kartu Stok Gudang
                 query_stock_sebelum = KartuStokGudang.objects.filter(nama_obat=self.nama_barang.nama_obat)
                 stock_sebelum = query_stock_sebelum[len(query_stock_sebelum)-1]
-                sisa = stock_sebelum.sisa_stok -self.jumlah
+                sisa = stock_sebelum.sisa_stok - self.jumlah
                 kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_keluar=self.jumlah, sisa_stok=sisa, ket=self.keluar_barang.notes[0:20])
                 kartu_stok_input.save()
+
+                # Query Kartu Stok Apotek
+                query_kartu_apt = KartuStokApotek.objects.filter(nama_obat=self.nama_barang.nama_obat)
+                stok_apt_sebelum = query_kartu_apt[len(query_kartu_apt)-1]
+                sisa_stok_apt = stok_apt_sebelum.sisa_stok + self.jumlah
+                kartu_stok_apt_input = KartuStokApotek(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_terima=self.jumlah, sisa_stok=sisa_stok_apt, ket=self.keluar_barang.notes[0:20])
+                kartu_stok_apt_input.save()
+                
                 stok_apt.jml = F('jml') + self.jumlah
                 stok_apt.save()
                 super(Pengeluaran, self).save(*args, **kwargs)
@@ -249,6 +273,10 @@ class Pengeluaran(models.Model):
                 sisa = stock_sebelum.sisa_stok -self.jumlah
                 kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_keluar=self.jumlah, sisa_stok=sisa, ket=self.keluar_barang.notes[0:20])
                 kartu_stok_input.save()
+
+                # Query Kartu Stok Apotek
+                kartu_stok_apt_input = KartuStokApotek(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_terima=self.jumlah, sisa_stok=self.jumlah, ket=self.keluar_barang.notes[0:20])
+                kartu_stok_apt_input.save()
                 super(Pengeluaran, self).save(*args, **kwargs)
         else:
             query_stock_sebelum = KartuStokGudang.objects.filter(nama_obat=self.nama_barang.nama_obat)

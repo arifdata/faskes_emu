@@ -1,11 +1,17 @@
 from django.contrib import admin
-from .models import DataObat, StokObatGudang, Resep, Penerimaan, BukuPenerimaan, SumberTerima, StokObatApotek, Pengeluaran, BukuPengeluaran, TujuanKeluar, KartuStokGudang
+from .models import DataObat, StokObatGudang, Resep, Penerimaan, BukuPenerimaan, SumberTerima, StokObatApotek, Pengeluaran, BukuPengeluaran, TujuanKeluar, KartuStokGudang, KartuStokApotek
 from rangefilter.filters import DateRangeFilter
 
 # Register your models here.
 
 @admin.register(KartuStokGudang)
 class KartuStokGudangAdmin(admin.ModelAdmin):
+    list_display = ('nama_obat', 'tgl', 'unit', 'stok_terima', 'stok_keluar', 'sisa_stok', 'ket')
+    ordering = ['-tgl', 'id']
+    search_fields = ['nama_obat__nama_obat']
+
+@admin.register(KartuStokApotek)
+class KartuStokApotekAdmin(admin.ModelAdmin):
     list_display = ('nama_obat', 'tgl', 'unit', 'stok_terima', 'stok_keluar', 'sisa_stok', 'ket')
     ordering = ['-tgl', 'id']
     search_fields = ['nama_obat__nama_obat']
