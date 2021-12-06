@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from laporan.views import index_page, laporan_page
+from laporan.views import index_page, laporan_page, get_name
 from utils import download_backup
 
 urlpatterns = [
@@ -25,6 +25,7 @@ urlpatterns = [
     path('', index_page, name='index_page'),
     path('laporan/', laporan_page, name='laporan_page'),
     path('utils/backupd', download_backup, name='backupd'),
+    path('fuyunghay', get_name, name='getname'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
