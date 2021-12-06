@@ -9,12 +9,32 @@ class KartuStokGudangAdmin(admin.ModelAdmin):
     list_display = ('nama_obat', 'tgl', 'unit', 'stok_terima', 'stok_keluar', 'sisa_stok', 'ket')
     ordering = ['-tgl', 'id']
     search_fields = ['nama_obat__nama_obat']
+    def has_module_permission(self, request):
+        return {}
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
+    def has_change_permission(self, request, obj=None):
+        return False
 
 @admin.register(KartuStokApotek)
 class KartuStokApotekAdmin(admin.ModelAdmin):
     list_display = ('nama_obat', 'tgl', 'unit', 'stok_terima', 'stok_keluar', 'sisa_stok', 'ket')
     ordering = ['-tgl', 'id']
     search_fields = ['nama_obat__nama_obat']
+    def has_module_permission(self, request):
+        return {}
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
+    def has_change_permission(self, request, obj=None):
+        return False
     
 @admin.register(StokObatGudang)
 class StokObatGudangAdmin(admin.ModelAdmin):
