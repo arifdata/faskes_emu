@@ -123,6 +123,9 @@ class Resep(models.Model):
     def delete(self, *args, **kwargs):
         reference = str(self.nama_obat.id)
         stock = StokObatApotek.objects.get(pk=reference)
+        krt = KartuStokApotek.objects.filter(nama_obat=self.nama_obat.nama_obat)
+        krt = krt[len(krt)-1]
+        krt.delete()
         stock.jml = F('jml') + self.jumlah
         stock.save()
         super(Resep, self).delete(*args, **kwargs)
