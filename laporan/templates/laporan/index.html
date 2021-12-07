@@ -39,15 +39,22 @@
             name: "kunjungan", type: "line",
             values: {{ data_kunjungan|safe }}
         }
-      ]
+      ],
+    yMarkers: [
+            {
+                label: "Rata-rata",
+                value: {{ rerata_kunjungan|safe }},
+                options: { labelPos: 'right' } // default: 'right'
+            }
+        ]
     }
 
     const kunjunganChart = new frappe.Chart("#kunjunganChart", {
-          title: "Kunjungan-{{bln}}-{{thn}}",
+          title: "Kunjungan {{bln}} {{thn}}",
           data: data_kunjungan,
           type: 'line', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 250,
-          colors: ['#9D9D9D'],
+          colors: ['#ff1178'],
           valuesOverPoints: 1,
           lineOptions: {
               regionFill: 1 // default: 0
@@ -69,11 +76,11 @@
     }
 
     const penyakitChart = new frappe.Chart("#penyakitPieChart", {
-          title: "Penyakit-{{bln}}-{{thn}}",
+          title: "Penyakit {{bln}} {{thn}}",
           data: data_penyakit,
           type: 'pie', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 350,
-          colors: ['violet', 'red', 'orange', 'yellow', 'green', 'light-green', 'purple', 'magenta', 'light-grey', 'dark-grey']
+          colors: ['#E4F700', '#F700C1', '#B300F7', '#8000F7',  '#1000F7', '#00C7F7', '#4900F7', '#00F7C2', '#00F740', '#ACF700']
       })
     {% else %}
     // belum ada data penyakit
@@ -91,11 +98,11 @@
     }
 
     const obatBarChart = new frappe.Chart("#obatBarChart", {
-          title: "Obat-Terbanyak-{{bln}}-{{thn}}",
+          title: "Obat Terbanyak {{bln}} {{thn}}",
           data: data_obat,
           type: 'bar', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 250,
-          colors: ['#79B4B7'],
+          colors: ['#1696d5'],
           axisOptions: {
               xAxisMode: 'tick' // default: 'span'
           },

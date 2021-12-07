@@ -5,6 +5,7 @@ from apotek.models import Resep
 import datetime
 from collections import OrderedDict
 import operator
+from statistics import mean
 
 from .forms import NameForm
 
@@ -38,6 +39,7 @@ def index_page(request):
 
     # mengurutkan data sesuai urutan tanggal
     cleaned_data_kunjungan = OrderedDict(sorted(raw_data_kunjungan.items()))
+    #print()
 
     # mengurutkan data sesuai urutan tanggal
     cleaned_data_penyakit = OrderedDict(sorted(raw_data_penyakit.items()))
@@ -56,17 +58,15 @@ def index_page(request):
     cleaned_data_obat = dict(sorted(raw_data_obat.items(), key=operator.itemgetter(1),reverse=True))
 
     context = {
-
-        'nama': 'Power User', 
         'bln': now.strftime("%B"), 
         'thn': now.year, 
         'labels_penyakit': list(cleaned_data_penyakit.keys()), 
         'data_penyakit': list(cleaned_data_penyakit.values()), 
         'labels_kunjungan': list(cleaned_data_kunjungan.keys()), 
         'data_kunjungan': list(cleaned_data_kunjungan.values()),
+        'rerata_kunjungan': mean(list(cleaned_data_kunjungan.values())),
         'labels_obat_terbanyak': list(cleaned_data_obat.keys())[0:10],
         'data_obat_terbanyak': list(cleaned_data_obat.values())[0:10]
-
     }
 
     return render(request, 'laporan/index.html', context)
