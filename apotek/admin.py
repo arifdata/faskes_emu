@@ -240,6 +240,12 @@ class BukuPengeluaranAdmin(admin.ModelAdmin):
         return False
     def has_delete_permission(self, request, obj=None):
         return False
+    def log_addition(self, *args):
+        return
+    def log_change(self, *args):
+        return
+    def log_deletion(self, *args):
+        return
 
 @admin.register(Pengeluaran)
 class PengeluaranAdmin(admin.ModelAdmin):

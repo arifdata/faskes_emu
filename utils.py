@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import FileResponse
 
-def coba(request):
-    return HttpResponse("Cobain")
+def download_backup(request):
+    return FileResponse(open('db.sqlite3', 'rb'), as_attachment=True)

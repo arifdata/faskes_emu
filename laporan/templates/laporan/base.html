@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/flexboxgrid.min.css' %}">
     <script src="{% static 'js/frappe-charts.min.iife.js' %}"></script>
   </head>
   <body>
@@ -20,9 +21,17 @@
         </div>
       </div>
       <div class="breadcrumbs">
+      	<div class="row">
+      	<div class="col-lg-2 col-xs-6">
         <a href="{% url 'index_page' %}">Home</a> |
-        <a href="/app">Masuk Ke App</a> |
-        <a href="{% url 'laporan_page' %}">Laporan Generator</a> |
+        <a href="{% url 'laporan_page' %}">Laporan Generator</a>
+        </div>
+
+        <div class="col-lg-offset-8 col-xs-offset-3 col-xs-3 col-lg-2">
+        <a href="/app">Masuk Ke App</a>
+        </div>
+        
+        </div>
       </div>
       {% block content %}
       {% endblock %}

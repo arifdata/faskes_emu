@@ -18,13 +18,13 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from laporan.views import index_page, laporan_page
-from utils import coba
+from utils import download_backup
 
 urlpatterns = [
     path('app/', admin.site.urls),
     path('', index_page, name='index_page'),
     path('laporan/', laporan_page, name='laporan_page'),
-    path('utils/', coba, name='coba'),
+    path('utils/backupd', download_backup, name='backupd'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
