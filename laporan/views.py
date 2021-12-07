@@ -6,6 +6,8 @@ import datetime
 from collections import OrderedDict
 import operator
 
+from .forms import NameForm
+
 # Create your views here.
 def index_page(request):
 
@@ -71,3 +73,28 @@ def index_page(request):
 
 def laporan_page(request):
     return render(request, 'laporan/laporan_generator.html')
+
+def get_name(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = NameForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            # return HttpResponseRedirect('/thanks/')
+            for key, value in request.POST.items():
+                print('Key: %s' % (key) ) 
+                # print(f'Key: {key}') in Python >= 3.7
+                print('Value %s' % (value) )
+                # print(f'Value: {value}') in Python >= 3.7
+                
+            return HttpResponse("{} dan {}".format(request.POST.get("tanggal1"), request.POST.get("tanggal2")))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = NameForm()
+
+    return render(request, 'laporan/name.html', {'form': form})
