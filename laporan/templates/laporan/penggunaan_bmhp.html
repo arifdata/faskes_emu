@@ -1,0 +1,36 @@
+{% extends 'laporan/base.html' %}
+{% block content %}
+
+<div id="content" class="colM">
+Penggunaan BMHP apotek  dari <strong>{{ startdate }}</strong> s/d <strong>{{ enddate }}</strong> <i><small>(YYYY-MM-DD)</small></i>:
+<p></p>
+
+{% if val %}
+	<table id="data-table" border="1">
+	  <tr><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
+	  {% for key, value in val.items %}
+	  <tr><td contenteditable="false">{{ key }}</td><td contenteditable="false">{{ value }}</td></tr>
+	  {% endfor %}
+	</table>
+<br>
+<p><input type="submit" value="Download Excel" onclick="dl_excel('xlsx');"></p>
+
+<script>
+function dl_excel(type, fn, dl) {
+	var elt = document.getElementById('data-table');
+	var wb = XLSX.utils.table_to_book(elt, {sheet:"Penggunaan BMHP Apotek"});
+	return dl ?
+		XLSX.write(wb, {bookType:type, bookSST:true, type: 'base64'}) :
+		XLSX.writeFile(wb, fn || ('Penggunaan-BMHP-Apotek__{{startdate}}__{{enddate}}.' + (type || 'xlsx')));
+}
+</script>
+
+{% else %}
+<p>Tidak ada data pengeluaran BMHP pada rentang tanggal di atas. Coba tanggal lainnya.</p>
+<p>(T⌓T)</p>
+
+{% endif %}
+
+{% endblock %}
+
+</div>

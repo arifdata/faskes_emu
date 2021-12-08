@@ -74,27 +74,39 @@ def index_page(request):
 def laporan_page(request):
     return render(request, 'laporan/laporan_generator.html')
 
-def get_name(request):
+def penggunaan_bmhp(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = NameForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            # return HttpResponseRedirect('/thanks/')
+            raw_data_obat = {}
+            """
             for key, value in request.POST.items():
                 print('Key: %s' % (key) ) 
-                # print(f'Key: {key}') in Python >= 3.7
                 print('Value %s' % (value) )
-                # print(f'Value: {value}') in Python >= 3.7
-                
-            return HttpResponse("{} dan {}".format(request.POST.get("tanggal1"), request.POST.get("tanggal2")))
+            """
+            q = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2"))
+
+            for data in q:
+                if data.nama_obat.nama_obat.nama_obat not in raw_data_obat:
+                    raw_data_obat[data.nama_obat.nama_obat.nama_obat] = data.jumlah
+                else:
+                    raw_data_obat[data.nama_obat.nama_obat.nama_obat] += data.jumlah
+
+            cleaned_data_obat = dict(sorted(raw_data_obat.items(), key=operator.itemgetter(1),reverse=True))
+            
+            context = {
+                'startdate': request.POST.get("tanggal1"),
+                'enddate': request.POST.get("tanggal2"),
+                'val': cleaned_data_obat,
+            }
+            #return HttpResponse("{}".format(q[0].nama_pasien))
+            return render(request, 'laporan/penggunaan_bmhp.html', context)
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = NameForm()
 
-    return render(request, 'laporan/name.html', {'form': form})
+    return render(request, 'laporan/form_penggunaan_bmhp.html', {'form': form})
