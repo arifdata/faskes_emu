@@ -100,6 +100,7 @@ def penggunaan_bmhp(request):
                     raw_data_bmhp_apt[data.nama_obat.nama_obat.nama_obat] += data.jumlah
 
             cleaned_data_obat = dict(sorted(raw_data_bmhp_apt.items(), key=operator.itemgetter(1),reverse=True))
+            cleaned_data_obat = OrderedDict(sorted(cleaned_data_obat.items()))
 
             for data in q2:
                 a = {}
