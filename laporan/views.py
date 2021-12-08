@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from poli.models import DataKunjungan
-from apotek.models import Resep
+from apotek.models import Resep, Pengeluaran
 import datetime
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 import operator
 from statistics import mean
 
@@ -81,28 +81,47 @@ def penggunaan_bmhp(request):
         form = NameForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            raw_data_obat = {}
+            raw_data_bmhp_apt = {}
+            raw_data_bmhp_unit = {}
+            kunci = []
+            cleaned_data_bmhp_unit = {}
             """
             for key, value in request.POST.items():
                 print('Key: %s' % (key) ) 
                 print('Value %s' % (value) )
             """
             q = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2"))
+            q2 = Pengeluaran.objects.filter(keluar_barang__tgl_keluar__gte=request.POST.get("tanggal1"), keluar_barang__tgl_keluar__lte=request.POST.get("tanggal2")).exclude(keluar_barang__tujuan__nama="APOTEK")
 
             for data in q:
-                if data.nama_obat.nama_obat.nama_obat not in raw_data_obat:
-                    raw_data_obat[data.nama_obat.nama_obat.nama_obat] = data.jumlah
+                if data.nama_obat.nama_obat.nama_obat not in raw_data_bmhp_apt:
+                    raw_data_bmhp_apt[data.nama_obat.nama_obat.nama_obat] = data.jumlah
                 else:
-                    raw_data_obat[data.nama_obat.nama_obat.nama_obat] += data.jumlah
+                    raw_data_bmhp_apt[data.nama_obat.nama_obat.nama_obat] += data.jumlah
 
-            cleaned_data_obat = dict(sorted(raw_data_obat.items(), key=operator.itemgetter(1),reverse=True))
+            cleaned_data_obat = dict(sorted(raw_data_bmhp_apt.items(), key=operator.itemgetter(1),reverse=True))
+
+            for data in q2:
+                a = {}
+                a[data.nama_barang.nama_obat.nama_obat] = data.jumlah
+                if data.keluar_barang.tujuan.nama not in raw_data_bmhp_unit.keys():
+                    raw_data_bmhp_unit[data.keluar_barang.tujuan.nama] = [a]
+                    kunci.append(data.keluar_barang.tujuan.nama)
+                else:                    
+                    raw_data_bmhp_unit[data.keluar_barang.tujuan.nama].append(a)
+
+            for d in kunci:
+                c = Counter()
+                for x in raw_data_bmhp_unit[d]:
+                    c.update(x)
+                    cleaned_data_bmhp_unit[d] = dict(c)
             
             context = {
                 'startdate': request.POST.get("tanggal1"),
                 'enddate': request.POST.get("tanggal2"),
                 'val': cleaned_data_obat,
+                'unit': cleaned_data_bmhp_unit,
             }
-            #return HttpResponse("{}".format(q[0].nama_pasien))
             return render(request, 'laporan/penggunaan_bmhp.html', context)
 
     # if a GET (or any other method) we'll create a blank form

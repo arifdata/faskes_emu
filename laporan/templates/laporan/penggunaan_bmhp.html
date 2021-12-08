@@ -2,7 +2,8 @@
 {% block content %}
 
 <div id="content" class="colM">
-Penggunaan BMHP apotek  dari <strong>{{ startdate }}</strong> s/d <strong>{{ enddate }}</strong> <i><small>(YYYY-MM-DD)</small></i>:
+<h2>Penggunaan BMHP Apotek</h2>
+Penggunaan BMHP apotek dari <strong>{{ startdate }}</strong> s/d <strong>{{ enddate }}</strong> <i><small>(YYYY-MM-DD)</small></i>:
 <p></p>
 
 {% if val %}
@@ -26,9 +27,27 @@ function dl_excel(type, fn, dl) {
 </script>
 
 {% else %}
-<p>Tidak ada data pengeluaran BMHP pada rentang tanggal di atas. Coba tanggal lainnya.</p>
+<p>Tidak ada data pengeluaran BMHP Apotek pada rentang tanggal di atas. Coba tanggal lainnya.</p>
 <p>(T⌓T)</p>
 
+{% endif %}
+<br>
+
+<h2>Pengeluaran BMHP ke Unit Lain</h2>
+Penggunaan BMHP unit lain dari <strong>{{ startdate }}</strong> s/d <strong>{{ enddate }}</strong> <i><small>(YYYY-MM-DD)</small></i>:
+
+
+{% if unit %}
+	<table id="data-table" border="1">
+	  <tr><td contenteditable="false"><strong>Lokasi Unit</strong></td><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
+	  {% for lokasi, value in unit.items %}
+	  <tr><td contenteditable="false"><strong>{{ lokasi }}</strong></td><td contenteditable="false"><strong>{{ value }}</strong></td><td contenteditable="false"><strong>{{ value }}</strong></td></tr>
+	  {% endfor %}
+	</table>
+
+{% else %}
+<p>Tidak ada data pengeluaran BMHP ke unit lain pada rentang tanggal di atas. Coba tanggal lainnya.</p>
+<p>(T⌓T)</p>
 {% endif %}
 
 {% endblock %}
