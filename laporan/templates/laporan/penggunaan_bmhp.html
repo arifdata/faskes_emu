@@ -2,6 +2,8 @@
 {% block content %}
 
 <div id="content" class="colM">
+<div class="row">
+<div class="col-lg-6 col-xs-12">
 <h2>Penggunaan BMHP Apotek</h2>
 Penggunaan BMHP apotek pada tanggal <strong>{{ startdate }}</strong> s/d <strong>{{ enddate }}</strong> <i><small>(YYYY-MM-DD)</small></i>:
 <p></p>
@@ -15,6 +17,7 @@ Penggunaan BMHP apotek pada tanggal <strong>{{ startdate }}</strong> s/d <strong
 	</table>
 <br>
 <p><input type="submit" value="Download Excel" onclick="dl_excel('xlsx');"></p>
+</div>
 
 <script>
 function dl_excel(type, fn, dl) {
@@ -33,6 +36,7 @@ function dl_excel(type, fn, dl) {
 {% endif %}
 <br>
 
+<div class="col-lg-6 col-xs-12">
 <h2>Pengeluaran BMHP dari Gudang ke Unit Lain</h2>
 Penggunaan BMHP dari gudang ke unit lain pada tanggal <strong>{{ startdate }}</strong> s/d <strong>{{ enddate }}</strong> <i><small>(YYYY-MM-DD)</small></i>:
 <p></p>
@@ -57,6 +61,9 @@ Penggunaan BMHP dari gudang ke unit lain pada tanggal <strong>{{ startdate }}</s
 	</table>
 	<br>
 	<p><input type="submit" value="Download Excel" onclick="dl_excel_unit('xlsx');"></p>
+</div>
+
+</div>
 
 <script>
 function dl_excel_unit(type, fn, dl) {

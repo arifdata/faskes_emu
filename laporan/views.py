@@ -1,17 +1,16 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from poli.models import DataKunjungan
-from apotek.models import Resep, Pengeluaran
+from django.http import HttpResponse, FileResponse
 import datetime
 from collections import OrderedDict, Counter
 import operator
 from statistics import mean
 
-from .forms import NameForm
+#from .forms import TglForm, TglChoiceForm
 
 # Create your views here.
 def index_page(request):
-
+    from poli.models import DataKunjungan
+    from apotek.models import Resep, Pengeluaran
     # get tanggal sekarang
     now = datetime.datetime.now()
 
@@ -75,10 +74,12 @@ def laporan_page(request):
     return render(request, 'laporan/laporan_generator.html')
 
 def penggunaan_bmhp(request):
+    from apotek.models import Resep, Pengeluaran
+    from .forms import TglForm
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = NameForm(request.POST)
+        form = TglForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
             raw_data_bmhp_apt = {}
@@ -127,6 +128,94 @@ def penggunaan_bmhp(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = NameForm()
+        form = TglForm()
 
     return render(request, 'laporan/form_penggunaan_bmhp.html', {'form': form})
+
+def pilih_kartu(kartu, tgl_awal, tgl_akhir):
+    from apotek.models import KartuStokApotek, KartuStokGudang
+    if kartu == "apotek":
+        q = KartuStokApotek.objects.filter(tgl__gte=tgl_awal, tgl__lte=tgl_akhir)
+    else:
+        q = KartuStokGudang.objects.filter(tgl__gte=tgl_awal, tgl__lte=tgl_akhir)
+    item_set, raw_data = [], {}
+    
+    for x in q:
+        item_set.append(x.nama_obat.nama_obat)
+    item_set = list(set(item_set))
+
+    for item in item_set:
+        raw_data[item] = []
+        data = q.filter(nama_obat__nama_obat=item)
+        for x in data:
+            raw_data[item].append([x.tgl.strftime("%Y-%m-%d"), x.unit.title(), x.stok_terima, x.stok_keluar, x.sisa_stok, x.ket])
+
+    #pprint.pprint(raw_data)
+    return raw_data
+
+def cetak_kartu_stok(request):
+    from .forms import TglChoiceForm
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = TglChoiceForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            from openpyxl.workbook import Workbook
+            from openpyxl.styles import Border, Font, Side
+            from openpyxl.writer.excel import save_virtual_workbook
+            from tempfile import NamedTemporaryFile
+            from os import unlink
+            
+            raw_data = pilih_kartu(request.POST.get("pilihan"), request.POST.get("tanggal1"), request.POST.get("tanggal2"))
+            ft = Font(name='Calibri', size=8)
+            brd = Border(left=Side(border_style='thin', color='000000'),
+                        right=Side(border_style='thin', color='000000'),
+                        top=Side(border_style='thin', color='000000'),
+                        bottom=Side(border_style='thin', color='000000'))
+            
+            wb = Workbook()
+            del wb["Sheet"]
+
+            for obat, data in raw_data.items():
+                ws = wb.create_sheet(obat)
+                ws.set_printer_settings(5, ws.ORIENTATION_LANDSCAPE)
+                ws.page_margins.left = 0.2
+                ws.page_margins.right = 0.2
+                ws.page_margins.bottom = 0.2
+                ws.page_margins.top = 0.2
+
+                for idx, rows in enumerate(data):
+                    if idx % 36 == 0:
+                        ws.append(["KARTU STOK{}".format(90 * " ")])
+                        ws.append(["Item : {}{}".format(obat.title(), 55 * " ")])
+                        ws.append(["Lokasi : {}{}".format(request.POST.get("pilihan").title(), 70 * " ")])
+                        ws.append(["{}".format(110 * " ")])
+                        ws.append(["Tanggal", "Unit", "Terima", "Keluar", "Sisa", "Ket"])
+                        ws.append(rows)
+                    else:
+                        ws.append(rows)
+
+                for cells in ws.rows:
+                    for cell in cells:
+                        cell.font = ft
+                        cell.border = brd
+                        
+                ws.column_dimensions['A'].width = 8
+                ws.column_dimensions['B'].width = 6
+                ws.column_dimensions['C'].width = 5
+                ws.column_dimensions['D'].width = 5
+                ws.column_dimensions['E'].width = 5
+                ws.column_dimensions['F'].width = 5
+
+            tmp = NamedTemporaryFile(delete=False)
+            with open(tmp.name) as fi:
+                wb.save(tmp.name)
+                return FileResponse(open(tmp.name, 'rb'), as_attachment=True, filename="kartu_stok_{}_{}_to_{}.xlsx".format(request.POST.get("pilihan"), request.POST.get("tanggal1"), request.POST.get("tanggal2")))
+
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = TglChoiceForm()
+
+    return render(request, 'laporan/form_cetak_kartu.html', {'form': form})
