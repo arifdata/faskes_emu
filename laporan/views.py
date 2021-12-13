@@ -174,53 +174,61 @@ def cetak_kartu_stok(request):
             
             wb = Workbook()
             del wb["Sheet"]
+            try:
+                for obat, data in raw_data.items():
+                    ws = wb.create_sheet(obat)
+                    ws.set_printer_settings(5, ws.ORIENTATION_LANDSCAPE)
+                    ws.page_margins.left = 0.2
+                    ws.page_margins.right = 0.2
+                    ws.page_margins.bottom = 0.2
+                    ws.page_margins.top = 0.2
 
-            for obat, data in raw_data.items():
-                ws = wb.create_sheet(obat)
-                ws.set_printer_settings(5, ws.ORIENTATION_LANDSCAPE)
-                ws.page_margins.left = 0.2
-                ws.page_margins.right = 0.2
-                ws.page_margins.bottom = 0.2
-                ws.page_margins.top = 0.2
-
-                for idx, rows in enumerate(data):
-                    if idx % 36 == 0:
-                        #ws.append(["KARTU STOK{}".format(90 * " ")])
-                        ws.append(["KARTU STOK"])
-                        ws.append(["Item : {}".format(obat.title())])
-                        ws.append(["Lokasi : {}".format(request.POST.get("pilihan").title())])
-                        ws.append(["{}".format(110 * " ")])
-                        ws.append(["Tanggal", "Unit", "Terima", "Keluar", "Sisa", "Ket"])
-                        ws.append(rows)
-                    else:
-                        ws.append(rows)
-
-                for cells in ws.rows:
-                    for cell in cells:
-                        if cell.value == "KARTU STOK" or str(cell.value).startswith("Item") or str(cell.value).startswith("Lokasi"):
-                            cell.border = brd
-                            cell.font = Font(name='Calibri', size=8, bold=True)
-                            cell.alignment = Alignment(horizontal='center')
-                            ws.merge_cells('A{}:F{}'.format(cell.row, cell.row))
-                        elif cell.value == "Tanggal" or cell.value == "Unit" or cell.value == "Terima" or cell.value == "Keluar" or cell.value == "Sisa" or cell.value == "Ket":
-                            cell.font = Font(name='Calibri', size=8, bold=True)
-                            cell.border = brd
-                            cell.alignment = Alignment(horizontal='center')
+                    for idx, rows in enumerate(data):
+                        if idx % 36 == 0:
+                            #ws.append(["KARTU STOK{}".format(90 * " ")])
+                            ws.append(["KARTU STOK"])
+                            ws.append(["Item : {}".format(obat.title())])
+                            ws.append(["Lokasi : {}".format(request.POST.get("pilihan").title())])
+                            ws.append(["{}".format(110 * " ")])
+                            ws.append(["Tanggal", "Unit", "Terima", "Keluar", "Sisa", "Ket"])
+                            ws.append(rows)
                         else:
-                            cell.font = ft
-                            cell.border = brd
-                        
-                ws.column_dimensions['A'].width = 8
-                ws.column_dimensions['B'].width = 6
-                ws.column_dimensions['C'].width = 5
-                ws.column_dimensions['D'].width = 5
-                ws.column_dimensions['E'].width = 5
-                ws.column_dimensions['F'].width = 5
+                            ws.append(rows)
 
-            tmp = NamedTemporaryFile(delete=False)
-            with open(tmp.name) as fi:
-                wb.save(tmp.name)
-                return FileResponse(open(tmp.name, 'rb'), as_attachment=True, filename="kartu_stok_{}_{}_to_{}.xlsx".format(request.POST.get("pilihan"), request.POST.get("tanggal1"), request.POST.get("tanggal2")))
+                    for cells in ws.rows:
+                        for cell in cells:
+                            if cell.value == "KARTU STOK" or str(cell.value).startswith("Item") or str(cell.value).startswith("Lokasi"):
+                                cell.border = brd
+                                cell.font = Font(name='Calibri', size=8, bold=True)
+                                cell.alignment = Alignment(horizontal='center')
+                                ws.merge_cells('A{}:F{}'.format(cell.row, cell.row))
+                            elif cell.value == "Tanggal" or cell.value == "Unit" or cell.value == "Terima" or cell.value == "Keluar" or cell.value == "Sisa" or cell.value == "Ket":
+                                cell.font = Font(name='Calibri', size=8, bold=True)
+                                cell.border = brd
+                                cell.alignment = Alignment(horizontal='center')
+                            else:
+                                cell.font = ft
+                                cell.border = brd
+                            
+                    ws.column_dimensions['A'].width = 8
+                    ws.column_dimensions['B'].width = 6
+                    ws.column_dimensions['C'].width = 5
+                    ws.column_dimensions['D'].width = 5
+                    ws.column_dimensions['E'].width = 5
+                    ws.column_dimensions['F'].width = 5
+
+                tmp = NamedTemporaryFile(delete=False)
+                with open(tmp.name) as fi:
+                    wb.save(tmp.name)
+                    return FileResponse(open(tmp.name, 'rb'), as_attachment=True, filename="kartu_stok_{}_{}_to_{}.xlsx".format(request.POST.get("pilihan"), request.POST.get("tanggal1"), request.POST.get("tanggal2")))
+
+            except IndexError:
+                ctx = {
+                    'gagal': "Tidak ada data. Coba tanggal lain!",
+                }
+                ctx.update({'form': form})
+                #return return render(request, 'laporan/form_cetak_kartu.html', {'form': form})
+                return render(request, 'laporan/form_cetak_kartu.html', context=ctx)
 
 
     # if a GET (or any other method) we'll create a blank form

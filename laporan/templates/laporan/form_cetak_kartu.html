@@ -5,6 +5,13 @@
 
 <div class="row">
 
+{% if gagal %}
+<script type="text/javascript">
+	alert("{{gagal}}");
+</script>
+{% else %}
+{% endif %}
+
 <div class="col-lg-12 col-xs-12">
 	Masukkan rentang tanggal awal dan tanggal akhir. Tekan submit untuk menyusun tabel penggunaan BMHP.
 </div>
