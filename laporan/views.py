@@ -162,7 +162,7 @@ def cetak_kartu_stok(request):
         # check whether it's valid:
         if form.is_valid():
             from openpyxl.workbook import Workbook
-            from openpyxl.styles import Border, Font, Side
+            from openpyxl.styles import Border, Font, Side, Alignment
             from tempfile import NamedTemporaryFile
             
             raw_data = pilih_kartu(request.POST.get("pilihan"), request.POST.get("tanggal1"), request.POST.get("tanggal2"))
@@ -200,10 +200,12 @@ def cetak_kartu_stok(request):
                         if cell.value == "KARTU STOK" or str(cell.value).startswith("Item") or str(cell.value).startswith("Lokasi"):
                             cell.border = brd
                             cell.font = Font(name='Calibri', size=8, bold=True)
+                            cell.alignment = Alignment(horizontal='center')
                             ws.merge_cells('A{}:F{}'.format(cell.row, cell.row))
                         elif cell.value == "Tanggal" or cell.value == "Unit" or cell.value == "Terima" or cell.value == "Keluar" or cell.value == "Sisa" or cell.value == "Ket":
                             cell.font = Font(name='Calibri', size=8, bold=True)
                             cell.border = brd
+                            cell.alignment = Alignment(horizontal='center')
                         else:
                             cell.font = ft
                             cell.border = brd
