@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse, FileResponse
-import datetime
 from collections import OrderedDict, Counter
 import operator
-from statistics import mean
 
 #from .forms import TglForm, TglChoiceForm
 
 # Create your views here.
 def index_page(request):
+    import datetime
+    from statistics import mean
     from poli.models import DataKunjungan
     from apotek.models import Resep, Pengeluaran
     # get tanggal sekarang
@@ -163,9 +163,7 @@ def cetak_kartu_stok(request):
         if form.is_valid():
             from openpyxl.workbook import Workbook
             from openpyxl.styles import Border, Font, Side
-            from openpyxl.writer.excel import save_virtual_workbook
             from tempfile import NamedTemporaryFile
-            from os import unlink
             
             raw_data = pilih_kartu(request.POST.get("pilihan"), request.POST.get("tanggal1"), request.POST.get("tanggal2"))
             ft = Font(name='Calibri', size=8)
@@ -187,9 +185,10 @@ def cetak_kartu_stok(request):
 
                 for idx, rows in enumerate(data):
                     if idx % 36 == 0:
-                        ws.append(["KARTU STOK{}".format(90 * " ")])
-                        ws.append(["Item : {}{}".format(obat.title(), 55 * " ")])
-                        ws.append(["Lokasi : {}{}".format(request.POST.get("pilihan").title(), 70 * " ")])
+                        #ws.append(["KARTU STOK{}".format(90 * " ")])
+                        ws.append(["KARTU STOK"])
+                        ws.append(["Item : {}".format(obat.title())])
+                        ws.append(["Lokasi : {}".format(request.POST.get("pilihan").title())])
                         ws.append(["{}".format(110 * " ")])
                         ws.append(["Tanggal", "Unit", "Terima", "Keluar", "Sisa", "Ket"])
                         ws.append(rows)
@@ -198,8 +197,16 @@ def cetak_kartu_stok(request):
 
                 for cells in ws.rows:
                     for cell in cells:
-                        cell.font = ft
-                        cell.border = brd
+                        if cell.value == "KARTU STOK" or str(cell.value).startswith("Item") or str(cell.value).startswith("Lokasi"):
+                            cell.border = brd
+                            cell.font = Font(name='Calibri', size=8, bold=True)
+                            ws.merge_cells('A{}:F{}'.format(cell.row, cell.row))
+                        elif cell.value == "Tanggal" or cell.value == "Unit" or cell.value == "Terima" or cell.value == "Keluar" or cell.value == "Sisa" or cell.value == "Ket":
+                            cell.font = Font(name='Calibri', size=8, bold=True)
+                            cell.border = brd
+                        else:
+                            cell.font = ft
+                            cell.border = brd
                         
                 ws.column_dimensions['A'].width = 8
                 ws.column_dimensions['B'].width = 6
