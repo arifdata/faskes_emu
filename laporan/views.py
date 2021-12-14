@@ -3,8 +3,6 @@ from django.http import HttpResponse, FileResponse
 from collections import OrderedDict, Counter
 import operator
 
-#from .forms import TglForm, TglChoiceForm
-
 # Create your views here.
 def index_page(request):
     import datetime
@@ -236,3 +234,54 @@ def cetak_kartu_stok(request):
         form = TglChoiceForm()
 
     return render(request, 'laporan/form_cetak_kartu.html', {'form': form})
+
+def lap_narko_psiko(request):
+    from .forms import TglForm
+    import json
+    if request.method == 'POST':
+        form = TglForm(request.POST)
+        if form.is_valid():
+            raw_data = {}
+            kunci = []
+            from apotek.models import Resep
+            q = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(nama_obat__nama_obat__is_okt=True)
+            
+            for object in q:
+                kunci.append(object.nama_obat.nama_obat.nama_obat)
+            kunci = list(set(kunci))
+            kunci.sort()
+
+            for item in kunci:
+                r = q.filter(nama_obat__nama_obat__nama_obat=item)
+                for data in r:                    
+                    if item not in raw_data.keys():
+                        raw_data[item] = [[
+                            data.kunjungan_pasien.tgl_kunjungan.strftime('%Y-%m-%d'),
+                            data.kunjungan_pasien.nama_pasien.nama_pasien,
+                            "{} tahun".format(data.kunjungan_pasien.nama_pasien.umur()),
+                            data.kunjungan_pasien.nama_pasien.alamat,
+                            data.kunjungan_pasien.penulis_resep.nama_peresep,
+                            data.jumlah,
+                            data.nama_obat.nama_obat.satuan,
+                        ]]
+                    else:
+                        raw_data[item].append([
+                            data.kunjungan_pasien.tgl_kunjungan.strftime('%Y-%m-%d'),
+                            data.kunjungan_pasien.nama_pasien.nama_pasien,
+                            "{} tahun".format(data.kunjungan_pasien.nama_pasien.umur()),
+                            data.kunjungan_pasien.nama_pasien.alamat,
+                            data.kunjungan_pasien.penulis_resep.nama_peresep,
+                            data.jumlah,
+                            data.nama_obat.nama_obat.satuan,
+                        ])
+                        
+        ctx = {
+            'data': raw_data,
+            'startdate': request.POST.get("tanggal1"),
+            'enddate': request.POST.get("tanggal2"),
+        }
+        #return HttpResponse(json.dumps(raw_data), content_type="application/json")
+        return render(request, 'laporan/lap_narko_psiko.html', context=ctx)
+    else:
+        form = TglForm()
+        return render(request, 'laporan/form_lap_narko_psiko.html', {'form': form})

@@ -1,0 +1,46 @@
+{% extends 'laporan/base.html' %}
+{% block content %}
+
+<div id="content" class="colM">
+<h1>Pengeluaran Narkotik & Psikotropik</h1>
+Pengeluaran narkotik & psikotropik pada tanggal <strong>{{ startdate }}</strong> s/d <strong>{{ enddate }}</strong> <i><small>(YYYY-MM-DD)</small></i>:
+<p></p>
+{% if data %}
+
+<table id="tabel-narko-psiko" border="2">
+    <tr><td contenteditable="false"><strong>Item</strong></td><td contenteditable="false"><strong>Tanggal</strong></td><td contenteditable="false"><strong>Nama</strong></td><td contenteditable="false"><strong>Usia</strong></td><td contenteditable="false"><strong>Alamat</strong></td><td contenteditable="false"><strong>Peresep</strong></td><td contenteditable="false"><strong>Jumlah</strong></td><td contenteditable="false"><strong>Satuan</strong></td></tr>
+    {% for item, datanya in data.items %}
+		{% for data in datanya %}
+			{% if forloop.first %}
+				<tr><td contenteditable="false">{{ item }}</td>{% for cell in data %}<td contenteditable="false">{{ cell }}</td>{% endfor %}</tr>
+			{% else %}
+				{% if forloop.last %}
+					<tr><td contenteditable="false"></td>{% for cell in data %}<td contenteditable="false">{{ cell }}</td>{% endfor %}</tr>
+					<tr style="background-color:#343A40;"><td contenteditable="false"></td>{% for cell in data %}<td contenteditable="false"></td>{% endfor %}</tr>
+				{% else %}
+					<tr><td contenteditable="false"></td>{% for cell in data %}<td contenteditable="false">{{ cell }}</td>{% endfor %}</tr>
+				{% endif %}				
+			{% endif %}
+		{% endfor %}
+    {% endfor %}
+</table>
+<br>
+<p><input type="submit" value="Download Excel" onclick="dl_excel('xlsx');"></p>
+
+<script>
+function dl_excel(type, fn, dl) {
+	var elt = document.getElementById('tabel-narko-psiko');
+	var wb = XLSX.utils.table_to_book(elt, {sheet:"Penggunaan BMHP Apotek"});
+	return dl ?
+		XLSX.write(wb, {bookType:type, bookSST:true, type: 'base64'}) :
+		XLSX.writeFile(wb, fn || ('Penggunaan-Narkotik-Psikotropik__{{startdate}}__{{enddate}}.' + (type || 'xlsx')));
+}
+</script>
+
+{% else %}
+<p>Tidak ada data pengeluaran narkotik & psikotropik pada rentang tanggal di atas. Coba tanggal lainnya.</p>
+<p>(T⌓T)</p>
+
+{% endif %}
+</div>
+{% endblock %}
