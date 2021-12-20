@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, FileResponse
 from collections import OrderedDict, Counter
 import operator
@@ -71,6 +72,7 @@ def index_page(request):
 def laporan_page(request):
     return render(request, 'laporan/laporan_generator.html')
 
+@login_required
 def penggunaan_bmhp(request):
     from apotek.models import Resep, Pengeluaran
     from .forms import TglForm
