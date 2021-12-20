@@ -153,6 +153,7 @@ def pilih_kartu(kartu, tgl_awal, tgl_akhir):
     #pprint.pprint(raw_data)
     return raw_data
 
+@login_required
 def cetak_kartu_stok(request):
     from .forms import TglChoiceForm
     # if this is a POST request we need to process the form data
@@ -237,6 +238,7 @@ def cetak_kartu_stok(request):
 
     return render(request, 'laporan/form_cetak_kartu.html', {'form': form})
 
+@login_required
 def lap_narko_psiko(request):
     from .forms import TglForm
     import json

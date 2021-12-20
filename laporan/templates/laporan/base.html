@@ -28,9 +28,15 @@
         <a href="{% url 'laporan_page' %}">Laporan Generator</a>
         </div>
 
+        {% if user.is_authenticated %}
+        <div class="col-lg-offset-8 col-xs-6 col-lg-2">
+        <a href="/app">Masuk App</a> | <a href="/app/logout/">Log Out ({{ user.username }})</a>
+        </div>
+        {% else %}
         <div class="col-lg-offset-8 col-xs-offset-3 col-xs-3 col-lg-2">
         <a href="/app">Masuk App</a>
         </div>
+        {% endif %}
         
         </div>
       </div>
