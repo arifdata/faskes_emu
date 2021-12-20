@@ -18,14 +18,14 @@ from django.urls import path, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko
-from utils import download_backup
+#from utils import download_backup
 from django.contrib.auth.views import LoginView    
 
 urlpatterns = [
     path('app/', admin.site.urls),
     path('', index_page, name='index_page'),
     path('laporan/', laporan_page, name='laporan_page'),
-    path('utils/backupd', download_backup, name='backupd'),
+    #path('utils/backupd', download_backup, name='backupd'),
     path('laporan/penggunaan_bmhp/', penggunaan_bmhp, name='penggunaan_bmhp'),
     path('laporan/cetak_kartu_stok/', cetak_kartu_stok, name='cetak_kartu'),
     path('laporan/lap_narko_psiko/', lap_narko_psiko, name='lap_narko_psiko'),

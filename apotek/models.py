@@ -41,10 +41,11 @@ class DataObat(models.Model):
         ('SYR', 'Sirup'),
         ('CAP', 'Kapsul'),
         ('BKS', 'Bungkus'),
-        ('SAL', 'Salep'),
+        ('TUB', 'Tube'),
         ('CRM', 'Krim'),
         ('PCS', 'Pcs'),
         ('BTL', 'Botol'),
+        ('AMP', 'Ampul'),
         ('SET', 'Set'),
         ('KTK', 'Kotak'),
         )
