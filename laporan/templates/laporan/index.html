@@ -8,6 +8,7 @@
       {% else %}
       <div><h3 align="center">Belum ada data kunjungan bulan {{bln}} {{thn}}.</h3></div>
       {% endif %}
+      <br>
       </div>
 
       <div class="col-lg-6 col-xs-12">
@@ -16,7 +17,7 @@
       {% else %}
       <div><h3 align="center">Belum ada data penyakit bulan {{bln}} {{thn}}.</h3></div>
       {% endif %}
-
+      <br>
       </div>
 
       <div class="col-lg-6 col-xs-12">
@@ -25,10 +26,17 @@
       {% else %}
       <div><h3 align="center">Belum ada data obat bulan {{bln}} {{thn}}.</h3></div>
       {% endif %}
+      <br>
       </div>
 
       <div class="col-lg-6 col-xs-12">
 		<p><h3><i>Tempat ini disiapkan untuk grafik lainnya.</i></h3></p>
+		<br>
+      </div>
+
+      <div class="col-lg-12 col-xs-12">
+      <br>
+      <br>
       </div>
 
       </div>
@@ -54,7 +62,7 @@
     }
 
     const kunjunganChart = new frappe.Chart("#kunjunganChart", {
-          title: "Kunjungan {{bln}} {{thn}}",
+          title: "Jml Resep Masuk {{bln}} {{thn}}",
           data: data_kunjungan,
           type: 'line', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 250,
@@ -80,7 +88,7 @@
     }
 
     const penyakitChart = new frappe.Chart("#penyakitPieChart", {
-          title: "Penyakit {{bln}} {{thn}}",
+          title: "Penyakit Terbanyak {{bln}} {{thn}}",
           data: data_penyakit,
           type: 'pie', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 350,
@@ -106,12 +114,12 @@
           data: data_obat,
           type: 'bar', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 250,
-          colors: ['#1696d5'],
+          colors: ['#009DAE'],
           axisOptions: {
               xAxisMode: 'tick' // default: 'span'
           },
           barOptions: {
-              spaceRatio: 0.4 // default: 1
+              spaceRatio: 0.6 // default: 1
           },
       })
     {% else %}

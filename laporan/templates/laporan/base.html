@@ -12,6 +12,18 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/flexboxgrid.min.css' %}">
     <script src="{% static 'js/frappe-charts.min.iife.js' %}"></script>
     <script src="{% static 'js/xlsx.full.min.js' %}"></script>
+    <style>
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: #417690;
+      color: white;
+      text-align: center;
+      
+    }
+    </style>
   </head>
   <body>
     <div id="container">
@@ -42,5 +54,15 @@
       </div>
       {% block content %}
       {% endblock %}
+
+      <div class="footer">
+        <p><span id="tahun"></span> &#169; <a href="https://linktr.ee/pratama24" target="_blank" style="color: #ffffcc;">Pratama</a></p>
+      </div>
+      <script>
+      window.onload = function(){
+        let d = new Date();
+        document.getElementById('tahun').innerHTML = d.getFullYear();
+      };
+      </script>
   </body>
 </html>
