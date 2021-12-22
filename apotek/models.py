@@ -244,14 +244,14 @@ class Pengeluaran(models.Model):
         return self.nama_barang.nama_obat.nama_obat
 
     def clean(self):
-        reference = str(self.nama_barang_id)
-        stock = StokObatGudang.objects.get(nama_obat_id=reference)
+        reference = str(self.nama_barang.nama_obat.nama_obat)
+        stock = StokObatGudang.objects.get(nama_obat__nama_obat=reference)
         if self.jumlah > stock.jml:
             raise ValidationError({'jumlah': 'Stok di gudang tidak mencukupi.'})
             
     def save(self, *args, **kwargs):
-        reference = str(self.nama_barang_id)
-        stock = StokObatGudang.objects.get(nama_obat_id=reference)
+        reference = str(self.nama_barang.nama_obat.nama_obat)
+        stock = StokObatGudang.objects.get(nama_obat__nama_obat=reference)
         stock.jml = F('jml') - self.jumlah
         stock.save()
         if self.keluar_barang.tujuan.nama == "APOTEK":
