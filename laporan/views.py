@@ -17,9 +17,17 @@ def index_page(request):
     raw_data_kunjungan = {}
     raw_data_penyakit = {}
     raw_data_obat = {}
+    raw_data_penulis = {}
 
     #query data dari awal bulan sekarang sampai sekarang
     query = DataKunjungan.objects.filter(tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day))
+
+    # hitung penulis resep
+    for data in query:
+        if data.penulis_resep.nama_peresep not in raw_data_penulis:
+            raw_data_penulis[data.penulis_resep.nama_peresep] = 1
+        else:
+            raw_data_penulis[data.penulis_resep.nama_peresep] += 1
 
     # memasukkan diagnosa ke raw_data_penyakit dan menghitung akumulasinya
     for data in query:
@@ -68,7 +76,9 @@ def index_page(request):
         'data_kunjungan': list(cleaned_data_kunjungan.values()),
         'rerata_kunjungan': rerata,
         'labels_obat_terbanyak': list(cleaned_data_obat.keys())[0:10],
-        'data_obat_terbanyak': list(cleaned_data_obat.values())[0:10]
+        'data_obat_terbanyak': list(cleaned_data_obat.values())[0:10],
+        'labels_penulis_resep': list(raw_data_penulis.keys()),
+        'data_penulis_resep': list(raw_data_penulis.values()),
     }
 
     return render(request, 'laporan/index.html', context)

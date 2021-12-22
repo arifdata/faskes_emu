@@ -30,7 +30,11 @@
       </div>
 
       <div class="col-lg-6 col-xs-12">
-		<p><h3><i>Tempat ini disiapkan untuk grafik lainnya.</i></h3></p>
+      {% if labels_penulis_resep and data_penulis_resep %}
+	  <div id="penulisResepPercentage"></div>
+	  {% else %}
+	  <div><h3 align="center">Belum ada data peresep {{bln}} {{thn}}.</h3></div>
+	  {% endif %}
 		<br>
       </div>
 
@@ -43,6 +47,28 @@
 
 
   <script type="text/javascript">
+  {% if labels_penulis_resep and data_penulis_resep %}
+    const data_penulis = {
+    labels: {{ labels_penulis_resep|safe }},
+    datasets: [
+        {
+            name: "penyakit", type: "line",
+            values: {{ data_penulis_resep|safe }}
+        }
+      ]
+    }
+
+    const penulisChart = new frappe.Chart("#penulisResepPercentage", {
+          title: "Penulis Resep {{bln}} {{thn}}",
+          data: data_penulis,
+          type: 'percentage',
+          height: 350,
+          colors: ['#FF0075', '#172774', '#77D970', '#480032', '#F14668', '#EEEEEE']
+      })
+    {% else %}
+    {% endif %}
+
+  
     {% if labels_kunjungan and data_kunjungan %}
     const data_kunjungan = {
     labels: {{ labels_kunjungan|safe }},
