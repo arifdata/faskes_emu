@@ -35,7 +35,7 @@ class KartuStokApotek(models.Model):
         verbose_name_plural = "Kartu Stok Apotek"
     
 class DataObat(models.Model):
-    nama_obat = models.CharField(max_length=100, help_text="Tulis nama obat dan dosisnya", blank=False)
+    nama_obat = models.CharField(max_length=200, help_text="Tulis nama obat dan dosisnya", blank=False)
     SAT = (
         ('TAB', 'Tablet'),
         ('SYR', 'Sirup'),
@@ -58,9 +58,15 @@ class DataObat(models.Model):
 
     def __str__(self):
         return str(self.nama_obat)
+
+    def clean(self):
+        if DataObat.objects.filter(nama_obat=self.nama_obat).exists():
+            raise ValidationError({'nama_obat': "Sudah ada item dengan nama yg sama"})
+            
     def save(self, *args, **kwargs):
         self.nama_obat = self.nama_obat.upper()
         return super(DataObat, self).save(*args, **kwargs)
+        
     class Meta:
         verbose_name_plural = "Data Obat"
 
