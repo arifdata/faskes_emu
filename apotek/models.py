@@ -64,7 +64,7 @@ class DataObat(models.Model):
             raise ValidationError({'nama_obat': "Sudah ada item dengan nama yg sama"})
             
     def save(self, *args, **kwargs):
-        self.nama_obat = self.nama_obat.upper()
+        # self.nama_obat = self.nama_obat.upper()
         return super(DataObat, self).save(*args, **kwargs)
         
     class Meta:
