@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+import datetime
 
 # Create your models here.
 class DataPasien(models.Model):
@@ -13,10 +13,11 @@ class DataPasien(models.Model):
         u = self.umur()
         return  str(self.nama_pasien) + " (" + u + ") " + ", " + str(self.alamat[:30])
     def umur(self):
-        usianya = datetime.now().year - self.usia.year
-        rendering = "{}".format(usianya)
+        now = datetime.datetime.now()
+        usianya = datetime.date(now.year, now.month, now.day) - self.usia
+        rendering = "{}Th {}Bln".format(int(usianya.days / 365), int((usianya.days % 365) / 30))
         return str(rendering)
-    umur.short_description = 'Usia (tahun)'
+    umur.short_description = 'Usia'
     
     def save(self, *args, **kwargs):
         # self.nama_pasien = self.nama_pasien.upper()

@@ -45,6 +45,7 @@ class DataKunjunganAdmin(admin.ModelAdmin):
 	    return False
 
 	inlines = [ResepInline,]
+	search_fields = ['nama_pasien__nama_pasien', 'nama_pasien__no_kartu']
 	autocomplete_fields = ['nama_pasien', 'diagnosa', 'penulis_resep']
 	list_display = ('nama_pasien', 'tgl_kunjungan')
 	list_per_page = 20
