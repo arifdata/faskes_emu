@@ -31,6 +31,10 @@ class DataKunjungan(models.Model):
 	notes = models.TextField(blank=True)
 	file_up = models.FileField(blank=True, upload_to='docs/%Y/%m/%d')
 
+	def get_diagnosa(self):
+	    return ", ".join([d.diagnosa for d in self.diagnosa.all()])
+	get_diagnosa.short_description = 'Diagnosa'
+
 	def save(self, *args, **kwargs):
 	    try:
 	        q = DataKunjungan.objects.filter(tgl_kunjungan=self.tgl_kunjungan)

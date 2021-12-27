@@ -47,7 +47,7 @@ class DataKunjunganAdmin(admin.ModelAdmin):
 	inlines = [ResepInline,]
 	search_fields = ['nama_pasien__nama_pasien', 'nama_pasien__no_kartu']
 	autocomplete_fields = ['nama_pasien', 'diagnosa', 'penulis_resep']
-	list_display = ('nama_pasien', 'tgl_kunjungan')
+	list_display = ('nama_pasien', 'tgl_kunjungan', 'penulis_resep', 'get_diagnosa')
 	list_per_page = 20
 	ordering = ['-tgl_kunjungan', '-no_resep']
 	#actions = ['delete_selected']
