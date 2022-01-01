@@ -55,7 +55,7 @@ class StokObatGudangAdmin(admin.ModelAdmin):
             ('tgl_kadaluarsa', DateRangeFilter),
         )
     autocomplete_fields = ['nama_obat']
-    list_display = ('nama_obat', 'jml', 'tgl_kadaluarsa')
+    list_display = ('nama_obat', "get_satuan", 'jml', 'tgl_kadaluarsa')
     ordering = ['nama_obat__nama_obat']
     list_per_page = 50
 

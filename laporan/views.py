@@ -191,6 +191,12 @@ def cetak_kartu_stok(request):
             del wb["Sheet"]
             try:
                 for obat, data in raw_data.items():
+                    no_char = "/\[]*?:"
+                    for c in no_char:
+                        if c in obat:
+                            obat = obat.replace(c, " ")
+                        else:
+                            pass
                     ws = wb.create_sheet(obat)
                     ws.set_printer_settings(5, ws.ORIENTATION_LANDSCAPE)
                     ws.page_margins.left = 0.2

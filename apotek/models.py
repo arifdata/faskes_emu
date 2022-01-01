@@ -77,6 +77,10 @@ class StokObatGudang(models.Model):
     
     def __str__(self):
         return self.nama_obat.nama_obat
+    def get_satuan(self):
+        return self.nama_obat.satuan
+    get_satuan.short_description = "satuan"
+
     class Meta:
         verbose_name_plural = "Stok Obat Gudang"
 
