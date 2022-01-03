@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, FileResponse
 from collections import OrderedDict, Counter
 import operator
+from socket import gethostname, gethostbyname
 
 # Create your views here.
 def index_page(request):
@@ -67,6 +68,10 @@ def index_page(request):
     if len(list(cleaned_data_kunjungan.values())) > 0:
         rerata = mean(list(cleaned_data_kunjungan.values()))
 
+    addr = gethostbyname(gethostname())
+    if addr == "127.0.0.1":
+        addr = ""
+
     context = {
         'bln': now.strftime("%B"), 
         'thn': now.year, 
@@ -79,6 +84,7 @@ def index_page(request):
         'data_obat_terbanyak': list(cleaned_data_obat.values())[0:10],
         'labels_penulis_resep': list(raw_data_penulis.keys()),
         'data_penulis_resep': list(raw_data_penulis.values()),
+        'addr': addr
     }
 
     return render(request, 'laporan/index.html', context)

@@ -6,10 +6,17 @@
       <div class="col-lg-3 col-xs-12">
       <h1>Laporan Apotek</h1>
           <ul>
-            <li><a href="penggunaan_bmhp/">Penggunaan BMHP</a></li>
-            <li><a href="cetak_kartu_stok/">Cetak Kartu Stok</a></li>
-            <li><a href="lap_narko_psiko/">Penggunaan Narkotik & Psikotropik</a></li>
-            <li><a href="laporan/">Laporan lainnya dst...</a></li>
+            <li><a href="{% url 'penggunaan_bmhp' %}">Penggunaan BMHP</a></li>
+            <li><a href="{% url 'cetak_kartu' %}">Cetak Kartu Stok</a></li>
+            <li><a href="{% url 'lap_narko_psiko' %}">Penggunaan Narkotik & Psikotropik</a></li>
+            <li><a href="#">Laporan lainnya dst...</a></li>
+          </ul>
+      </div>
+
+      <div class="col-lg-3 col-xs-12">
+      <h1>Extras</h1>
+          <ul>
+            <li><a href="{% url 'backupd' %}">Download Backup Database</a></li>
           </ul>
       </div>
       

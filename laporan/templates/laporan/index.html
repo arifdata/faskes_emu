@@ -1,7 +1,6 @@
 {% extends 'laporan/base.html' %}
 {% block content %}
 	  <div class="row">
-
 	  <div class="col-lg-6 col-xs-12">
       {% if labels_kunjungan and data_kunjungan %}
       <div id="kunjunganChart"></div>
@@ -39,10 +38,15 @@
       </div>
 
       <div class="col-lg-12 col-xs-12">
+      {% if addr %}
+      <p>Public IP (<u>{{ addr }}:8000</u>)</p>
+      {% else %}
+      <p><i>Not connected to any network</i></p>
+      {% endif %}
       <br>
       <br>
       </div>
-
+            
       </div>
 
 
@@ -114,11 +118,11 @@
     }
 
     const penyakitChart = new frappe.Chart("#penyakitPieChart", {
-          title: "Penyakit Terbanyak {{bln}} {{thn}}",
+          title: "Diagnosa Terbanyak {{bln}} {{thn}}",
           data: data_penyakit,
           type: 'pie', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
           height: 350,
-          colors: ['#E4F700', '#F700C1', '#B300F7', '#8000F7',  '#1000F7', '#00C7F7', '#4900F7', '#00F7C2', '#00F740', '#ACF700']
+          colors: ['#E4F700', '#F700C1', '#B300F7', '#8000F7',  '#1000F7', '#00C7F7', '#4900F7', '#00F7C2', '#00F740', '#ACF700', '#F05454', '#FFA6D5', '#FFAB4C', '#FF0075', '#F4EBC1']
       })
     {% else %}
     // belum ada data penyakit

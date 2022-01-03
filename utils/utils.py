@@ -1,9 +1,11 @@
 from django.http import FileResponse
 from pendaftaran.models import DataPasien
 from apotek.models import DataObat
+from django.contrib.auth.decorators import login_required
 import csv
 import datetime
 
+@login_required
 def download_backup(request):
     return FileResponse(open('db.sqlite3', 'rb'), as_attachment=True)
 
