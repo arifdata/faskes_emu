@@ -28,6 +28,7 @@ class KartuStokApotek(models.Model):
     stok_keluar = models.PositiveSmallIntegerField(default=0)
     sisa_stok = models.PositiveSmallIntegerField(default=0)
     ket = models.CharField(max_length=20, default='-')
+    ref = models.PositiveIntegerField()
 
     def __str__(self):
         return self.nama_obat.nama_obat
@@ -126,16 +127,20 @@ class Resep(models.Model):
         query_kartu_apt = KartuStokApotek.objects.filter(nama_obat=self.nama_obat.nama_obat)
         stok_apt_sebelum = query_kartu_apt[len(query_kartu_apt)-1]
         sisa_stok_apt = stok_apt_sebelum.sisa_stok - self.jumlah
-        kartu_stok_apt_input = KartuStokApotek(nama_obat=self.nama_obat.nama_obat, tgl=self.kunjungan_pasien.tgl_kunjungan, unit=self.kunjungan_pasien.nama_pasien.nama_pasien[0:20], stok_keluar=self.jumlah, sisa_stok=sisa_stok_apt, ket=self.kunjungan_pasien.notes[0:20])
-        kartu_stok_apt_input.save()
+        #kartu_stok_apt_input = KartuStokApotek(nama_obat=self.nama_obat.nama_obat, tgl=self.kunjungan_pasien.tgl_kunjungan, unit=self.kunjungan_pasien.nama_pasien.nama_pasien[0:20], stok_keluar=self.jumlah, sisa_stok=sisa_stok_apt, ket=self.kunjungan_pasien.notes[0:20], ref=self.id)
+        #kartu_stok_apt_input.save()
         
         super(Resep, self).save(*args, **kwargs)
+        kartu_stok_apt_input = KartuStokApotek(nama_obat=self.nama_obat.nama_obat, tgl=self.kunjungan_pasien.tgl_kunjungan, unit=self.kunjungan_pasien.nama_pasien.nama_pasien[0:20], stok_keluar=self.jumlah, sisa_stok=sisa_stok_apt, ket=self.kunjungan_pasien.notes[0:20], ref=self.id)
+        kartu_stok_apt_input.save()
 
     def delete(self, *args, **kwargs):
         reference = str(self.nama_obat.id)
         stock = StokObatApotek.objects.get(pk=reference)
-        krt = KartuStokApotek.objects.filter(nama_obat=self.nama_obat.nama_obat)
-        krt = krt[len(krt)-1]
+        #krt = KartuStokApotek.objects.filter(nama_obat=self.nama_obat.nama_obat)
+        #krt = krt[len(krt)-1]
+        #krt.delete()
+        krt = KartuStokApotek.objects.get(ref=self.id)
         krt.delete()
         stock.jml = F('jml') + self.jumlah
         stock.save()
