@@ -28,7 +28,7 @@ class KartuStokApotek(models.Model):
     stok_keluar = models.PositiveSmallIntegerField(default=0)
     sisa_stok = models.PositiveSmallIntegerField(default=0)
     ket = models.CharField(max_length=20, default='-')
-    ref = models.PositiveIntegerField()
+    ref = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.nama_obat.nama_obat
