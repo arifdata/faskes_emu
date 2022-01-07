@@ -4,12 +4,20 @@
 
     <div class="row">
       <div class="col-lg-3 col-xs-12">
+      <h1>Public Information Area</h1>
+          <ul>
+            <li><a href="#">Tengok Stok Obat (Todo)</a></li>
+            <li><a href="{% url 'tengok_alkes' %}">Tengok Stok Alkes</a></li>
+          </ul>
+      </div>
+      <div class="col-lg-3 col-xs-12">
       <h1>Laporan Apotek</h1>
           <ul>
             <li><a href="{% url 'penggunaan_bmhp' %}">Penggunaan BMHP</a></li>
             <li><a href="{% url 'cetak_kartu' %}">Cetak Kartu Stok</a></li>
             <li><a href="{% url 'lap_narko_psiko' %}">Penggunaan Narkotik & Psikotropik</a></li>
-            <li><a href="#">Laporan lainnya dst...</a></li>
+            <li><a href="#">Laporan Generik (Todo)</a></li>
+            <li><a href="#">Laporan POR (Todo)</a></li>
           </ul>
       </div>
 
@@ -17,6 +25,7 @@
       <h1>Extras</h1>
           <ul>
             <li><a href="{% url 'backupd' %}">Download Backup Database</a></li>
+            <li><a href="#">Penyesuaian kartu stok (Todo)</a></li>
           </ul>
       </div>
       

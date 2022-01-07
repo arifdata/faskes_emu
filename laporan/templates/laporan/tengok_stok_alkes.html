@@ -1,0 +1,16 @@
+{% extends 'laporan/base.html' %}
+{% block content %}
+    <div id="content" class="colM">
+    <h1>Alkes</h1>
+
+	<table border="2">
+	  <tr><td contenteditable="false"><strong>Nama Alkes</strong></td><td contenteditable="false"><strong>Satuan</strong></td><td contenteditable="false"><strong>Stok</strong></td></tr>
+	  {% for key, value in data.items %}
+	  <tr><td contenteditable="false">{{ key }}</td><td contenteditable="false">{{ value.0 }}</td><td contenteditable="false">{{ value.1 }}</td></tr>
+	  {% endfor %}
+	</table>
+	
+    </div>
+    <br>
+    <br>
+{% endblock %}

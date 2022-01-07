@@ -55,7 +55,6 @@ def index_page(request):
 
     # Handling perhitungan jumlah obat terpakai
     for data in query_obat:
-        #print(data.nama_obat.nama_obat.nama_obat)
         if data.nama_obat.nama_obat.nama_obat not in raw_data_obat:
             raw_data_obat[data.nama_obat.nama_obat.nama_obat] = data.jumlah
         else:
@@ -80,8 +79,8 @@ def index_page(request):
         'labels_kunjungan': list(cleaned_data_kunjungan.keys()), 
         'data_kunjungan': list(cleaned_data_kunjungan.values()),
         'rerata_kunjungan': rerata,
-        'labels_obat_terbanyak': list(cleaned_data_obat.keys())[0:10],
-        'data_obat_terbanyak': list(cleaned_data_obat.values())[0:10],
+        'labels_obat_terbanyak': list(cleaned_data_obat.keys())[0:20],
+        'data_obat_terbanyak': list(cleaned_data_obat.values())[0:20],
         'labels_penulis_resep': list(raw_data_penulis.keys()),
         'data_penulis_resep': list(raw_data_penulis.values()),
         'addr': addr
@@ -315,3 +314,19 @@ def lap_narko_psiko(request):
     else:
         form = TglForm()
         return render(request, 'laporan/form_lap_narko_psiko.html', {'form': form})
+
+def tengok_stok_alkes(request):
+    from apotek.models import StokObatGudang
+    q = StokObatGudang.objects.filter(nama_obat__is_alkes=True)
+    alkes = {}
+    for item in q:
+        if item.jml > 0:
+            alkes[item.nama_obat.nama_obat] = [item.nama_obat.satuan, "ada"]
+        else:
+            alkes[item.nama_obat.nama_obat] = [item.nama_obat.satuan, "kosong"]
+
+    alkes = OrderedDict(sorted(alkes.items()))
+    ctx = {
+        'data': alkes,
+    }
+    return render(request, 'laporan/tengok_stok_alkes.html', context=ctx)
