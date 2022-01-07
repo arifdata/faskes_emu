@@ -6,6 +6,9 @@ import operator
 from socket import gethostname, gethostbyname
 
 # Create your views here.
+def contact_developer(request):
+    return render(request, 'laporan/hubungi_developer.html')
+    
 def index_page(request):
     import datetime
     from statistics import mean

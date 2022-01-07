@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko, tengok_stok_alkes, tengok_stok_obat
+from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko, tengok_stok_alkes, tengok_stok_obat, contact_developer
 
 from utils.utils import download_backup
 from django.contrib.auth.views import LoginView    
@@ -27,6 +27,7 @@ urlpatterns = [
     path('', index_page, name='index_page'),
     path('laporan/', laporan_page, name='laporan_page'),
     path('utils/backupd', download_backup, name='backupd'),
+    path('kontak_dev/', contact_developer, name='contact_dev'),
     path('laporan/penggunaan_bmhp/', penggunaan_bmhp, name='penggunaan_bmhp'),
     path('laporan/cetak_kartu_stok/', cetak_kartu_stok, name='cetak_kartu'),
     path('laporan/lap_narko_psiko/', lap_narko_psiko, name='lap_narko_psiko'),

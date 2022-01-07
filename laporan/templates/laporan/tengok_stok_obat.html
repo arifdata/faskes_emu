@@ -1,7 +1,16 @@
 {% extends 'laporan/base.html' %}
 {% block content %}
     <div id="content" class="colM">
-    <h1>Obat</h1>
+    <h2>Navigation</h2>
+    <ul>
+        <li><a href="#obat">Obat</a></li>
+        <li><a href="#ab">Antibiotik</a></li>
+        <li><a href="#okt">OKT</a></li>
+    </ul>
+    <hr>
+    
+    <br>
+    <h1 id="obat">Obat</h1>
 
 	<table border="2">
 	  <tr><td contenteditable="false"><strong>Nama Obat</strong></td><td contenteditable="false"><strong>Satuan</strong></td><td contenteditable="false"><strong>Stok</strong></td></tr>
@@ -10,8 +19,10 @@
 	  {% endfor %}
 	</table>
 	<br>
+	<hr>
+	<br>
 	
-    <h1>Antibiotik</h1>
+    <h1 id="ab">Antibiotik</h1>
 
 	<table border="2">
 	  <tr><td contenteditable="false"><strong>Nama Obat</strong></td><td contenteditable="false"><strong>Satuan</strong></td><td contenteditable="false"><strong>Stok</strong></td></tr>
@@ -20,8 +31,10 @@
 	  {% endfor %}
 	</table>
 	<br>
+	<hr>
+	<br>
 	
-    <h1>OKT</h1>
+    <h1 id="okt">OKT</h1>
 
 	<table border="2">
 	  <tr><td contenteditable="false"><strong>Nama Obat</strong></td><td contenteditable="false"><strong>Satuan</strong></td><td contenteditable="false"><strong>Stok</strong></td></tr>
@@ -29,5 +42,6 @@
 	  <tr><td contenteditable="false">{{ key }}</td><td contenteditable="false">{{ value.0 }}</td><td contenteditable="false">{% if value.1 > 0 %}ada{% else %}kosong{% endif %}</td></tr>
 	  {% endfor %}
 	</table>
+	<br>
 	<br>
 {% endblock %}
