@@ -1,0 +1,33 @@
+{% extends 'laporan/base.html' %}
+{% block content %}
+    <div id="content" class="colM">
+    <h1>Obat</h1>
+
+	<table border="2">
+	  <tr><td contenteditable="false"><strong>Nama Obat</strong></td><td contenteditable="false"><strong>Satuan</strong></td><td contenteditable="false"><strong>Stok</strong></td></tr>
+	  {% for key, value in obat.items %}
+	  <tr><td contenteditable="false">{{ key }}</td><td contenteditable="false">{{ value.0 }}</td><td contenteditable="false">{% if value.1 > 0 %}ada{% else %}kosong{% endif %}</td></tr>
+	  {% endfor %}
+	</table>
+	<br>
+	
+    <h1>Antibiotik</h1>
+
+	<table border="2">
+	  <tr><td contenteditable="false"><strong>Nama Obat</strong></td><td contenteditable="false"><strong>Satuan</strong></td><td contenteditable="false"><strong>Stok</strong></td></tr>
+	  {% for key, value in antibiotik.items %}
+	  <tr><td contenteditable="false">{{ key }}</td><td contenteditable="false">{{ value.0 }}</td><td contenteditable="false">{% if value.1 > 0 %}ada{% else %}kosong{% endif %}</td></tr>
+	  {% endfor %}
+	</table>
+	<br>
+	
+    <h1>OKT</h1>
+
+	<table border="2">
+	  <tr><td contenteditable="false"><strong>Nama Obat</strong></td><td contenteditable="false"><strong>Satuan</strong></td><td contenteditable="false"><strong>Stok</strong></td></tr>
+	  {% for key, value in okt.items %}
+	  <tr><td contenteditable="false">{{ key }}</td><td contenteditable="false">{{ value.0 }}</td><td contenteditable="false">{% if value.1 > 0 %}ada{% else %}kosong{% endif %}</td></tr>
+	  {% endfor %}
+	</table>
+	<br>
+{% endblock %}

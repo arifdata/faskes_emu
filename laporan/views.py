@@ -330,3 +330,49 @@ def tengok_stok_alkes(request):
         'data': alkes,
     }
     return render(request, 'laporan/tengok_stok_alkes.html', context=ctx)
+
+def tengok_stok_obat(request):
+    from apotek.models import StokObatGudang, StokObatApotek
+
+    okt = {}
+    q = StokObatGudang.objects.filter(nama_obat__is_okt=True)
+    for item in q:
+        okt[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
+    q = StokObatApotek.objects.filter(nama_obat__is_okt=True)
+    for item in q:
+        if item.nama_obat.nama_obat not in okt:
+            okt[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
+        else:
+            okt[item.nama_obat.nama_obat][1] += item.jml
+    okt = OrderedDict(sorted(okt.items()))
+
+    ab = {}
+    q = StokObatGudang.objects.filter(nama_obat__is_ab=True)
+    for item in q:
+        ab[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
+    q = StokObatApotek.objects.filter(nama_obat__is_ab=True)
+    for item in q:
+        if item.nama_obat.nama_obat not in ab:
+            ab[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
+        else:
+            ab[item.nama_obat.nama_obat][1] += item.jml
+    ab = OrderedDict(sorted(ab.items()))
+
+    obt = {}
+    q = StokObatGudang.objects.filter(nama_obat__is_alkes=False, nama_obat__is_ab=False, nama_obat__is_okt=False)
+    for item in q:
+        obt[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
+    q = StokObatApotek.objects.filter(nama_obat__is_ab=True)
+    for item in q:
+        if item.nama_obat.nama_obat not in obt:
+            obt[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
+        else:
+            obt[item.nama_obat.nama_obat][1] += item.jml
+    obt = OrderedDict(sorted(obt.items()))
+            
+    ctx = {
+        'okt': okt,
+        'antibiotik': ab,
+        'obat': obt,
+    }
+    return render(request, 'laporan/tengok_stok_obat.html', context=ctx)
