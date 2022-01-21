@@ -8,3 +8,8 @@ class TglForm(forms.Form):
 class TglChoiceForm(TglForm):
     CHOICES = [('apotek', 'Apotek'), ('gudang', 'Gudang')]
     pilihan = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+
+class GenerikForm(TglForm):
+    from poli.models import DataPeresep
+    CHOICES = [(p.nama_peresep, p.nama_peresep) for p in DataPeresep.objects.all()]
+    pilihan = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)

@@ -16,6 +16,8 @@
 	  <tr><td contenteditable="false"><strong>Nama Obat</strong></td><td contenteditable="false"><strong>Satuan</strong></td><td contenteditable="false"><strong>Stok</strong></td></tr>
 	  {% for key, value in obat.items %}
 	  <tr><td contenteditable="false">{{ key }}</td><td contenteditable="false">{{ value.0 }}</td><td contenteditable="false">{% if value.1 > 0 %}ada{% else %}kosong{% endif %}</td></tr>
+	  {# merah <tr style="background-color:#f90716;"> #}
+	  {# oren <tr style="background-color:#ff5403;"> #}
 	  {% endfor %}
 	</table>
 	<br>

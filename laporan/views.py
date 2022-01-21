@@ -379,3 +379,44 @@ def tengok_stok_obat(request):
         'obat': obt,
     }
     return render(request, 'laporan/tengok_stok_obat.html', context=ctx)
+
+@login_required
+def lap_generik(request):
+    from .forms import GenerikForm
+    
+    if request.method == 'POST':
+        from apotek.models import Resep
+        from poli.models import DataKunjungan
+        form = GenerikForm(request.POST)
+        if form.is_valid():
+            try:
+                jml_lbr = DataKunjungan.objects.filter(tgl_kunjungan__gte=request.POST.get("tanggal1"), tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(penulis_resep__nama_peresep=request.POST.get("pilihan"))
+
+                tot_r = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__penulis_resep__nama_peresep=request.POST.get("pilihan"))
+                
+                r_generik = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__penulis_resep__nama_peresep=request.POST.get("pilihan")).filter(nama_obat__nama_obat__is_non_generik=True)
+                
+                ctx = {
+                    'kalkulasi': {
+                        'peresep': request.POST.get("pilihan"),
+                        'jml_lembar': jml_lbr.count(),
+                        'total_resep': tot_r.count(),
+                        'resep_generik': tot_r.count() - r_generik.count(),
+                        'persentase': "{0:.2f} %".format((tot_r.count() - r_generik.count()) / tot_r.count() * 100),
+                    },
+                }
+                ctx['form'] = form
+
+                return render(request, 'laporan/form_lap_generik.html', context=ctx)
+
+            except:
+                return HttpResponse("Tidak ada data. Coba tanggal atau pilihan lain.")
+
+            '''
+            except Exception as e:
+                return HttpResponse(e)
+            '''
+    else:
+        form = GenerikForm()
+        
+    return render(request, 'laporan/form_lap_generik.html', {'form': form})

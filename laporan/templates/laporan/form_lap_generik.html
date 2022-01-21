@@ -1,0 +1,48 @@
+{% extends 'laporan/base.html' %}
+{% block content %}
+<div id="content" class="colM">
+<h1>Laporan Generik</h1>
+
+<div class="row">
+
+<div class="col-lg-12 col-xs-12">
+	Masukkan rentang tanggal awal dan tanggal akhir dan pilih nama peresep.
+</div>
+
+<div class="col-lg-6 col-xs-12">
+<br>
+<br>
+<form action="/laporan/lap_generik/" method="post">
+    {% csrf_token %}
+    <label>Tanggal Awal: </label>
+    {{ form.tanggal1 }}
+    <br>
+    <br>
+    <label>Tanggal Akhir: </label>
+    {{ form.tanggal2 }}
+    <br>
+    <br>
+
+	<label>Nama Penulis Resep: </label>
+    {{ form.pilihan }}
+    
+    <input type="submit" value="Submit">
+</form>
+</div>
+
+<div class="col-lg-6 col-xs-12">
+{% if kalkulasi %}
+<h3>Lap. generik {{ kalkulasi.peresep }}</h3>
+<table id="tabel-apt" border="2">
+    <tr><td contenteditable="false"><strong>Jumlah Lembar Resep</strong></td><td contenteditable="false"><strong>Total R/</strong></td><td contenteditable="false"><strong>Total R/ Generik</strong></td><td contenteditable="false"><strong>Persentase R/ Generik</strong></td></tr>
+    <tr><td contenteditable="false">{{ kalkulasi.jml_lembar }}</td><td contenteditable="false">{{ kalkulasi.total_resep }}</td><td contenteditable="false">{{ kalkulasi.resep_generik }}</td><td contenteditable="false">{{ kalkulasi.persentase }}</td></tr>
+</table>
+<br>
+<br>
+{% else %}
+{% endif %}
+</div>
+
+</div>
+</div>
+{% endblock %}
