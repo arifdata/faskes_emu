@@ -11,7 +11,7 @@ class TglChoiceForm(TglForm):
 
 class GenerikForm(TglForm):
     from poli.models import DataPeresep
-    CHOICES = [(p.nama_peresep, p.nama_peresep) for p in DataPeresep.objects.all()]
+    CHOICES = sorted([(p.nama_peresep, p.nama_peresep) for p in DataPeresep.objects.all()])
     pilihan = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 
 class PorForm(TglForm):
