@@ -43,13 +43,11 @@ def index_page(request):
     
     # memasukkan tanggal beserta jumlah kunjungannya respectively ke dict raw_data_kunjungan
     for data in query:
-        #print(data.diagnosa.values('diagnosa'))
-        b = DataKunjungan.objects.filter(tgl_kunjungan=data.tgl_kunjungan)
-        raw_data_kunjungan[data.tgl_kunjungan.strftime('%d-%m')] = len(b)
+        b = DataKunjungan.objects.filter(tgl_kunjungan=data.tgl_kunjungan).count()
+        raw_data_kunjungan[data.tgl_kunjungan.strftime('%d-%m')] = b
 
     # mengurutkan data sesuai urutan tanggal
     cleaned_data_kunjungan = OrderedDict(sorted(raw_data_kunjungan.items()))
-    #print()
 
     # mengurutkan data sesuai urutan tanggal
     cleaned_data_penyakit = OrderedDict(sorted(raw_data_penyakit.items()))
@@ -390,19 +388,19 @@ def lap_generik(request):
         form = GenerikForm(request.POST)
         if form.is_valid():
             try:
-                jml_lbr = DataKunjungan.objects.filter(tgl_kunjungan__gte=request.POST.get("tanggal1"), tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(penulis_resep__nama_peresep=request.POST.get("pilihan"))
+                jml_lbr = DataKunjungan.objects.filter(tgl_kunjungan__gte=request.POST.get("tanggal1"), tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(penulis_resep__nama_peresep=request.POST.get("pilihan")).count()
 
-                tot_r = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__penulis_resep__nama_peresep=request.POST.get("pilihan"))
+                tot_r = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__penulis_resep__nama_peresep=request.POST.get("pilihan")).count()
                 
-                r_generik = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__penulis_resep__nama_peresep=request.POST.get("pilihan")).filter(nama_obat__nama_obat__is_non_generik=True)
+                r_generik = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__penulis_resep__nama_peresep=request.POST.get("pilihan")).filter(nama_obat__nama_obat__is_non_generik=True).count()
                 
                 ctx = {
                     'kalkulasi': {
                         'peresep': request.POST.get("pilihan"),
-                        'jml_lembar': jml_lbr.count(),
-                        'total_resep': tot_r.count(),
-                        'resep_generik': tot_r.count() - r_generik.count(),
-                        'persentase': "{0:.2f} %".format((tot_r.count() - r_generik.count()) / tot_r.count() * 100),
+                        'jml_lembar': jml_lbr,
+                        'total_resep': tot_r,
+                        'resep_generik': tot_r - r_generik,
+                        'persentase': "{0:.2f} %".format((tot_r - r_generik) / tot_r * 100),
                     },
                 }
                 ctx['form'] = form
@@ -411,12 +409,46 @@ def lap_generik(request):
 
             except:
                 return HttpResponse("Tidak ada data. Coba tanggal atau pilihan lain.")
-
-            '''
-            except Exception as e:
-                return HttpResponse(e)
-            '''
     else:
         form = GenerikForm()
         
     return render(request, 'laporan/form_lap_generik.html', {'form': form})
+
+@login_required
+def lap_por(request):
+    from .forms import PorForm
+    if request.method == 'POST':
+        from apotek.models import Resep
+        form = PorForm(request.POST)
+        if form.is_valid():
+            try:
+                refdose = dict(Resep.ATURAN_PK)
+                counter = 1
+                raw_data = {}
+                q = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__diagnosa__diagnosa=request.POST.get("pilihan")).order_by('kunjungan_pasien__tgl_kunjungan').iterator()
+                
+                for data in q:
+                    if not raw_data:
+                        raw_data[counter] = {"nama": data.kunjungan_pasien.nama_pasien.nama_pasien, "tgl": data.kunjungan_pasien.tgl_kunjungan.strftime("%Y-%m-%d"), "obat": [(data.nama_obat.nama_obat.nama_obat, refdose[data.aturan_pakai], data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab)], "id": data.kunjungan_pasien.id, "usia": data.kunjungan_pasien.nama_pasien.umur()}
+                    elif data.kunjungan_pasien.nama_pasien.nama_pasien == raw_data[counter]["nama"] and data.kunjungan_pasien.id == raw_data[counter]["id"]:
+                        raw_data[counter]["obat"].append((data.nama_obat.nama_obat.nama_obat, refdose[data.aturan_pakai], data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab))
+                    else:
+                        counter += 1
+                        raw_data[counter] = {"nama": data.kunjungan_pasien.nama_pasien.nama_pasien, "tgl": data.kunjungan_pasien.tgl_kunjungan.strftime("%Y-%m-%d"), "obat": [(data.nama_obat.nama_obat.nama_obat, refdose[data.aturan_pakai], data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab)], "id": data.kunjungan_pasien.id, "usia": data.kunjungan_pasien.nama_pasien.umur()}
+                        
+                ctx = {
+                    'data': raw_data,
+                    'input': {
+                        'date1': request.POST.get("tanggal1"),
+                        'date2': request.POST.get("tanggal2"),
+                        'diag': request.POST.get("pilihan"),
+                    }
+                }
+                return render(request, 'laporan/lap_por.html', context=ctx)
+
+            except Exception as e:
+                return HttpResponse(e)
+
+    else:
+        form = PorForm()
+    return render(request, 'laporan/form_lap_por.html', {'form': form})

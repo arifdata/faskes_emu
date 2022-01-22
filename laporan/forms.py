@@ -13,3 +13,8 @@ class GenerikForm(TglForm):
     from poli.models import DataPeresep
     CHOICES = [(p.nama_peresep, p.nama_peresep) for p in DataPeresep.objects.all()]
     pilihan = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+
+class PorForm(TglForm):
+    from poli.models import Diagnosa
+    CHOICES = sorted([(d.diagnosa, d.diagnosa) for d in Diagnosa.objects.all()])
+    pilihan = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
