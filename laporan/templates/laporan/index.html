@@ -1,5 +1,6 @@
 {% extends 'laporan/base.html' %}
 {% block content %}
+	  <br>
 	  <div class="row">
 	  <div class="col-lg-6 col-xs-12">
       {% if labels_kunjungan and data_kunjungan %}
@@ -29,8 +30,8 @@
       </div>
 
       <div class="col-lg-6 col-xs-12">
-      {% if labels_penulis_resep and data_penulis_resep %}
-	  <div id="penulisResepPercentage"></div>
+      {% if peresep_data %}
+	  <div id="penulisResep"></div>
 	  {% else %}
 	  <div><h3 align="center">Belum ada data peresep {{bln}} {{thn}}.</h3></div>
 	  {% endif %}
@@ -51,107 +52,214 @@
 
 
   <script type="text/javascript">
-  {% if labels_penulis_resep and data_penulis_resep %}
-    const data_penulis = {
-    labels: {{ labels_penulis_resep|safe }},
-    datasets: [
-        {
-            name: "penyakit", type: "line",
-            values: {{ data_penulis_resep|safe }}
+  {% if peresep_data %}
+      var opsi_peresep = {
+      series: [
+      {
+        data: {{ peresep_data|safe }}
+      }
+    ],
+      legend: {
+      show: false
+    },
+    chart: {
+      height: 300,
+      type: 'treemap'
+    },
+    plotOptions: {
+        treemap: {
+            distributed: true
         }
-      ]
+    },
+    colors: [
+        '#96CEB4',
+        '#D9534F',
+        '#FFAD60',
+        '#7900FF',
+        '#F05454',
+        '#D06224',
+    ],
+    legend: {
+        show: true,
+        position: 'bottom'
+    },
+    title: {
+      text: 'Peresep Bulan Ini',
+      align: 'center'
     }
+    };
 
-    const penulisChart = new frappe.Chart("#penulisResepPercentage", {
-          title: "Penulis Resep {{bln}} {{thn}}",
-          data: data_penulis,
-          type: 'percentage',
-          height: 350,
-          colors: ['#FF0075', '#172774', '#77D970', '#480032', '#F14668', '#EEEEEE']
-      })
+    var peresep_chart = new ApexCharts(document.querySelector("#penulisResep"), opsi_peresep);
+    peresep_chart.render();
+
     {% else %}
     {% endif %}
 
   
     {% if labels_kunjungan and data_kunjungan %}
-    const data_kunjungan = {
-    labels: {{ labels_kunjungan|safe }},
-    datasets: [
-        {
-            name: "kunjungan", type: "line",
-            values: {{ data_kunjungan|safe }}
+    var opsi_kunjungan = {
+      series: [{
+        name: "Lembar Resep",
+        data: {{ data_kunjungan|safe }}
+    }],
+      chart: {
+      //height: 350,
+      type: 'line',
+      zoom: {
+        enabled: true
+      }
+    },
+    dataLabels: {
+      enabled: true
+    },
+    stroke: {
+      curve: 'straight',
+      width: 2
+    },
+    title: {
+      text: 'Jumlah R/ Bulan Ini',
+      align: 'center'
+    },
+    subtitle: {
+        text: "Rata-rata: {{ rerata_kunjungan|floatformat:0 }}",
+        align: 'right'
+    },
+    markers:{
+        size: 2,
+        shape: "circle"
+    },
+    colors: ["#D96098"],
+    grid: {
+      borderColor: '#325288',
+      xaxis: {
+        lines: {
+            show: true
         }
-      ],
-    yMarkers: [
-            {
-                label: "Rata-rata",
-                value: {{ rerata_kunjungan|safe }},
-                options: { labelPos: 'right' } // default: 'right'
-            }
-        ]
+      },
+      yaxis: {
+        lines: {
+            show: true
+        }
+      },
+      row: {
+        colors: ['#24A19C'],
+        opacity: 0.1
+      },
+      column: {
+        colors: ['#24A19C'],
+        opacity: 0.2
+      },
+    },
+    yaxis: {
+        show: true,
+        showAlways: true,
+        min: -1,
+        title: {
+            text: "Jumlah Lembar",
+            rotate: -90,
+        },
+    },
+    xaxis: {
+      min: 0,
+      categories: {{ labels_kunjungan|safe }},
+      labels: {
+        show: true,
+        rotate: -45,
+        rotateAlways: true
+      },
+      title:{
+        text: "Tanggal",
+        style: {
+            fontSize: '12px'
+        },
+      },
     }
+    };
 
-    const kunjunganChart = new frappe.Chart("#kunjunganChart", {
-          title: "Jml Resep Masuk {{bln}} {{thn}}",
-          data: data_kunjungan,
-          type: 'line', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
-          height: 350,
-          colors: ['#ff1178'],
-          valuesOverPoints: 1,
-          lineOptions: {
-              regionFill: 1 // default: 0
-          },
-      })
+    var kunjungan_chart = new ApexCharts(document.querySelector("#kunjunganChart"), opsi_kunjungan);
+    kunjungan_chart.render();
+
     {% else %}
     // belum ada data kunjungan
     {% endif %}
 
     {% if labels_penyakit and data_penyakit %}
-    const data_penyakit = {
+    var opsi_penyakit = {
+      series: {{ data_penyakit|safe }},
+      chart: {
+      type: 'donut',
+    },
+    colors: [
+            '#FF0075',
+            '#172774',
+            '#77D970',
+            '#EEEEEE',
+            '#F43B86',
+            '#FFE459',
+            '#FC92E3',
+            '#22B9CA',
+            '#D22779',
+            '#612897',
+            '#FF6363',
+            '#E99497',
+            '#FF449F',
+            '#CF0000',
+            '#C0E218',
+            '#59886B',
+            '#FAC70B',
+        ],
+      title: {
+      text: 'Penyakit Bulan Ini',
+      align: 'center'
+    },
     labels: {{ labels_penyakit|safe }},
-    datasets: [
-        {
-            name: "penyakit", type: "line",
-            values: {{ data_penyakit|safe }}
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        legend: {
+          position: 'bottom'
         }
-      ]
-    }
+      }
+    }]
+    };
 
-    const penyakitChart = new frappe.Chart("#penyakitPieChart", {
-          title: "Diagnosa Terbanyak {{bln}} {{thn}}",
-          data: data_penyakit,
-          type: 'pie', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
-          height: 350,
-          colors: ['#E4F700', '#F700C1', '#B300F7', '#8000F7',  '#1000F7', '#00C7F7', '#4900F7', '#00F7C2', '#00F740', '#ACF700', '#F05454', '#FFA6D5', '#FFAB4C', '#FF0075', '#F4EBC1']
-      })
+    var penyakit_chart = new ApexCharts(document.querySelector("#penyakitPieChart"), opsi_penyakit);
+    penyakit_chart.render();
+
     {% else %}
     // belum ada data penyakit
     {% endif %}
 
     {% if labels_obat_terbanyak and data_obat_terbanyak %}
-    const data_obat = {
-    labels: {{ labels_obat_terbanyak|safe }},
-    datasets: [
-        {
-            name: "jumlah", type: "line",
-            values: {{ data_obat_terbanyak|safe }}
+    var opsi_top_obat = {
+      chart: {
+        type: 'bar'
+      },
+    title: {
+      text: 'Obat Terbanyak Bulan Ini',
+      align: 'center'
+    },
+    theme: {
+        palette: 'palette7'
+    },
+    plotOptions: {
+        bar: {
+          borderRadius: 3,
+          horizontal: true,
         }
-      ]
+      },
+      series: [{
+        name: 'obat',
+        data: {{ data_obat_terbanyak|safe }}
+      }],
+      xaxis: {
+        categories: {{ labels_obat_terbanyak|safe }}
+      }
     }
-
-    const obatBarChart = new frappe.Chart("#obatBarChart", {
-          title: "Obat Terbanyak {{bln}} {{thn}}",
-          data: data_obat,
-          type: 'bar', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
-          height: 350,
-          colors: ['#009DAE'],
-          axisOptions: {
-              xAxisMode: 'tick' // default: 'span'
-          },
-          barOptions: {
-              spaceRatio: 0.6 // default: 1
-          },
-      })
+    
+    var top_obat_chart = new ApexCharts(document.querySelector("#obatBarChart"), opsi_top_obat);
+    
+    top_obat_chart.render();
     {% else %}
     //belum ada data obat terbanyak
     {% endif %}
