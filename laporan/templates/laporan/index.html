@@ -13,7 +13,7 @@
 
       <div class="col-lg-6 col-xs-12">
       {% if penyakit %}
-      <div id="penyakitPieChart"></div>
+      <div id="penyakitChart"></div>
       {% else %}
       <div><h3 align="center">Belum ada data penyakit bulan {{bln}} {{thn}}.</h3></div>
       {% endif %}
@@ -57,7 +57,7 @@
 		series: {{ data_penulis_resep|safe }},
 		chart: {
 			type: 'donut',
-			height: 500,
+			height: 400,
 		},
 		theme: {
 			'palette': 'palette1'
@@ -175,9 +175,7 @@
           show: false
         },
         chart: {
-          height: '45%',
-          offsetX: 10,
-          width: '95%',
+          height: '400',
           type: 'treemap',
         },
         plotOptions: {
@@ -198,7 +196,7 @@
         }
         };
 
-    var penyakit_chart = new ApexCharts(document.querySelector("#penyakitPieChart"), opsi_penyakit);
+    var penyakit_chart = new ApexCharts(document.querySelector("#penyakitChart"), opsi_penyakit);
     penyakit_chart.render();
 
     {% else %}
@@ -209,17 +207,19 @@
     var opsi_top_obat = {
       chart: {
         type: 'bar',
-        height: '45%',
-        offsetX: 10,
-        width: '95%',
+        height: '400',
       },
     title: {
       text: 'Obat Terbanyak Bulan Ini',
       align: 'center'
     },
-    theme: {
-        palette: 'palette7'
+    fill: {
+        type: 'gradient',
+        gradient: {
+            shade: 'light'
+        },
     },
+    colors: ['#FF0075'],
     plotOptions: {
         bar: {
           borderRadius: 3,
