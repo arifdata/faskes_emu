@@ -71,21 +71,22 @@ def index_page(request):
     addr = gethostbyname(gethostname())
     if addr == "127.0.0.1":
         addr = ""
-
-    peresep = [{'x':k, 'y':v} for k, v in raw_data_penulis.items()]
+        
+    penyakit = [{'x':k, 'y':v} for k, v in cleaned_data_penyakit.items()]
 
     context = {
         'bln': now.strftime("%B"), 
         'thn': now.year, 
-        'labels_penyakit': list(cleaned_data_penyakit.keys()), 
-        'data_penyakit': list(cleaned_data_penyakit.values()), 
         'labels_kunjungan': list(cleaned_data_kunjungan.keys()), 
         'data_kunjungan': list(cleaned_data_kunjungan.values()),
         'rerata_kunjungan': rerata,
+        'maks': max(list(cleaned_data_kunjungan.values())),
         'labels_obat_terbanyak': list(cleaned_data_obat.keys())[0:20],
         'data_obat_terbanyak': list(cleaned_data_obat.values())[0:20],
         'addr': addr,
-        'peresep_data': peresep
+        'labels_penulis_resep': list(raw_data_penulis.keys()),
+        'data_penulis_resep': list(raw_data_penulis.values()),
+        'penyakit': penyakit,
     }
 
     return render(request, 'laporan/index.html', context)

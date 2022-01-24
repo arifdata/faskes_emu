@@ -12,7 +12,7 @@
       </div>
 
       <div class="col-lg-6 col-xs-12">
-      {% if labels_penyakit and data_penyakit %}
+      {% if penyakit %}
       <div id="penyakitPieChart"></div>
       {% else %}
       <div><h3 align="center">Belum ada data penyakit bulan {{bln}} {{thn}}.</h3></div>
@@ -30,7 +30,7 @@
       </div>
 
       <div class="col-lg-6 col-xs-12">
-      {% if peresep_data %}
+      {% if labels_penulis_resep and data_penulis_resep %}
 	  <div id="penulisResep"></div>
 	  {% else %}
 	  <div><h3 align="center">Belum ada data peresep {{bln}} {{thn}}.</h3></div>
@@ -52,42 +52,22 @@
 
 
   <script type="text/javascript">
-  {% if peresep_data %}
-      var opsi_peresep = {
-      series: [
-      {
-        data: {{ peresep_data|safe }}
-      }
-    ],
-      legend: {
-      show: false
-    },
-    chart: {
-      height: 300,
-      type: 'treemap'
-    },
-    plotOptions: {
-        treemap: {
-            distributed: true
-        }
-    },
-    colors: [
-        '#96CEB4',
-        '#D9534F',
-        '#FFAD60',
-        '#7900FF',
-        '#F05454',
-        '#D06224',
-    ],
-    legend: {
-        show: true,
-        position: 'bottom'
-    },
-    title: {
-      text: 'Peresep Bulan Ini',
-      align: 'center'
-    }
-    };
+  {% if labels_penulis_resep and data_penulis_resep %}
+	var opsi_peresep = {
+		series: {{ data_penulis_resep|safe }},
+		chart: {
+			type: 'donut',
+			height: 500,
+		},
+		theme: {
+			'palette': 'palette1'
+		},
+		title: {
+			text: 'Peresep Bulan Ini',
+			align: 'center'
+		},
+		labels: {{ labels_penulis_resep|safe }}
+	};
 
     var peresep_chart = new ApexCharts(document.querySelector("#penulisResep"), opsi_peresep);
     peresep_chart.render();
@@ -147,12 +127,13 @@
       },
       column: {
         colors: ['#24A19C'],
-        opacity: 0.2
+        opacity: 0.1
       },
     },
     yaxis: {
         show: true,
         showAlways: true,
+        max: {{ maks|add:"5"}},
         min: -1,
         title: {
             text: "Jumlah Lembar",
@@ -183,45 +164,39 @@
     // belum ada data kunjungan
     {% endif %}
 
-    {% if labels_penyakit and data_penyakit %}
+    {% if penyakit %}
     var opsi_penyakit = {
-      series: {{ data_penyakit|safe }},
-      chart: {
-      type: 'donut',
-    },
-    colors: [
-            '#FF0075',
-            '#172774',
-            '#77D970',
-            '#EEEEEE',
-            '#F43B86',
-            '#FFE459',
-            '#FC92E3',
-            '#22B9CA',
-            '#D22779',
-            '#612897',
-            '#FF6363',
-            '#E99497',
-            '#FF449F',
-            '#CF0000',
-            '#C0E218',
-            '#59886B',
-            '#FAC70B',
+          series: [
+          {
+            data: {{ penyakit|safe }}
+          }
         ],
-      title: {
-      text: 'Penyakit Bulan Ini',
-      align: 'center'
-    },
-    labels: {{ labels_penyakit|safe }},
-    responsive: [{
-      breakpoint: 480,
-      options: {
+          legend: {
+          show: false
+        },
+        chart: {
+          height: '45%',
+          offsetX: 10,
+          width: '95%',
+          type: 'treemap',
+        },
+        plotOptions: {
+            treemap: {
+                distributed: true
+            }
+        },
+        theme: {
+        	'palette': 'palette1'
+        },
         legend: {
-          position: 'bottom'
+            show: true,
+            position: 'bottom'
+        },
+        title: {
+          text: 'Penyakit Bulan Ini',
+          align: 'center'
         }
-      }
-    }]
-    };
+        };
 
     var penyakit_chart = new ApexCharts(document.querySelector("#penyakitPieChart"), opsi_penyakit);
     penyakit_chart.render();
@@ -233,7 +208,10 @@
     {% if labels_obat_terbanyak and data_obat_terbanyak %}
     var opsi_top_obat = {
       chart: {
-        type: 'bar'
+        type: 'bar',
+        height: '45%',
+        offsetX: 10,
+        width: '95%',
       },
     title: {
       text: 'Obat Terbanyak Bulan Ini',
