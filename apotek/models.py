@@ -12,7 +12,7 @@ class KartuStokGudang(models.Model):
     unit = models.CharField(max_length=20, default="")
     stok_terima = models.PositiveSmallIntegerField(default=0)
     stok_keluar = models.PositiveSmallIntegerField(default=0)
-    sisa_stok = models.PositiveSmallIntegerField(default=0)
+    sisa_stok = models.SmallIntegerField(default=0)
     ket = models.CharField(max_length=20, default='-')
 
     def __str__(self):
@@ -26,7 +26,7 @@ class KartuStokApotek(models.Model):
     unit = models.CharField(max_length=20, default="")
     stok_terima = models.PositiveSmallIntegerField(default=0)
     stok_keluar = models.PositiveSmallIntegerField(default=0)
-    sisa_stok = models.PositiveSmallIntegerField(default=0)
+    sisa_stok = models.SmallIntegerField(default=0)
     ket = models.CharField(max_length=20, default='-')
     ref = models.PositiveIntegerField(null=True, blank=True)
 
