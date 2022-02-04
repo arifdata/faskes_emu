@@ -7,7 +7,9 @@ import datetime
 
 @login_required
 def download_backup(request):
-    return FileResponse(open('db.sqlite3', 'rb'), as_attachment=True)
+    timestamp = datetime.datetime.now()
+    return FileResponse(open('db.sqlite3', 'rb'), as_attachment=True, filename="backup_faskes-emu_{}.sqlite3".format(timestamp.strftime("%Y-%b-%d")))
+    
 
 def init_data_pasien():
     with open('utils/master_pasien_kusem.csv', 'r') as f:

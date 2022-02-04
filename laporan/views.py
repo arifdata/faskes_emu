@@ -73,6 +73,7 @@ def index_page(request):
         addr = ""
         
     penyakit = [{'x':k, 'y':v} for k, v in cleaned_data_penyakit.items()]
+    maksimum = 0 if len(cleaned_data_kunjungan.values()) == 0 else max(list(cleaned_data_kunjungan.values()))
 
     context = {
         'bln': now.strftime("%B"), 
@@ -80,7 +81,7 @@ def index_page(request):
         'labels_kunjungan': list(cleaned_data_kunjungan.keys()), 
         'data_kunjungan': list(cleaned_data_kunjungan.values()),
         'rerata_kunjungan': rerata,
-        'maks': max(list(cleaned_data_kunjungan.values())),
+        'maks': maksimum,
         'labels_obat_terbanyak': list(cleaned_data_obat.keys())[0:20],
         'data_obat_terbanyak': list(cleaned_data_obat.values())[0:20],
         'addr': addr,
