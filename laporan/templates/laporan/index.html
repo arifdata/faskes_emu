@@ -12,6 +12,14 @@
       </div>
 
       <div class="col-lg-6 col-xs-12">
+      {% if ed %}
+      <div id="tlChart"></div>
+      {% else %}
+      <div><h3 align="center">Tidak ada obat ED dalam rentang 3 bulan ke belakang dan 3 bulan ke depan.</h3></div>
+      {% endif %}
+      </div>
+      
+      <div class="col-lg-6 col-xs-12">
       {% if penyakit %}
       <div id="penyakitChart"></div>
       {% else %}
@@ -47,11 +55,83 @@
       <br>
       <br>
       </div>
-            
+
       </div>
 
 
   <script type="text/javascript">
+  {% if ed %}
+  var timeline = {
+        series: [
+        {
+          data: [
+          {% for item, tgl in ed.items %}
+            {
+                x: '{{ item|safe }}',
+                y: [
+                    {% for tanggal in tgl %}new Date('{{ tanggal|safe }}').getTime(),{% endfor %}
+                    ],
+                fillColor: '#FF5959'
+            },
+          {% endfor %}
+          ]
+        }
+      ],
+        chart: {
+        height: 350,
+        type: 'rangeBar'
+      },
+      title: {
+        text: 'Obat ED 3 Bulan Ke Belakang & Ke Depan',
+        align: 'center'
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          distributed: true,
+          dataLabels: {
+            hideOverflowingLabels: false
+          }
+        }
+      },
+      tooltip: {
+        enabled: true,
+        custom: function({ series, seriesIndex, dataPointIndex, w }) {
+            ed = new Date(w.config.series[0].data[dataPointIndex].y[0]).toLocaleDateString("id")
+            return "<strong>" + w.config.series[0].data[dataPointIndex].x + ": " + ed + "</strong>";
+        }
+      },
+      xaxis: {
+        type: 'datetime'
+      },
+    grid: {
+      borderColor: '#325288',
+      xaxis: {
+        lines: {
+            show: true
+        }
+      },
+      yaxis: {
+        lines: {
+            show: true
+        }
+      },
+      row: {
+        colors: ['#24A19C'],
+        opacity: 0.1
+      },
+      column: {
+        colors: ['#24A19C'],
+        opacity: 0.1
+      },
+    },
+  };
+
+  var tlChart = new ApexCharts(document.querySelector("#tlChart"), timeline);
+  tlChart.render();
+  {% else %}
+  {% endif %}
+          
   {% if labels_penulis_resep and data_penulis_resep %}
 	var opsi_peresep = {
 		series: {{ data_penulis_resep|safe }},

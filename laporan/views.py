@@ -13,15 +13,23 @@ def index_page(request):
     import datetime
     from statistics import mean
     from poli.models import DataKunjungan
-    from apotek.models import Resep, Pengeluaran
+    from apotek.models import Resep, Pengeluaran, StokObatGudang
     # get tanggal sekarang
     now = datetime.datetime.now()
+    three_month_before = now - datetime.timedelta(days=90)
+    three_month_after = now + datetime.timedelta(days=90)
 
     #dict utk menampung data sementara
     raw_data_kunjungan = {}
     raw_data_penyakit = {}
     raw_data_obat = {}
     raw_data_penulis = {}
+    raw_data_ed = {}
+
+    ed = StokObatGudang.objects.filter(tgl_kadaluarsa__gte=f"{three_month_before.year}-{three_month_before.month}-{three_month_before.day}", tgl_kadaluarsa__lte=f"{three_month_after.year}-{three_month_after.month}-{three_month_after.day}")
+
+    for i in ed:
+        raw_data_ed[i.nama_obat.nama_obat] = [f"{i.tgl_kadaluarsa.year}-{i.tgl_kadaluarsa.month}-{i.tgl_kadaluarsa.day}", f"{(i.tgl_kadaluarsa + datetime.timedelta(days=2)).year}-{(i.tgl_kadaluarsa + datetime.timedelta(days=2)).month}-{(i.tgl_kadaluarsa + datetime.timedelta(days=2)).day}"]
 
     #query data dari awal bulan sekarang sampai sekarang
     query = DataKunjungan.objects.filter(tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day))
@@ -88,6 +96,7 @@ def index_page(request):
         'labels_penulis_resep': list(raw_data_penulis.keys()),
         'data_penulis_resep': list(raw_data_penulis.values()),
         'penyakit': penyakit,
+        'ed': raw_data_ed,
     }
 
     return render(request, 'laporan/index.html', context)
@@ -455,3 +464,4 @@ def lap_por(request):
     else:
         form = PorForm()
     return render(request, 'laporan/form_lap_por.html', {'form': form})
+    
