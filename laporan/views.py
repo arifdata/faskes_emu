@@ -60,7 +60,7 @@ def index_page(request):
     # mengurutkan data sesuai urutan tanggal
     cleaned_data_penyakit = OrderedDict(sorted(raw_data_penyakit.items()))
 
-    query_obat = Resep.objects.select_related('nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), kunjungan_pasien__tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day)).iterator()
+    query_obat = Resep.objects.select_related('nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), kunjungan_pasien__tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day)).iterator()
 
     # Handling perhitungan jumlah obat terpakai
     for data in query_obat:
@@ -118,13 +118,9 @@ def penggunaan_bmhp(request):
             raw_data_bmhp_unit = {}
             kunci = []
             cleaned_data_bmhp_unit = {}
-            """
-            for key, value in request.POST.items():
-                print('Key: %s' % (key) ) 
-                print('Value %s' % (value) )
-            """
-            q = Resep.objects.select_related('nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).iterator()
-            q2 = Pengeluaran.objects.select_related('nama_barang').filter(keluar_barang__tgl_keluar__gte=request.POST.get("tanggal1"), keluar_barang__tgl_keluar__lte=request.POST.get("tanggal2")).exclude(keluar_barang__tujuan__nama="APOTEK").iterator()
+            
+            q = Resep.objects.select_related('nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).iterator()
+            q2 = Pengeluaran.objects.select_related('nama_barang__nama_obat').filter(keluar_barang__tgl_keluar__gte=request.POST.get("tanggal1"), keluar_barang__tgl_keluar__lte=request.POST.get("tanggal2")).exclude(keluar_barang__tujuan__nama="APOTEK").iterator()
 
             for data in q:
                 if data.nama_obat.nama_obat.nama_obat not in raw_data_bmhp_apt:
@@ -286,7 +282,7 @@ def lap_narko_psiko(request):
             raw_data = {}
             kunci = []
             from apotek.models import Resep
-            q = Resep.objects.select_related('kunjungan_pasien', 'nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(nama_obat__nama_obat__is_okt=True)
+            q = Resep.objects.select_related('kunjungan_pasien', 'nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(nama_obat__nama_obat__is_okt=True)
             
             for object in q:
                 kunci.append(object.nama_obat.nama_obat.nama_obat)
@@ -437,7 +433,7 @@ def lap_por(request):
                 refdose = dict(Resep.ATURAN_PK)
                 counter = 1
                 raw_data = {}
-                q = Resep.objects.select_related('kunjungan_pasien', 'nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__diagnosa__diagnosa=request.POST.get("pilihan")).order_by('kunjungan_pasien__tgl_kunjungan').iterator()
+                q = Resep.objects.select_related('kunjungan_pasien__nama_pasien', 'nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__diagnosa__diagnosa=request.POST.get("pilihan")).order_by('kunjungan_pasien__tgl_kunjungan').iterator()
                 
                 for data in q:
                     if not raw_data:
