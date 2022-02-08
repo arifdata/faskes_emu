@@ -26,13 +26,13 @@ def index_page(request):
     raw_data_penulis = {}
     raw_data_ed = {}
 
-    ed = StokObatGudang.objects.filter(tgl_kadaluarsa__gte=f"{three_month_before.year}-{three_month_before.month}-{three_month_before.day}", tgl_kadaluarsa__lte=f"{three_month_after.year}-{three_month_after.month}-{three_month_after.day}")
+    ed = StokObatGudang.objects.select_related('nama_obat').filter(tgl_kadaluarsa__gte=f"{three_month_before.year}-{three_month_before.month}-{three_month_before.day}", tgl_kadaluarsa__lte=f"{three_month_after.year}-{three_month_after.month}-{three_month_after.day}").iterator()
 
     for i in ed:
         raw_data_ed[i.nama_obat.nama_obat] = [f"{i.tgl_kadaluarsa.year}-{i.tgl_kadaluarsa.month}-{i.tgl_kadaluarsa.day}", f"{(i.tgl_kadaluarsa + datetime.timedelta(days=2)).year}-{(i.tgl_kadaluarsa + datetime.timedelta(days=2)).month}-{(i.tgl_kadaluarsa + datetime.timedelta(days=2)).day}"]
 
     #query data dari awal bulan sekarang sampai sekarang
-    query = DataKunjungan.objects.filter(tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day))
+    query = DataKunjungan.objects.select_related('penulis_resep').filter(tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day))
 
     # hitung penulis resep
     for data in query:
@@ -60,7 +60,7 @@ def index_page(request):
     # mengurutkan data sesuai urutan tanggal
     cleaned_data_penyakit = OrderedDict(sorted(raw_data_penyakit.items()))
 
-    query_obat = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), kunjungan_pasien__tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day))
+    query_obat = Resep.objects.select_related('nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), kunjungan_pasien__tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day)).iterator()
 
     # Handling perhitungan jumlah obat terpakai
     for data in query_obat:
@@ -123,8 +123,8 @@ def penggunaan_bmhp(request):
                 print('Key: %s' % (key) ) 
                 print('Value %s' % (value) )
             """
-            q = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2"))
-            q2 = Pengeluaran.objects.filter(keluar_barang__tgl_keluar__gte=request.POST.get("tanggal1"), keluar_barang__tgl_keluar__lte=request.POST.get("tanggal2")).exclude(keluar_barang__tujuan__nama="APOTEK")
+            q = Resep.objects.select_related('nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).iterator()
+            q2 = Pengeluaran.objects.select_related('nama_barang').filter(keluar_barang__tgl_keluar__gte=request.POST.get("tanggal1"), keluar_barang__tgl_keluar__lte=request.POST.get("tanggal2")).exclude(keluar_barang__tujuan__nama="APOTEK").iterator()
 
             for data in q:
                 if data.nama_obat.nama_obat.nama_obat not in raw_data_bmhp_apt:
@@ -167,9 +167,9 @@ def penggunaan_bmhp(request):
 def pilih_kartu(kartu, tgl_awal, tgl_akhir):
     from apotek.models import KartuStokApotek, KartuStokGudang
     if kartu == "apotek":
-        q = KartuStokApotek.objects.filter(tgl__gte=tgl_awal, tgl__lte=tgl_akhir)
+        q = KartuStokApotek.objects.select_related('nama_obat').filter(tgl__gte=tgl_awal, tgl__lte=tgl_akhir)
     else:
-        q = KartuStokGudang.objects.filter(tgl__gte=tgl_awal, tgl__lte=tgl_akhir)
+        q = KartuStokGudang.objects.select_related('nama_obat').filter(tgl__gte=tgl_awal, tgl__lte=tgl_akhir)
     item_set, raw_data = [], {}
     
     for x in q:
@@ -286,7 +286,7 @@ def lap_narko_psiko(request):
             raw_data = {}
             kunci = []
             from apotek.models import Resep
-            q = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(nama_obat__nama_obat__is_okt=True)
+            q = Resep.objects.select_related('kunjungan_pasien', 'nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(nama_obat__nama_obat__is_okt=True)
             
             for object in q:
                 kunci.append(object.nama_obat.nama_obat.nama_obat)
@@ -330,7 +330,7 @@ def lap_narko_psiko(request):
 
 def tengok_stok_alkes(request):
     from apotek.models import StokObatGudang
-    q = StokObatGudang.objects.filter(nama_obat__is_alkes=True)
+    q = StokObatGudang.objects.select_related('nama_obat').filter(nama_obat__is_alkes=True)
     alkes = {}
     for item in q:
         if item.jml > 0:
@@ -348,10 +348,10 @@ def tengok_stok_obat(request):
     from apotek.models import StokObatGudang, StokObatApotek
 
     okt = {}
-    q = StokObatGudang.objects.filter(nama_obat__is_okt=True)
+    q = StokObatGudang.objects.select_related('nama_obat').filter(nama_obat__is_okt=True)
     for item in q:
         okt[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
-    q = StokObatApotek.objects.filter(nama_obat__is_okt=True)
+    q = StokObatApotek.objects.select_related('nama_obat').filter(nama_obat__is_okt=True)
     for item in q:
         if item.nama_obat.nama_obat not in okt:
             okt[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
@@ -360,10 +360,10 @@ def tengok_stok_obat(request):
     okt = OrderedDict(sorted(okt.items()))
 
     ab = {}
-    q = StokObatGudang.objects.filter(nama_obat__is_ab=True)
+    q = StokObatGudang.objects.select_related('nama_obat').filter(nama_obat__is_ab=True)
     for item in q:
         ab[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
-    q = StokObatApotek.objects.filter(nama_obat__is_ab=True)
+    q = StokObatApotek.objects.select_related('nama_obat').filter(nama_obat__is_ab=True)
     for item in q:
         if item.nama_obat.nama_obat not in ab:
             ab[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
@@ -372,10 +372,10 @@ def tengok_stok_obat(request):
     ab = OrderedDict(sorted(ab.items()))
 
     obt = {}
-    q = StokObatGudang.objects.filter(nama_obat__is_alkes=False, nama_obat__is_ab=False, nama_obat__is_okt=False)
+    q = StokObatGudang.objects.select_related('nama_obat').filter(nama_obat__is_alkes=False, nama_obat__is_ab=False, nama_obat__is_okt=False)
     for item in q:
         obt[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
-    q = StokObatApotek.objects.filter(nama_obat__is_ab=True)
+    q = StokObatApotek.objects.select_related('nama_obat').filter(nama_obat__is_ab=True)
     for item in q:
         if item.nama_obat.nama_obat not in obt:
             obt[item.nama_obat.nama_obat] = [item.nama_obat.satuan, item.jml]
@@ -437,7 +437,7 @@ def lap_por(request):
                 refdose = dict(Resep.ATURAN_PK)
                 counter = 1
                 raw_data = {}
-                q = Resep.objects.filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__diagnosa__diagnosa=request.POST.get("pilihan")).order_by('kunjungan_pasien__tgl_kunjungan').iterator()
+                q = Resep.objects.select_related('kunjungan_pasien', 'nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__diagnosa__diagnosa=request.POST.get("pilihan")).order_by('kunjungan_pasien__tgl_kunjungan').iterator()
                 
                 for data in q:
                     if not raw_data:
