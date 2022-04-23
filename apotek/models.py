@@ -74,7 +74,7 @@ class DataObat(models.Model):
 class StokObatGudang(models.Model):
     nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
     jml = models.SmallIntegerField(verbose_name="Jumlah")
-    tgl_kadaluarsa = models.DateField(verbose_name="Tanggal Kadaluarsa")
+    tgl_kadaluarsa = models.DateField(verbose_name="Tanggal Kadaluarsa", null=True, blank=True)
     
     def __str__(self):
         return self.nama_obat.nama_obat
@@ -153,7 +153,8 @@ class Penerimaan(models.Model):
     terima_barang = models.ForeignKey('apotek.BukuPenerimaan', on_delete=models.CASCADE)
     nama_barang = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
     jumlah = models.PositiveSmallIntegerField(blank=False, verbose_name="Jumlah")
-    tgl_kadaluarsa = models.DateField(null=True, blank=True)
+    tgl_kadaluarsa = models.DateField(null=True, blank=True, help_text="Isi tgl kadaluarsa, jika tdk ada kosongkan", verbose_name="Tanggal Kadaluarsa")
+    no_batch = models.CharField(max_length=30, help_text="Isi no batch, jika tdk ada kosongkan", verbose_name="Nomor Batch", null=True, blank=True)
     
     def __str__(self):
         return self.nama_barang.nama_obat
@@ -174,7 +175,7 @@ class Penerimaan(models.Model):
             stock.jml = F('jml') + self.jumlah
             if self.tgl_kadaluarsa == None:
                 self.tgl_kadaluarsa = stock.tgl_kadaluarsa
-            elif self.tgl_kadaluarsa < stock.tgl_kadaluarsa:
+            else:
                 stock.tgl_kadaluarsa = self.tgl_kadaluarsa
             stock.save()
             super(Penerimaan, self).save(*args, **kwargs)
