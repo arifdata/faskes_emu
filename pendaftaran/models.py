@@ -20,8 +20,8 @@ class DataPasien(models.Model):
     umur.short_description = 'Usia'
     
     def save(self, *args, **kwargs):
-        # self.nama_pasien = self.nama_pasien.upper()
-        # self.alamat = self.alamat.upper()
+        self.nama_pasien = self.nama_pasien.upper()
+        self.alamat = self.alamat.upper()
         return super(DataPasien, self).save(*args, **kwargs)
     class Meta:
         verbose_name_plural = "Data Pasien"
