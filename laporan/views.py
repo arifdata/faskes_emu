@@ -430,19 +430,19 @@ def lap_por(request):
         form = PorForm(request.POST)
         if form.is_valid():
             try:
-                refdose = dict(Resep.ATURAN_PK)
+                #refdose = dict(Resep.ATURAN_PK)
                 counter = 1
                 raw_data = {}
                 q = Resep.objects.select_related('kunjungan_pasien__nama_pasien', 'nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).filter(kunjungan_pasien__diagnosa__diagnosa=request.POST.get("pilihan")).order_by('kunjungan_pasien__tgl_kunjungan').iterator()
                 
                 for data in q:
                     if not raw_data:
-                        raw_data[counter] = {"nama": data.kunjungan_pasien.nama_pasien.nama_pasien, "tgl": data.kunjungan_pasien.tgl_kunjungan.strftime("%Y-%m-%d"), "obat": [(data.nama_obat.nama_obat.nama_obat, refdose[data.aturan_pakai], data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab)], "id": data.kunjungan_pasien.id, "usia": data.kunjungan_pasien.nama_pasien.umur()}
+                        raw_data[counter] = {"nama": data.kunjungan_pasien.nama_pasien.nama_pasien, "tgl": data.kunjungan_pasien.tgl_kunjungan.strftime("%Y-%m-%d"), "obat": [(data.nama_obat.nama_obat.nama_obat, data.aturan_pakai, data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab)], "id": data.kunjungan_pasien.id, "usia": data.kunjungan_pasien.nama_pasien.umur()}
                     elif data.kunjungan_pasien.nama_pasien.nama_pasien == raw_data[counter]["nama"] and data.kunjungan_pasien.id == raw_data[counter]["id"]:
-                        raw_data[counter]["obat"].append((data.nama_obat.nama_obat.nama_obat, refdose[data.aturan_pakai], data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab))
+                        raw_data[counter]["obat"].append((data.nama_obat.nama_obat.nama_obat, data.aturan_pakai, data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab))
                     else:
                         counter += 1
-                        raw_data[counter] = {"nama": data.kunjungan_pasien.nama_pasien.nama_pasien, "tgl": data.kunjungan_pasien.tgl_kunjungan.strftime("%Y-%m-%d"), "obat": [(data.nama_obat.nama_obat.nama_obat, refdose[data.aturan_pakai], data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab)], "id": data.kunjungan_pasien.id, "usia": data.kunjungan_pasien.nama_pasien.umur()}
+                        raw_data[counter] = {"nama": data.kunjungan_pasien.nama_pasien.nama_pasien, "tgl": data.kunjungan_pasien.tgl_kunjungan.strftime("%Y-%m-%d"), "obat": [(data.nama_obat.nama_obat.nama_obat, data.aturan_pakai, data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab)], "id": data.kunjungan_pasien.id, "usia": data.kunjungan_pasien.nama_pasien.umur()}
                         
                 ctx = {
                     'data': raw_data,
