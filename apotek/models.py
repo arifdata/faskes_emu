@@ -98,16 +98,9 @@ class Resep(models.Model):
     kunjungan_pasien = models.ForeignKey('poli.DataKunjungan', on_delete=models.CASCADE)
     nama_obat = models.ForeignKey('apotek.StokObatApotek', on_delete=models.CASCADE)
     jumlah = models.PositiveSmallIntegerField(blank=False, verbose_name="Jumlah")
-    ATURAN_PK = (
-        (0, '3x1'),
-        (1, '2x1'),
-        (2, '1x1'),
-        (3, 'sue'),
-        (4, 'sprn'),
-        (5, 'suc'),
-        )
-    aturan_pakai = models.PositiveSmallIntegerField(choices=ATURAN_PK, verbose_name="Aturan Pakai")
-    lama_pengobatan = models.PositiveSmallIntegerField(verbose_name="Lama Pengobatan (hari)")
+
+    aturan_pakai = models.CharField(max_length=10, help_text="Aturan pakai obat", null=True, blank=True)
+    lama_pengobatan = models.PositiveSmallIntegerField(verbose_name="Lama Pengobatan (hari)", null=True, blank=True)
     
     def __str__(self):
         return str(self.nama_obat.nama_obat.nama_obat)
