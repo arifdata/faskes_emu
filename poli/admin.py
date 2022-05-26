@@ -6,7 +6,7 @@ from apotek.models import Resep
 # Register your models here.
 @admin.register(DataPeresep)
 class DataPeresepAdmin(admin.ModelAdmin):
-	search_fields = ['penulis_resep']
+	search_fields = ['nama_peresep']
 	def has_module_permission(self, request):
 		return {}
 	def log_addition(self, *args):
