@@ -14,13 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
+from rest_framework import routers
+from pendaftaran.views import DataPasienViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko, tengok_stok_alkes, tengok_stok_obat, contact_developer, lap_generik, lap_por
 
 from utils.utils import download_backup
-from django.contrib.auth.views import LoginView    
+from django.contrib.auth.views import LoginView
+
+router = routers.DefaultRouter()
+router.register(r'datapasien', DataPasienViewSet) 
 
 urlpatterns = [
     path('app/', admin.site.urls),
@@ -36,6 +41,8 @@ urlpatterns = [
     path('laporan/lap_generik/', lap_generik, name='lap_generik'),
     path('laporan/lap_por/', lap_por, name='lap_por'),
     re_path(r"^accounts/login/*", LoginView.as_view(), name="login"),
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
