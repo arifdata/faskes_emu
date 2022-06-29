@@ -6,8 +6,7 @@ import datetime
 from collections import OrderedDict
 import operator
 
-from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework import viewsets, permissions
 from .serializers import DataPasienSerializer
 from .models import DataPasien
 
