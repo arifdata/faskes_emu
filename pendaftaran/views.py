@@ -6,7 +6,7 @@ import datetime
 from collections import OrderedDict
 import operator
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, filters
 from .serializers import DataPasienSerializer
 from .models import DataPasien
 
@@ -14,6 +14,8 @@ class DataPasienViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
+    search_fields = ['no_kartu', 'nama_pasien']
+    filter_backends = (filters.SearchFilter,)
     queryset = DataPasien.objects.all().order_by('nama_pasien')
     serializer_class = DataPasienSerializer
     permission_classes = [permissions.IsAuthenticated]
