@@ -21,15 +21,10 @@ func HurufConvert(s string) int {
 	return huruf
 }
 
-func TanggalFixer(s string) string {
-	if s == "-" {
-		return "2030-10-12"
-	} else {
-		tgl := strings.Split(s, "-")
-		bener := fmt.Sprintf("%s-%s-%s", tgl[2], tgl[1], tgl[0])
-		return bener
-	}
-
+func TanggalFixer(s string) *string {
+	tgl := strings.Split(s, "-")
+	bener := fmt.Sprintf("%s-%s-%s", tgl[2], tgl[1], tgl[0])
+	return &bener
 }
 
 func CobaGorm() {
@@ -125,15 +120,27 @@ func CobaGorm() {
 
 	for index, row := range rows {
 		if index > 3 {
-			var obat ApotekDataobat
-			db.First(&obat, "nama_obat = ?", row[1])
-			data.PenerimaanSet[penerimaan_count] = Penerimaan{
-				NamaBarang:    obat.ID,
-				Jumlah:        HurufConvert(row[4]),
-				TglKadaluarsa: TanggalFixer(row[9]),
-				NoBatch:       row[8],
+			if row[9] != "-" {
+				var obat ApotekDataobat
+				db.First(&obat, "nama_obat = ?", row[1])
+				data.PenerimaanSet[penerimaan_count] = Penerimaan{
+					NamaBarang:    obat.ID,
+					Jumlah:        HurufConvert(row[4]),
+					TglKadaluarsa: TanggalFixer(row[9]),
+					NoBatch:       row[8],
+				}
+				penerimaan_count += 1
+			} else {
+				var obat ApotekDataobat
+				db.First(&obat, "nama_obat = ?", row[1])
+				data.PenerimaanSet[penerimaan_count] = Penerimaan{
+					NamaBarang:    obat.ID,
+					Jumlah:        HurufConvert(row[4]),
+					TglKadaluarsa: nil,
+					NoBatch:       row[8],
+				}
+				penerimaan_count += 1
 			}
-			penerimaan_count += 1
 		}
 
 	}
