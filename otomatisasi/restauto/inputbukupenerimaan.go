@@ -27,7 +27,7 @@ func TanggalFixer(s string) *string {
 	return &bener
 }
 
-func CobaGorm() {
+func InputBukuPenerimaan() {
 	// konek ke sqlite database pake gorm
 	db, err := gorm.Open(sqlite.Open("../db.sqlite3"), &gorm.Config{})
 	if err != nil {

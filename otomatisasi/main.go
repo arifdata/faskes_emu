@@ -6,5 +6,5 @@ import (
 
 func main() {
 	//restauto.Eksekusi()
-	restauto.CobaGorm()
+	restauto.InputBukuPenerimaan()
 }
