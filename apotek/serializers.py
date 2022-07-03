@@ -5,7 +5,7 @@ from drf_writable_nested.serializers import WritableNestedModelSerializer
 class DataObatSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataObat
-        fields = ['id', 'nama_obat', 'satuan', 'is_ab', 'is_okt', 'is_non_generik', 'is_alkes', 'is_jkn']
+        fields = ['nama_obat', 'satuan', 'is_ab', 'is_okt', 'is_non_generik', 'is_alkes', 'is_jkn']
 
 class DataObat(serializers.ModelSerializer):
     class Meta:
@@ -20,10 +20,10 @@ class SumberTerimaSerializer(serializers.HyperlinkedModelSerializer):
 class PenerimaanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Penerimaan
-        fields = ['id', 'nama_barang', 'jumlah', 'tgl_kadaluarsa', 'no_batch']
+        fields = ['nama_barang', 'jumlah', 'tgl_kadaluarsa', 'no_batch']
 
 class BukuPenerimaanSerializer(WritableNestedModelSerializer):
     penerimaan_set = PenerimaanSerializer(many=True)
     class Meta:
         model = BukuPenerimaan
-        fields = ['id', 'tgl_terima', 'sumber', 'notes', 'file_up', 'penerimaan_set']
+        fields = ['tgl_terima', 'sumber', 'notes', 'file_up', 'penerimaan_set']
