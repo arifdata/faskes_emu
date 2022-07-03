@@ -5,5 +5,6 @@ import (
 )
 
 func main() {
-	restauto.Eksekusi()
+	//restauto.Eksekusi()
+	restauto.CobaGorm()
 }
