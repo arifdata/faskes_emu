@@ -195,7 +195,7 @@ def cetak_kartu_stok(request):
             from tempfile import NamedTemporaryFile
             
             raw_data = pilih_kartu(request.POST.get("pilihan"), request.POST.get("tanggal1"), request.POST.get("tanggal2"))
-            ft = Font(name='Calibri', size=8)
+            ft = Font(name='Calibri', size=6.5)
             brd = Border(left=Side(border_style='thin', color='000000'),
                         right=Side(border_style='thin', color='000000'),
                         top=Side(border_style='thin', color='000000'),
@@ -225,7 +225,7 @@ def cetak_kartu_stok(request):
                             ws.append(["Item : {}".format(obat.title())])
                             ws.append(["Lokasi : {}".format(request.POST.get("pilihan").title())])
                             ws.append(["{}".format(110 * " ")])
-                            ws.append(["Tanggal", "Unit", "Terima", "Keluar", "Sisa", "Ket"])
+                            ws.append(["Tanggal", "Unit|Batch", "Terima", "Keluar", "Sisa", "Ket/ED"])
                             ws.append(rows)
                         else:
                             ws.append(rows)
@@ -234,23 +234,23 @@ def cetak_kartu_stok(request):
                         for cell in cells:
                             if cell.value == "KARTU STOK" or str(cell.value).startswith("Item") or str(cell.value).startswith("Lokasi"):
                                 cell.border = brd
-                                cell.font = Font(name='Calibri', size=8, bold=True)
+                                cell.font = Font(name='Calibri', size=7, bold=True)
                                 cell.alignment = Alignment(horizontal='center')
                                 ws.merge_cells('A{}:F{}'.format(cell.row, cell.row))
-                            elif cell.value == "Tanggal" or cell.value == "Unit" or cell.value == "Terima" or cell.value == "Keluar" or cell.value == "Sisa" or cell.value == "Ket":
-                                cell.font = Font(name='Calibri', size=8, bold=True)
+                            elif cell.value == "Tanggal" or cell.value == "Unit|Batch" or cell.value == "Terima" or cell.value == "Keluar" or cell.value == "Sisa" or cell.value == "Ket/ED":
+                                cell.font = Font(name='Calibri', size=7, bold=True)
                                 cell.border = brd
                                 cell.alignment = Alignment(horizontal='center')
                             else:
                                 cell.font = ft
                                 cell.border = brd
                             
-                    ws.column_dimensions['A'].width = 8
-                    ws.column_dimensions['B'].width = 6
-                    ws.column_dimensions['C'].width = 5
-                    ws.column_dimensions['D'].width = 5
-                    ws.column_dimensions['E'].width = 5
-                    ws.column_dimensions['F'].width = 5
+                    ws.column_dimensions['A'].width = 7
+                    ws.column_dimensions['B'].width = 9
+                    ws.column_dimensions['C'].width = 4
+                    ws.column_dimensions['D'].width = 4
+                    ws.column_dimensions['E'].width = 4
+                    ws.column_dimensions['F'].width = 6
 
                 tmp = NamedTemporaryFile(delete=False)
                 with open(tmp.name) as fi:

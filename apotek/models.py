@@ -152,6 +152,12 @@ class Penerimaan(models.Model):
     def __str__(self):
         return self.nama_barang.nama_obat
 
+    def checkED(self, tgl_ed):
+        if tgl_ed is None:
+            return ""
+        else:
+            return tgl_ed
+
     #def clean(self):
     #    if self.jumlah < 10:
     #        raise ValidationError({'jumlah': 'jumlah dibawah 10'})
@@ -163,7 +169,7 @@ class Penerimaan(models.Model):
             query_stock_sebelum = KartuStokGudang.objects.filter(nama_obat=self.nama_barang)
             stock_sebelum = query_stock_sebelum[len(query_stock_sebelum)-1]
             sisa = stock_sebelum.sisa_stok + self.jumlah
-            kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang, tgl=self.terima_barang.tgl_terima, unit=self.terima_barang.sumber.nama, stok_terima=self.jumlah, sisa_stok=sisa, ket=self.terima_barang.notes[0:20])
+            kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang, tgl=self.terima_barang.tgl_terima, unit="{}|{}".format(self.terima_barang.sumber.nama, self.no_batch), stok_terima=self.jumlah, sisa_stok=sisa, ket=self.checkED(self.tgl_kadaluarsa))
             kartu_stok_input.save()
             stock.jml = F('jml') + self.jumlah
             if self.tgl_kadaluarsa == None:
@@ -175,7 +181,7 @@ class Penerimaan(models.Model):
         except StokObatGudang.DoesNotExist:
             new_item = StokObatGudang(nama_obat=self.nama_barang, jml=self.jumlah, tgl_kadaluarsa=self.tgl_kadaluarsa)
             new_item.save()
-            kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang, tgl=self.terima_barang.tgl_terima, unit=self.terima_barang.sumber, stok_terima=self.jumlah, sisa_stok=self.jumlah, ket=self.terima_barang.notes[0:20])
+            kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang, tgl=self.terima_barang.tgl_terima, unit="{}|{}".format(self.terima_barang.sumber.nama, self.no_batch), stok_terima=self.jumlah, sisa_stok=self.jumlah, ket=self.checkED(self.tgl_kadaluarsa))
             kartu_stok_input.save()
             super(Penerimaan, self).save(*args, **kwargs)
        # except KartuStokGudang.DoesNotExist:
