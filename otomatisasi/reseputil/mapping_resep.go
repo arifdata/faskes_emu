@@ -46,13 +46,13 @@ func MappingResep() map[int]interface{} {
 	for index, item := range rows {
 		if index >= 25 {
 
-			obat, signa, jml := ObatRegex(item[65]), SignaRegex(item[65]), JumlahObatRegex(item[65])
+			obat, signa, jml := ObatRegex(item[72]), SignaRegex(item[72]), JumlahObatRegex(item[72])
 			lama_hari := HitungLamaPengobatan(jml, signa)
 
 			if len(obat) > 0 {
 				i, _ := strconv.Atoi(item[0])
 				tgl_berobat := strings.Split(item[1], " ")
-				diagnosa := []string{item[54], item[56], item[58], item[60], item[62]}
+				diagnosa := []string{item[61], item[63], item[65], item[67], item[69]}
 				data_map[i] = map[string]interface{}{
 					"nama":            item[2],
 					"no_kartu":        getNoKartu(item[4]),
@@ -61,7 +61,7 @@ func MappingResep() map[int]interface{} {
 					"no_tlp":          getNoTelepon(item[8]),
 					"tgl_berobat":     tgl_berobat[0],
 					"diagnosa":        popEmptySlice(diagnosa),
-					"nama_dokter":     item[26],
+					"nama_dokter":     item[27],
 					"obat":            obat,
 					"signa":           signa,
 					"jml":             jml,
