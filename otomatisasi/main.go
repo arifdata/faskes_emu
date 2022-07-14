@@ -8,5 +8,7 @@ import (
 func main() {
 	//restauto.Eksekusi()
 	//restauto.InputBukuPenerimaan()
-	browserway.Wikigo()
+	//browserway.Wikigo()
+	//restauto.InputDiagnosa()
+	browserway.InputDataHarian()
 }

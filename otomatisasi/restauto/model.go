@@ -37,3 +37,11 @@ type BukuPenerimaan struct {
 	Notes         string       `json:"notes"`
 	PenerimaanSet []Penerimaan `json:"penerimaan_set"`
 }
+
+type Diagnosa struct {
+	Diagnosa string `json:"diagnosa"`
+}
+
+func (Diagnosa) TableName() string {
+	return "poli_diagnosa"
+}

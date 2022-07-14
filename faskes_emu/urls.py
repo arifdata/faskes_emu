@@ -18,6 +18,7 @@ from django.urls import path, re_path, include
 from rest_framework import routers
 from pendaftaran.views import DataPasienViewSet
 from apotek.views import DataObatViewSet, PenerimaanViewSet
+from poli.views import DiagnosaViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko, tengok_stok_alkes, tengok_stok_obat, contact_developer, lap_generik, lap_por
@@ -29,6 +30,7 @@ router = routers.DefaultRouter()
 router.register(r'datapasien', DataPasienViewSet)
 router.register(r'dataobat', DataObatViewSet)
 router.register(r'bukupenerimaan', PenerimaanViewSet)
+router.register(r'diagnosa', DiagnosaViewSet)
 
 urlpatterns = [
     path('app/', admin.site.urls),
