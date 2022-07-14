@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func Wikigo() {
+func InputBukuPengeluaran() {
 	// buka file excel penerimaan_epus.xlsx pake excelize
 	f, err := excelize.OpenFile("pengeluaran_epus.xlsx")
 	if err != nil {
