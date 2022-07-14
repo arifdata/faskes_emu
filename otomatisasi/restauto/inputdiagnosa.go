@@ -38,7 +38,7 @@ func InputDiagnosa() {
 
 	for indeks, row := range rows {
 		if indeks > 24 {
-			diag_col := []int{54, 56, 58, 60, 62}
+			diag_col := []int{61, 63, 65, 67, 69}
 			for _, colnum := range diag_col {
 				var diag Diagnosa
 				result := db.First(&diag, "diagnosa = ?", row[colnum])
@@ -49,7 +49,7 @@ func InputDiagnosa() {
 				}
 			}
 
-			//fmt.Println(row[54], row[56], row[58], row[60], row[62])
+			//fmt.Println(row[61], row[63], row[65], row[67], row[69])
 		}
 	}
 }
