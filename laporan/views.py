@@ -219,7 +219,7 @@ def cetak_kartu_stok(request):
                     ws.page_margins.top = 0.2
 
                     for idx, rows in enumerate(data):
-                        if idx % 36 == 0:
+                        if idx % 34 == 0:
                             #ws.append(["KARTU STOK{}".format(90 * " ")])
                             ws.append(["KARTU STOK"])
                             ws.append(["Item : {}".format(obat.title())])
