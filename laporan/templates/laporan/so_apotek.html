@@ -13,7 +13,7 @@
 <table border="2">
 <tr><td contenteditable="false"><strong>Nama Barang</strong></td><td contenteditable="false"><strong>Stok Tercatat</strong></td><td contenteditable="false"><strong>Stok Fisik Sebenarnya</strong></td></tr>
 {% for obat in data %}
-<tr><td contenteditable="false">{{ obat.nama_obat.nama_obat }}</td><td contenteditable="false">{{ obat.jml }}</td><td contenteditable="false"><input type="text" name="{{ obat.nama_obat.nama_obat }}" value="{{ obat.jml }}"></td></tr>
+<tr><td contenteditable="false">{{ obat.nama_obat.nama_obat }}</td><td contenteditable="false">{{ obat.jml }}</td><td contenteditable="false"><input type="text" name="{{ obat.nama_obat.nama_obat }}" value=""></td></tr>
 {% endfor %}
 </table>
 <br>
