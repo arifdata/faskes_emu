@@ -105,6 +105,13 @@ def laporan_page(request):
     return render(request, 'laporan/laporan_generator.html')
 
 @login_required
+def so_apotek(request):
+    if request.method == 'POST':
+        pass
+    else:
+        pass
+
+@login_required
 def penggunaan_bmhp(request):
     from apotek.models import Resep, Pengeluaran
     from .forms import TglForm
@@ -385,6 +392,49 @@ def tengok_stok_obat(request):
         'obat': obt,
     }
     return render(request, 'laporan/tengok_stok_obat.html', context=ctx)
+
+@login_required
+def so_apotek(request):
+    from .forms import SingleTgl
+    from apotek.models import StokObatApotek, KartuStokApotek
+
+    stok_apotek = StokObatApotek.objects.all()
+    form = SingleTgl(request.POST)
+    context = {
+        'data': stok_apotek
+    }
+    context['form'] = form
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            
+            #print(form['tanggal'].value())
+            
+            for obat in stok_apotek:
+                #Ubah jumlah stok sesuai value yg diinput
+
+                if int(request.POST[obat.nama_obat.nama_obat]) != obat.jml:
+                    obat.jml = request.POST[obat.nama_obat.nama_obat]
+                    obat.save()
+
+                #Penyesuaian kartu stok tiap item
+                query_kartu_apt = KartuStokApotek.objects.filter(nama_obat__nama_obat=obat)
+                stok_apt_sebelum = query_kartu_apt[len(query_kartu_apt)-1]
+
+                #Bila stok fisik lebih kecil daripada stok tercatat sebelumnya
+                if int(request.POST[obat.nama_obat.nama_obat]) < stok_apt_sebelum.sisa_stok:
+                    selisih = stok_apt_sebelum.sisa_stok - int(request.POST[obat.nama_obat.nama_obat])
+                    kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Staf", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
+                    kartu_stok_apt_input.save()
+                    
+            """
+            for obat in stok_apotek:
+                print(request.POST[obat.nama_obat.nama_obat])
+            """
+            return render(request, 'laporan/so_apotek.html', context)
+            
+    else:
+        return render(request, 'laporan/so_apotek.html', context)
 
 @login_required
 def lap_generik(request):

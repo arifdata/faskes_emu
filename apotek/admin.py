@@ -47,9 +47,9 @@ class StokObatGudangAdmin(admin.ModelAdmin):
     def has_add_permission(self, request, obj=None):
         return False
     def has_change_permission(self, request, obj=None):
-        return False
+        return True
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True
     search_fields = ['nama_obat__nama_obat']
     list_filter = (
             ('tgl_kadaluarsa', DateRangeFilter),
@@ -72,11 +72,11 @@ class StokObatApotekAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return False
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True        
     search_fields = ['nama_obat__nama_obat']
     autocomplete_fields = ['nama_obat']
     list_display = ('nama_obat', 'jml')
-    ordering = ['nama_obat__nama_obat']
+    #ordering = ['nama_obat__nama_obat']
     list_per_page = 50
     
 @admin.register(DataObat)
