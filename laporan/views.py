@@ -439,6 +439,52 @@ def so_apotek(request):
         return render(request, 'laporan/so_apotek.html', context)
 
 @login_required
+def so_gudang(request):
+    from .forms import SingleTgl
+    from apotek.models import StokObatGudang, KartuStokGudang
+
+    stok_gudang = StokObatGudang.objects.all()
+    form = SingleTgl(request.POST)
+    context = {
+        'data': stok_gudang
+    }
+    context['form'] = form
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            
+            #print(form['tanggal'].value())
+            
+            for obat in stok_gudang:
+                #Ubah jumlah stok sesuai value yg diinput
+
+                if int(request.POST[obat.nama_obat.nama_obat]) != obat.jml:
+                    obat.jml = request.POST[obat.nama_obat.nama_obat]
+                    obat.save()
+
+                #Penyesuaian kartu stok tiap item
+                stok_gd_sebelum = KartuStokGudang.objects.filter(nama_obat__nama_obat=obat).last()
+                try:
+                    #Bila stok fisik lebih kecil daripada stok tercatat sebelumnya
+                    if int(request.POST[obat.nama_obat.nama_obat]) < stok_gd_sebelum.sisa_stok:
+                        selisih = stok_gd_sebelum.sisa_stok - int(request.POST[obat.nama_obat.nama_obat])
+                        kartu_stok_gd_input = KartuStokGudang(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Staf", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]))
+                        kartu_stok_gd_input.save()
+
+                    #Bila stok fisik lebih besar daripada stok tercatat sebelumnya
+                    if int(request.POST[obat.nama_obat.nama_obat]) > stok_gd_sebelum.sisa_stok:
+                        selisih = int(request.POST[obat.nama_obat.nama_obat]) - stok_gd_sebelum.sisa_stok
+                        kartu_stok_gd_input = KartuStokGudang(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Retur", stok_terima=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]))
+                        kartu_stok_gd_input.save()
+                except AttributeError:
+                    pass
+                    
+            return render(request, 'laporan/so_gudang.html', context)
+            
+    else:
+        return render(request, 'laporan/so_gudang.html', context)
+
+@login_required
 def lap_generik(request):
     from .forms import GenerikForm
     
