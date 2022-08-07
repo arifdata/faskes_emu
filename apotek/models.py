@@ -281,11 +281,13 @@ class Pengeluaran(models.Model):
                 kartu_stok_input = KartuStokGudang(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_keluar=self.jumlah, sisa_stok=sisa, ket=self.keluar_barang.notes[0:20])
                 kartu_stok_input.save()
 
+                last_data_penerimaan = Penerimaan.objects.filter(nama_barang__nama_obat=self.nama_barang.nama_obat.nama_obat).last()
+
                 # Query Kartu Stok Apotek
                 query_kartu_apt = KartuStokApotek.objects.filter(nama_obat=self.nama_barang.nama_obat)
                 stok_apt_sebelum = query_kartu_apt[len(query_kartu_apt)-1]
                 sisa_stok_apt = stok_apt_sebelum.sisa_stok + self.jumlah
-                kartu_stok_apt_input = KartuStokApotek(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_terima=self.jumlah, sisa_stok=sisa_stok_apt, ket=self.keluar_barang.notes[0:20])
+                kartu_stok_apt_input = KartuStokApotek(nama_obat=self.nama_barang.nama_obat, tgl=self.keluar_barang.tgl_keluar, unit=self.keluar_barang.tujuan.nama, stok_terima=self.jumlah, sisa_stok=sisa_stok_apt, ket=last_data_penerimaan.tgl_kadaluarsa)
                 kartu_stok_apt_input.save()
                 
                 stok_apt.jml = F('jml') + self.jumlah
