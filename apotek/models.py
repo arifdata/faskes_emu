@@ -77,7 +77,7 @@ class StokObatGudang(models.Model):
     tgl_kadaluarsa = models.DateField(verbose_name="Tanggal Kadaluarsa", null=True, blank=True)
     
     def __str__(self):
-        return self.nama_obat.nama_obat
+        return "{} [{}]".format(self.nama_obat.nama_obat, self.jml)
     def get_satuan(self):
         return self.nama_obat.satuan
     get_satuan.short_description = "satuan"
@@ -90,7 +90,8 @@ class StokObatApotek(models.Model):
     jml = models.SmallIntegerField(verbose_name="Jumlah")
     
     def __str__(self):
-        return self.nama_obat.nama_obat
+        return "{} [{}]".format(self.nama_obat.nama_obat, self.jml) #non aktifkan jika SO APOTEK
+        #return "{}".format(self.nama_obat.nama_obat) #aktifkan ketika SO APOTEK, non aktifkan jika enggak SO
     class Meta:
         verbose_name_plural = "Stok Obat Apotek"
 

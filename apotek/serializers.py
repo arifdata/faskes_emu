@@ -5,7 +5,7 @@ from drf_writable_nested.serializers import WritableNestedModelSerializer
 class DataObatSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataObat
-        fields = ['nama_obat', 'satuan', 'is_ab', 'is_okt', 'is_non_generik', 'is_alkes', 'is_jkn']
+        fields = ['id', 'nama_obat', 'satuan', 'is_ab', 'is_okt', 'is_non_generik', 'is_alkes', 'is_jkn']
 
 class DataObat(serializers.ModelSerializer):
     class Meta:

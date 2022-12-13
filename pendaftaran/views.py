@@ -18,7 +18,14 @@ class DataPasienViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     queryset = DataPasien.objects.all().order_by('nama_pasien')
     serializer_class = DataPasienSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = []
+    authentication_classes = []
+
+    def post(self, request):
+        serializer = DataPasienSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
 
 # Create your views here.
 def index_page(request):

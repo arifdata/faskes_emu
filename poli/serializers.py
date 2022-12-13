@@ -4,4 +4,4 @@ from .models import Diagnosa
 class DiagnosaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diagnosa
-        fields = ['diagnosa']
+        fields = ['id', 'diagnosa']
