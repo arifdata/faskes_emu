@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import DataObat, BukuPenerimaan, Penerimaan, SumberTerima
+from .models import DataObat, BukuPenerimaan, Penerimaan, SumberTerima, StokObatApotek
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 class DataObatSerializer(serializers.ModelSerializer):
@@ -11,6 +11,15 @@ class DataObat(serializers.ModelSerializer):
     class Meta:
         model = DataObat
         fields = ['nama_obat']
+
+class StokObatApotekSerializer(serializers.ModelSerializer):
+    nama_obat = serializers.SlugRelatedField(
+        slug_field = 'nama_obat',
+        read_only = True
+    )
+    class Meta:
+        model = StokObatApotek
+        fields = ['id', 'nama_obat', 'jml']
 
 class SumberTerimaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

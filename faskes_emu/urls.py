@@ -17,8 +17,8 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from rest_framework import routers
 from pendaftaran.views import DataPasienViewSet
-from apotek.views import DataObatViewSet, PenerimaanViewSet
-from poli.views import DiagnosaViewSet
+from apotek.views import DataObatViewSet, PenerimaanViewSet, StokObatApotekViewSet
+from poli.views import DiagnosaViewSet, DataPeresepViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko, tengok_stok_alkes, tengok_stok_obat, contact_developer, lap_generik, lap_por, so_apotek, so_gudang
@@ -31,6 +31,8 @@ router.register(r'datapasien', DataPasienViewSet)
 router.register(r'dataobat', DataObatViewSet)
 router.register(r'bukupenerimaan', PenerimaanViewSet)
 router.register(r'diagnosa', DiagnosaViewSet)
+router.register(r'stokobatapotek', StokObatApotekViewSet)
+router.register(r'peresep', DataPeresepViewSet)
 
 urlpatterns = [
     path('app/', admin.site.urls),
