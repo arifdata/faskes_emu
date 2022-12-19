@@ -119,7 +119,7 @@ def coba_post(sesi):
             
             c = 0
             nama_pasien = sr.cell(row=rowNum, column=3).value
-            no_kartu = sr.cell(row=rowNum, column=5).value
+            no_kartu = sr.cell(row=rowNum, column=5).value if sr.cell(row=rowNum, column=5).value != None else "belum_ada"
             usia = sr.cell(row=rowNum, column=18).value
             alamat = sr.cell(row=rowNum, column=16).value
             no_hp = sr.cell(row=rowNum, column=10).value
@@ -230,6 +230,8 @@ def getPeresep():
 
 def main():
     with requests.Session() as sesi:
+
+        #pasien = getPasien(sesi)
     
         diag = getDiagnosa()
         cekDiagnosa(sesi, diag)
