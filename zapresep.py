@@ -9,7 +9,6 @@ try:
 except FileNotFoundError:
     sys.exit('Error: File excel harus bernama "STS.xlsx".')
 sr = wb.active
-#print(sr.cell(row=26, column=64).value)
 
 def getObat(obatraw):
     items = []
@@ -93,7 +92,6 @@ def getIDDiagnosa(sesi, rowNum):
     diag.append(sr.cell(row=rowNum, column=72).value)
     
     diag = [i for i in diag if i is not None]
-    #return diag
 
     for namapenyakit in diag:
         url = "http://localhost:8000/api/diagnosa/?format=json&search={}".format(namapenyakit)
@@ -104,6 +102,7 @@ def getIDDiagnosa(sesi, rowNum):
     return idDiag
 
 def coba_post(sesi):
+    print("======= Bersiap input resep =======")
     r = sesi.get("http://localhost:8000/app/poli/datakunjungan/add/")
     rawText = r.text
     regex = re.search(r'csrfmiddlewaretoken" value=".*">', rawText)
@@ -145,44 +144,28 @@ def coba_post(sesi):
             for diagnosa in listIDDiagnosa:
                 files["diagnosa"].append(diagnosa)
 
-            #print(idPasien)
-            #print(sr.cell(row=rowNum, column=15).value[0:10])
             files["nama_pasien"] = idPasien
             files["tgl_kunjungan"] = sr.cell(row=rowNum, column=15).value[0:10]
             files["penulis_resep"] = idPeresep
-            #files["diagnosa"].append(34)
-            #print(files)
+
             r = sesi.post("http://localhost:8000/app/poli/datakunjungan/add/", data=files)
             if "Stok di apotek tidak mencukupi." in r.text:
-                msg = "{} gagal input karena stok tidak cukup.".format(sr.cell(row=rowNum, column=3).value)
+                msg = "{} gagal input karena stok obat berikut tidak cukup:".format(sr.cell(row=rowNum, column=3).value)
                 print(msg)
+                html = r.text
+                stokkurang = re.findall(r'<ul class="errorlist"><li>Stok di apotek tidak mencukupi.*\n.*">', html)
+                for regex in stokkurang:
+                    regexItem = re.search(r'id_resep_set-\d-jumlah', regex)
+                    idItem = int(regexItem.group().removeprefix("id_resep_set-").removesuffix("-jumlah"))
+                    tpl = '<select name="resep_set-{}-nama_obat" id="id_resep_set-{}-nama_obat".*\n.*option>'.format(idItem, idItem)
+                    itemRegex = re.search(tpl, html)
+                    itemStok = itemRegex.group().split("selected>")[1].removesuffix("</option>")
+                    print("{} - [{}]".format(itemStok, obat[1]))
+                print("")
             else:
                 msg = "Berhasil input {}.".format(sr.cell(row=rowNum, column=3).value)
                 print(msg)
-
-    #r = sesi.post("http://localhost:8000/app/poli/datakunjungan/add/", data=files)
-    #print(r.status_code)
-
-def cek_pasien(sesi, search):
-    parameter = {
-        "search": search
-    }
-    r = sesi.get("http://localhost:8000/api/datapasien/", params=parameter)
-    print(r.json()['results'])
-    if r.json()["count"] == 0:
-        print("pasien belum ada")
-        json = {
-            "no_kartu": "belum_ada",
-            "nama_pasien": "sonyanagara",
-            "alamat": "beasd",
-            "usia": "1989-10-12",
-            "no_hp": "081224124175"
-        }
-        r = sesi.post("http://localhost:8000/api/datapasien/", json=json)
-        print(r.json())
-        
-    else:
-        return r.json()
+                print("")
         
 def cekDiagnosa(sesi, diag):
     r = sesi.get("http://localhost:8000/api/diagnosa/")
