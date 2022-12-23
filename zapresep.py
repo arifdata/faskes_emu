@@ -81,6 +81,8 @@ def getIDObat(sesi, obat):
     for o in q.json()["results"]:
         if obat == o["nama_obat"]:
             return o["id"]
+        else:
+            pass
 
 def getIDDiagnosa(sesi, rowNum):
     diag = []
@@ -109,19 +111,12 @@ def coba_post(sesi):
     token = regex.group().removeprefix('csrfmiddlewaretoken" value="').removesuffix('">')
     for rowNum in range(26, sr.max_row + 1):
         if sr.cell(row=rowNum, column=75).value != None:
-            files = {
-                "csrfmiddlewaretoken": token,
-                "diagnosa": [],
-                "resep_set-TOTAL_FORMS": 4,
-                "resep_set-INITIAL_FORMS": 0,
-                "_save": "Simpan"
-            }
             
             c = 0
             nama_pasien = sr.cell(row=rowNum, column=3).value
             no_kartu = sr.cell(row=rowNum, column=5).value if sr.cell(row=rowNum, column=5).value != None else "belum_ada"
             usia = sr.cell(row=rowNum, column=18).value
-            alamat = sr.cell(row=rowNum, column=16).value
+            alamat = sr.cell(row=rowNum, column=16).value if sr.cell(row=rowNum, column=16).value != None else "KOSONG"
             no_hp = sr.cell(row=rowNum, column=10).value
             idPasien = getIDPasien(sesi, nama_pasien, no_kartu, usia, alamat, no_hp)
             idPeresep = getIDPeresep(sesi, sr.cell(row=rowNum, column=29).value)
@@ -132,6 +127,13 @@ def coba_post(sesi):
             tmpLamaMinumObat = "resep_set-{}-lama_pengobatan"
 
             listObat = getObat(sr.cell(row=rowNum, column=75).value)
+            files = {
+                "csrfmiddlewaretoken": token,
+                "diagnosa": [],
+                "resep_set-TOTAL_FORMS": len(listObat),
+                "resep_set-INITIAL_FORMS": 0,
+                "_save": "Simpan"
+            }
             for obat in listObat:
                 idObat = getIDObat(sesi, obat[0])
                 files[tmpNamaObat.format(c)] = idObat
@@ -162,6 +164,9 @@ def coba_post(sesi):
                     itemStok = itemRegex.group().split("selected>")[1].removesuffix("</option>")
                     print("{} - [{}]".format(itemStok, obat[1]))
                 print("")
+            elif "Bidang ini harus diisi." in r.text:
+                msg = "{} gagal input karena data pasien gagal terinput.".format(sr.cell(row=rowNum, column=3).value)
+                print(msg)
             else:
                 msg = "Berhasil input {}.".format(sr.cell(row=rowNum, column=3).value)
                 print(msg)
