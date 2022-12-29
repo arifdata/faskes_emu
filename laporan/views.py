@@ -167,6 +167,116 @@ def penggunaan_bmhp(request):
 
     return render(request, 'laporan/form_penggunaan_bmhp.html', {'form': form})
 
+@login_required
+def laporan_semua(request):
+    import datetime
+    from statistics import mean
+    from poli.models import DataKunjungan
+    from apotek.models import Resep, Pengeluaran, Penerimaan
+    from .forms import TglForm
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = TglForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+        
+            now = datetime.datetime.now()
+            three_month_before = now - datetime.timedelta(days=90)
+            three_month_after = now + datetime.timedelta(days=90)
+
+            #dict utk menampung data sementara
+            raw_data_kunjungan = {}
+            raw_data_penyakit = {}
+            raw_data_obat = {}
+            raw_data_penulis = {}
+            raw_data_ed = {}
+
+            ed = Penerimaan.objects.select_related('nama_barang').filter(tgl_kadaluarsa__gte=f"{three_month_before.year}-{three_month_before.month}-{three_month_before.day}", tgl_kadaluarsa__lte=f"{three_month_after.year}-{three_month_after.month}-{three_month_after.day}").iterator()
+
+            for i in ed:
+                raw_data_ed[i.nama_barang.nama_obat] = [f"{i.tgl_kadaluarsa.year}-{i.tgl_kadaluarsa.month}-{i.tgl_kadaluarsa.day}", f"{(i.tgl_kadaluarsa + datetime.timedelta(days=2)).year}-{(i.tgl_kadaluarsa + datetime.timedelta(days=2)).month}-{(i.tgl_kadaluarsa + datetime.timedelta(days=2)).day}"]
+
+            #query data dari awal bulan sekarang sampai sekarang
+            query = DataKunjungan.objects.select_related('penulis_resep').filter(tgl_kunjungan__gte=request.POST.get("tanggal1"), tgl_kunjungan__lte=request.POST.get("tanggal2"))
+
+            # hitung penulis resep
+            for data in query:
+                if data.penulis_resep.nama_peresep not in raw_data_penulis:
+                    raw_data_penulis[data.penulis_resep.nama_peresep] = 1
+                else:
+                    raw_data_penulis[data.penulis_resep.nama_peresep] += 1
+
+            # memasukkan diagnosa ke raw_data_penyakit dan menghitung akumulasinya
+            for data in query:
+                for diag in data.diagnosa.values('diagnosa'):
+                    if diag['diagnosa'] not in raw_data_penyakit:
+                        raw_data_penyakit[diag['diagnosa']] = 1
+                    else:
+                        raw_data_penyakit[diag['diagnosa']] += 1
+            
+            # memasukkan tanggal beserta jumlah kunjungannya respectively ke dict raw_data_kunjungan
+            for data in query:
+                b = DataKunjungan.objects.filter(tgl_kunjungan=data.tgl_kunjungan).count()
+                raw_data_kunjungan[data.tgl_kunjungan.strftime('%d-%m')] = b
+
+            # mengurutkan data sesuai urutan tanggal
+            cleaned_data_kunjungan = OrderedDict(sorted(raw_data_kunjungan.items()))
+
+            # mengurutkan data sesuai urutan tanggal
+            cleaned_data_penyakit = OrderedDict(sorted(raw_data_penyakit.items()))
+
+            query_obat = Resep.objects.select_related('nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), kunjungan_pasien__tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day)).iterator()
+
+            # Handling perhitungan jumlah obat terpakai
+            for data in query_obat:
+                if data.nama_obat.nama_obat.nama_obat not in raw_data_obat:
+                    raw_data_obat[data.nama_obat.nama_obat.nama_obat] = data.jumlah
+                else:
+                    raw_data_obat[data.nama_obat.nama_obat.nama_obat] += data.jumlah
+
+            # urutkan dictionary obat berdasarkan jumlah terbanyak
+            cleaned_data_obat = dict(sorted(raw_data_obat.items(), key=operator.itemgetter(1),reverse=True))
+            
+            rerata = 0
+            if len(list(cleaned_data_kunjungan.values())) > 0:
+                rerata = mean(list(cleaned_data_kunjungan.values()))
+                
+            penyakit = [{'x':k, 'y':v} for k, v in cleaned_data_penyakit.items()]
+            maksimum = 0 if len(cleaned_data_kunjungan.values()) == 0 else max(list(cleaned_data_kunjungan.values()))
+            minimum = 0 if len(cleaned_data_kunjungan.values()) == 0 else min(list(cleaned_data_kunjungan.values()))
+
+            context = {
+                'startdate': request.POST.get("tanggal1"),
+                'enddate': request.POST.get("tanggal2"),
+                'val': query,
+                'bln': now.strftime("%B"), 
+                'thn': now.year, 
+                #'labels_kunjungan': list(cleaned_data_kunjungan.keys()), 
+                'labels_kunjungan': [x[0:2] for x in cleaned_data_kunjungan.keys()], 
+                'data_kunjungan': list(cleaned_data_kunjungan.values()),
+                'terbanyak': maksimum,
+                'tersedikit': minimum,
+                'total_resep': sum(list(cleaned_data_kunjungan.values())),
+                'rerata_kunjungan': rerata,
+                'maks': maksimum,
+                'labels_obat_terbanyak': list(cleaned_data_obat.keys())[0:20],
+                'data_obat_terbanyak': list(cleaned_data_obat.values())[0:20],
+                'labels_penulis_resep': list(raw_data_penulis.keys()),
+                'data_penulis_resep': list(raw_data_penulis.values()),
+                'peresep': raw_data_penulis,
+                #'penyakit': penyakit,
+                'penyakit': sorted(penyakit, key=lambda k: k['y'], reverse=True)[0:1],
+                'ed': raw_data_ed,
+            }
+            return render(request, 'laporan/laporan_semua.html', context)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = TglForm()
+
+    return render(request, 'laporan/form_laporan_semua.html', {'form': form})
+
 def pilih_kartu(kartu, tgl_awal, tgl_akhir):
     from apotek.models import KartuStokApotek, KartuStokGudang
     if kartu == "apotek":
