@@ -172,7 +172,7 @@ def laporan_semua(request):
     import datetime
     from statistics import mean
     from poli.models import DataKunjungan
-    from apotek.models import Resep, Pengeluaran, Penerimaan
+    from apotek.models import Resep, Pengeluaran, Penerimaan, KartuStokApotek
     from .forms import TglForm
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -191,6 +191,10 @@ def laporan_semua(request):
             raw_data_obat = {}
             raw_data_penulis = {}
             raw_data_ed = {}
+            raw_data_bmhp_unit = {}
+            kunci = []
+            cleaned_data_bmhp_unit = {}
+            raw_data_bmhp_apt = {}
 
             ed = Penerimaan.objects.select_related('nama_barang').filter(tgl_kadaluarsa__gte=f"{three_month_before.year}-{three_month_before.month}-{three_month_before.day}", tgl_kadaluarsa__lte=f"{three_month_after.year}-{three_month_after.month}-{three_month_after.day}").iterator()
 
@@ -219,6 +223,34 @@ def laporan_semua(request):
             for data in query:
                 b = DataKunjungan.objects.filter(tgl_kunjungan=data.tgl_kunjungan).count()
                 raw_data_kunjungan[data.tgl_kunjungan.strftime('%d-%m')] = b
+
+            q = Resep.objects.select_related('nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).iterator()
+
+            for data in q:
+                if data.nama_obat.nama_obat.nama_obat not in raw_data_bmhp_apt:
+                    raw_data_bmhp_apt[data.nama_obat.nama_obat.nama_obat] = data.jumlah
+                else:
+                    raw_data_bmhp_apt[data.nama_obat.nama_obat.nama_obat] += data.jumlah
+
+            cleaned_data_apt = dict(sorted(raw_data_bmhp_apt.items(), key=operator.itemgetter(1),reverse=True))
+            cleaned_data_apt = OrderedDict(sorted(cleaned_data_apt.items()))
+            
+            q2 = Pengeluaran.objects.select_related('nama_barang__nama_obat').filter(keluar_barang__tgl_keluar__gte=request.POST.get("tanggal1"), keluar_barang__tgl_keluar__lte=request.POST.get("tanggal2")).exclude(keluar_barang__tujuan__nama="APOTEK").iterator()
+
+            for data in q2:
+                a = {}
+                a[data.nama_barang.nama_obat.nama_obat] = data.jumlah
+                if data.keluar_barang.tujuan.nama not in raw_data_bmhp_unit.keys():
+                    raw_data_bmhp_unit[data.keluar_barang.tujuan.nama] = [a]
+                    kunci.append(data.keluar_barang.tujuan.nama)
+                else:                    
+                    raw_data_bmhp_unit[data.keluar_barang.tujuan.nama].append(a)
+
+            for d in kunci:
+                c = Counter()
+                for x in raw_data_bmhp_unit[d]:
+                    c.update(x)
+                    cleaned_data_bmhp_unit[d] = dict(c)
 
             # mengurutkan data sesuai urutan tanggal
             cleaned_data_kunjungan = OrderedDict(sorted(raw_data_kunjungan.items()))
@@ -265,10 +297,13 @@ def laporan_semua(request):
                 'labels_penulis_resep': list(raw_data_penulis.keys()),
                 'data_penulis_resep': list(raw_data_penulis.values()),
                 'peresep': raw_data_penulis,
-                #'penyakit': penyakit,
-                'penyakit': sorted(penyakit, key=lambda k: k['y'], reverse=True)[0:1],
+                'penyakit': OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))),
+                #'penyakit': sorted(penyakit, key=lambda k: k['y'], reverse=True)[0:1],
                 'ed': raw_data_ed,
+                'unit': cleaned_data_bmhp_unit,
+                'apt': cleaned_data_apt,
             }
+            #print(OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))))
             return render(request, 'laporan/laporan_semua.html', context)
 
     # if a GET (or any other method) we'll create a blank form

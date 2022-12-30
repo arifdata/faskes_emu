@@ -8,7 +8,6 @@
     <title>Rangkuman Data Pelayanan Apotek Puskesmas Berakit</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/flexboxgrid.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/chartist.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/min.css' %}">
     <script src="{% static 'js/chartist.min.js' %}"></script>
     <script src="{% static 'js/chartist-plugin-pointlabels.min.js' %}"></script>
     <script src="{% static 'js/chartist-plugin-axistitle.min.js' %}"></script>
@@ -26,6 +25,17 @@
 	@media print {
 	    .pagebreak { page-break-before: always; } /* page-break-after works, as well */
 	}
+	
+	table, th, td {
+	  border: 1px solid white;
+	  border-collapse: collapse;
+	}
+	
+	th, td {
+	  background-color: #FF6464;
+	  padding: 2px;
+	}
+	
 	</style>
   </head>
 
@@ -207,22 +217,77 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 </div>
 
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
     	<table class="table">
     	<thead><tr><th>No.</th><th>Diagnosa</th><th>Jumlah</th></tr></thead>
-    	<tbody><tr><td>1</td><td>5</td><td>10</td></tr></tbody>
+    	{% for x, y in penyakit.items %}
+    		{% if forloop.counter > 40 %}
+    		{% else%}
+    		<tbody><tr><td>{{ forloop.counter }}</td><td contenteditable="true">{{ x }}</td><td>{{ y }}</td></tr></tbody>
+    		{% endif %}
+    	{% endfor %}
     	</table>
     </div>
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    </div>
 </div>
-{% for diag in penyakit %}
-	{{ diag }}<br>
-{% endfor %}
 
-{% for diagnosa in penyakit %}
-	{% for k, v in diagnosa.items %}
-		{{ v.x }}
-	{% endfor %}
-{% endfor %}
+<div class="pagebreak"> </div>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    	<h4>Penggunaan Obat Di Apotek</h4>
+    </div>
+</div>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+	<table>
+	  <tr><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
+	  {% for key, value in apt.items %}
+	  <tr><td contenteditable="true">{{ key }}</td><td contenteditable="true">{{ value }}</td></tr>
+	  {% endfor %}
+	</table>
+	</div>
+</div>
+
+<div class="pagebreak"> </div>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    	<h4>Distribusi BMHP Ke Unit Lain</h4>
+    </div>
+</div>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+	<table>
+	  <tr><td contenteditable="false"><strong>Lokasi Unit</strong></td><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
+	  {% for lokasi, value in unit.items %}
+	  	{% for bmhp, jml in value.items %}
+	  		{% if forloop.first %}
+	  			<tr><td contenteditable="true">{{ lokasi }}</td><td contenteditable="true">{{ bmhp }}</td><td contenteditable="true">{{ jml }}</td></tr>
+	  			{% else %}
+	  				{% if forloop.last %}
+	  					<tr><td contenteditable="true"> </td><td contenteditable="true">{{ bmhp }}</td><td contenteditable="true">{{ jml }}</td></tr>
+	  					<tr><td style="background-color:#343A40;" contenteditable="false"> </td><td style="background-color:#343A40;" contenteditable="false"></td><td style="background-color:#343A40;" contenteditable="false"></td></tr>
+	  						{% else %}
+	  						<tr><td contenteditable="true"> </td><td contenteditable="true">{{ bmhp }}</td><td contenteditable="true">{{ jml }}</td></tr>
+	  				{% endif %}
+			{% endif %}
+	  	{% endfor %}
+	  {% endfor %}
+	</table>
+	</div>
+</div>
 
 {% else %}
 <p>Tidak ada data pengeluaran BMHP Apotek pada rentang tanggal di atas. Coba tanggal lainnya.</p>
