@@ -238,6 +238,28 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 
 <div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    	<h4>Penerimaan BMHP</h4>
+    </div>
+</div>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+    </div>
+
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+	<table>
+	  <tr><td contenteditable="false"><strong>No.</strong></td><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Tgl Terima</strong></td><td contenteditable="false"><strong>Sumber</strong></td><td contenteditable="false"><strong>No. Batch</strong></td><td contenteditable="false"><strong>Tgl Kadaluarsa</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
+	  {% for key, value in penerimaan.items %}
+	  <tr><td contenteditable="true">{{ forloop.counter }}</td>{% for data in value %}<td contenteditable="true">{{ data }}</td>{% endfor %}</tr>
+	  {% endfor %}
+	</table>
+	</div>
+</div>
+
+<div class="pagebreak"> </div>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
     	<h4>Penggunaan Obat Di Apotek</h4>
     </div>
 </div>

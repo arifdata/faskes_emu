@@ -195,6 +195,7 @@ def laporan_semua(request):
             kunci = []
             cleaned_data_bmhp_unit = {}
             raw_data_bmhp_apt = {}
+            raw_data_penerimaan = {}
 
             ed = Penerimaan.objects.select_related('nama_barang').filter(tgl_kadaluarsa__gte=f"{three_month_before.year}-{three_month_before.month}-{three_month_before.day}", tgl_kadaluarsa__lte=f"{three_month_after.year}-{three_month_after.month}-{three_month_after.day}").iterator()
 
@@ -252,6 +253,11 @@ def laporan_semua(request):
                     c.update(x)
                     cleaned_data_bmhp_unit[d] = dict(c)
 
+            terima = Penerimaan.objects.filter(terima_barang__tgl_terima__gte=request.POST.get("tanggal1")).filter(terima_barang__tgl_terima__lte=request.POST.get("tanggal2")).order_by("terima_barang__tgl_terima")
+            for data in terima:
+                raw_data_penerimaan[data.id] = [data.nama_barang.nama_obat, data.terima_barang.tgl_terima, data.terima_barang.sumber.nama, data.no_batch, data.tgl_kadaluarsa, data.jumlah]
+                #print(x.nama_barang.nama_obat, x.jumlah, x.terima_barang.tgl_terima, x.id)
+                
             # mengurutkan data sesuai urutan tanggal
             cleaned_data_kunjungan = OrderedDict(sorted(raw_data_kunjungan.items()))
 
@@ -298,6 +304,7 @@ def laporan_semua(request):
                 'data_penulis_resep': list(raw_data_penulis.values()),
                 'peresep': raw_data_penulis,
                 'penyakit': OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))),
+                'penerimaan': raw_data_penerimaan,
                 #'penyakit': sorted(penyakit, key=lambda k: k['y'], reverse=True)[0:1],
                 'ed': raw_data_ed,
                 'unit': cleaned_data_bmhp_unit,
