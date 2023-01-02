@@ -165,7 +165,7 @@ def laporan_semua(request):
     import datetime
     from statistics import mean
     from poli.models import DataKunjungan
-    from apotek.models import Resep, Pengeluaran, Penerimaan, KartuStokApotek
+    from apotek.models import Resep, Pengeluaran, Penerimaan, KartuStokApotek, KartuStokGudang, StokObatGudang, StokObatApotek
     from .forms import TglForm
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -277,6 +277,23 @@ def laporan_semua(request):
             maksimum = 0 if len(cleaned_data_kunjungan.values()) == 0 else max(list(cleaned_data_kunjungan.values()))
             minimum = 0 if len(cleaned_data_kunjungan.values()) == 0 else min(list(cleaned_data_kunjungan.values()))
 
+            #Get stok apotek
+            nama_bmhp_apotek = []
+            q_nama_bmhp_apotek = StokObatApotek.objects.all().iterator()
+            for i in q_nama_bmhp_apotek:
+                nama_bmhp_apotek.append(i.nama_obat.nama_obat)
+
+            raw_data_stok_apotek = {}
+            for bmhp in nama_bmhp_apotek:
+                try:
+                    stok_akhir = KartuStokApotek.objects.filter(nama_obat__nama_obat=bmhp).filter(tgl__gte=request.POST.get("tanggal1"), tgl__lte=request.POST.get("tanggal2")).last()
+                    #print(stok_akhir.nama_obat.nama_obat, stok_akhir.sisa_stok)
+                    raw_data_stok_apotek[stok_akhir.nama_obat.nama_obat] = stok_akhir.sisa_stok
+                except:
+                    stok_akhir = KartuStokApotek.objects.filter(nama_obat__nama_obat=bmhp).last()
+                    #print(stok_akhir.nama_obat.nama_obat, stok_akhir.sisa_stok)
+                    raw_data_stok_apotek[stok_akhir.nama_obat.nama_obat] = stok_akhir.sisa_stok
+
             context = {
                 'startdate': request.POST.get("tanggal1"),
                 'enddate': request.POST.get("tanggal2"),
@@ -302,6 +319,7 @@ def laporan_semua(request):
                 'ed': raw_data_ed,
                 'unit': cleaned_data_bmhp_unit,
                 'apt': cleaned_data_apt,
+                'stok_apt': OrderedDict(sorted(raw_data_stok_apotek.items())),
             }
             #print(OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))))
             return render(request, 'laporan/laporan_semua.html', context)

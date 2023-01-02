@@ -194,7 +194,7 @@ var peresepOptions = {
 var peresepResponsiveOptions = [
   ['screen and (min-width: 100px)', {
     chartPadding: 30,
-    labelOffset: 100,
+    labelOffset: 80,
     labelDirection: 'explode',
     labelInterpolationFnc: function(value) {
       return value;
@@ -287,10 +287,10 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 </div>
 
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
     </div>
 
-    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
 	<table>
 	  <tr><td contenteditable="false"><strong>Lokasi Unit</strong></td><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
 	  {% for lokasi, value in unit.items %}
@@ -306,6 +306,28 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 	  				{% endif %}
 			{% endif %}
 	  	{% endfor %}
+	  {% endfor %}
+	</table>
+	</div>
+</div>
+
+<div class="pagebreak"> </div>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    	<h4>Stok Obat di Apotek</h4>
+    </div>
+</div>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+    </div>
+
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+	<table>
+	  <tr><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
+	  {% for key, value in stok_apt.items %}
+	  <tr><td contenteditable="true">{{ key }}</td><td contenteditable="true">{{ value }}</td></tr>
 	  {% endfor %}
 	</table>
 	</div>
