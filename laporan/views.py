@@ -105,13 +105,6 @@ def laporan_page(request):
     return render(request, 'laporan/laporan_generator.html')
 
 @login_required
-def so_apotek(request):
-    if request.method == 'POST':
-        pass
-    else:
-        pass
-
-@login_required
 def penggunaan_bmhp(request):
     from apotek.models import Resep, Pengeluaran
     from .forms import TglForm
@@ -264,7 +257,7 @@ def laporan_semua(request):
             # mengurutkan data sesuai urutan tanggal
             cleaned_data_penyakit = OrderedDict(sorted(raw_data_penyakit.items()))
 
-            query_obat = Resep.objects.select_related('nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte="{}-{}-1".format(now.year, now.month), kunjungan_pasien__tgl_kunjungan__lte="{}-{}-{}".format(now.year, now.month, now.day)).iterator()
+            query_obat = Resep.objects.select_related('nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal1")).iterator()
 
             # Handling perhitungan jumlah obat terpakai
             for data in query_obat:
@@ -615,7 +608,7 @@ def so_gudang(request):
                     obat.save()
 
                 #Penyesuaian kartu stok tiap item
-                stok_gd_sebelum = KartuStokGudang.objects.filter(nama_obat__nama_obat=obat).last()
+                stok_gd_sebelum = KartuStokGudang.objects.filter(nama_obat__nama_obat=obat.nama_obat).last()
                 try:
                     #Bila stok fisik lebih kecil daripada stok tercatat sebelumnya
                     if int(request.POST[obat.nama_obat.nama_obat]) < stok_gd_sebelum.sisa_stok:
