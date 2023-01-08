@@ -294,25 +294,26 @@ def laporan_semua(request):
                     #print(stok_akhir.nama_obat.nama_obat, stok_akhir.sisa_stok)
                     raw_data_stok_apotek[stok_akhir.nama_obat.nama_obat] = stok_akhir.sisa_stok
 
-            # # Get stok gudang
-            # nama_bmhp_gudang = []
-            # q_nama_bmhp_gudang = StokObatGudang.objects.all().iterator()
-            # for i in q_nama_bmhp_gudang:
-                # if i.nama_obat.nama_obat == "zzdummydata":
-                    # pass
-                # else:
-                    # nama_bmhp_gudang.append(i.nama_obat.nama_obat)
-# 
-            # raw_data_stok_gudang = {}
-            # for i in nama_bmhp_gudang:
-                # try:
-                    # sa = KartuStokGudang.objects.filter(nama_obat__nama_obat=i).filter(tgl__gte=request.POST.get("tanggal1"), tgl__lte=request.POST.get("tanggal2")).last()
-                    # #print(sa)
-                    # raw_data_stok_gudang[sa.nama_obat.nama_obat] = sa.sisa_stok
-                # except AttributeError:
-                    # sa = KartuStokApotek.objects.filter(nama_obat__nama_obat=i).last()
-                    # print(sa.nama_obat)
-                    # #raw_data_stok_gudang[sa.nama_obat.nama_obat] = sa.sisa_stok
+            # Get stok gudang
+            nama_bmhp_gudang = []
+            q_nama_bmhp_gudang = StokObatGudang.objects.all().iterator()
+            for i in q_nama_bmhp_gudang:
+                if i.nama_obat.nama_obat == "zzdummydata":
+                    pass
+                else:
+                    nama_bmhp_gudang.append(i.nama_obat.nama_obat)
+
+            raw_data_stok_gudang = {}
+
+            for i in nama_bmhp_gudang:
+                sa = KartuStokGudang.objects.filter(nama_obat__nama_obat=i).filter(tgl__gte=request.POST.get("tanggal1"), tgl__lte=request.POST.get("tanggal2")).last()
+                if sa is None:
+                    sa = KartuStokGudang.objects.filter(nama_obat__nama_obat=i).last()
+                    raw_data_stok_gudang[sa.nama_obat.nama_obat] = sa.sisa_stok
+                else:
+                    raw_data_stok_gudang[sa.nama_obat.nama_obat] = sa.sisa_stok
+
+            print(raw_data_penerimaan)
 
             context = {
                 'startdate': request.POST.get("tanggal1"),
@@ -340,7 +341,7 @@ def laporan_semua(request):
                 'unit': cleaned_data_bmhp_unit,
                 'apt': cleaned_data_apt,
                 'stok_apt': OrderedDict(sorted(raw_data_stok_apotek.items())),
-                #'stok_gdg': OrderedDict(sorted(raw_data_stok_gudang.items())),
+                'stok_gdg': OrderedDict(sorted(raw_data_stok_gudang.items())),
             }
             #print(OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))))
             return render(request, 'laporan/laporan_semua.html', context)

@@ -235,7 +235,7 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 </div>
 
 <div class="pagebreak"> </div>
-
+{% if penerimaan %}
 <div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
     	<h4>Penerimaan BMHP</h4>
@@ -255,6 +255,13 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 	</table>
 	</div>
 </div>
+{% else %}
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    	<h4>Tidak Ada Penerimaan BMHP Pada Rentang Tanggal Tersebut</h4>
+    </div>
+</div>
+{% endif %}
 
 <div class="pagebreak"> </div>
 
