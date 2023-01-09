@@ -313,8 +313,6 @@ def laporan_semua(request):
                 else:
                     raw_data_stok_gudang[sa.nama_obat.nama_obat] = sa.sisa_stok
 
-            print(raw_data_penerimaan)
-
             context = {
                 'startdate': request.POST.get("tanggal1"),
                 'enddate': request.POST.get("tanggal2"),

@@ -303,10 +303,10 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 	  {% for lokasi, value in unit.items %}
 	  	{% for bmhp, jml in value.items %}
 	  		{% if forloop.counter == 1 and forloop.last %}
-	  			<tr><td contenteditable="true">{{ lokasi }}</td><td contenteditable="true">{{ bmhp }}</td><td contenteditable="true">{{ jml }}</td></tr>
+	  			<tr><td contenteditable="true"><strong>{{ lokasi }}</strong></td><td contenteditable="true">{{ bmhp }}</td><td contenteditable="true">{{ jml }}</td></tr>
 	  			<tr><td style="background-color:#343A40;" contenteditable="false"> </td><td style="background-color:#343A40;" contenteditable="false"></td><td style="background-color:#343A40;" contenteditable="false"></td></tr>
 	  		{% elif forloop.counter == 1 and not forloop.last %}
-	  			<tr><td contenteditable="true">{{ lokasi }}</td><td contenteditable="true">{{ bmhp }}</td><td contenteditable="true">{{ jml }}</td></tr>
+	  			<tr><td contenteditable="true"><strong>{{ lokasi }}</strong></td><td contenteditable="true">{{ bmhp }}</td><td contenteditable="true">{{ jml }}</td></tr>
 	  		{% else %}
 	  			{% if forloop.last %}
 	  			<tr><td contenteditable="true"> </td><td contenteditable="true">{{ bmhp }}</td><td contenteditable="true">{{ jml }}</td></tr>

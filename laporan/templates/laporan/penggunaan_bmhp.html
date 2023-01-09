@@ -46,8 +46,11 @@ Pengeluaran BMHP dari gudang ke unit lain pada tanggal <strong>{{ startdate }}</
 	  <tr><td contenteditable="false"><strong>Lokasi Unit</strong></td><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
 	  {% for lokasi, value in unit.items %}
 	  	{% for bmhp, jml in value.items %}
-	  		{% if forloop.first %}
-	  			<tr><td contenteditable="false">{{ lokasi }}</td><td contenteditable="false">{{ bmhp }}</td><td contenteditable="false">{{ jml }}</td></tr>
+	  		{% if forloop.counter == 1 and forloop.last %}
+	  			<tr><td contenteditable="false"><strong>{{ lokasi }}</strong></td><td contenteditable="false">{{ bmhp }}</td><td contenteditable="false">{{ jml }}</td></tr>
+	  			<tr style="background-color:#343A40;"><td contenteditable="false"> </td><td contenteditable="false"></td><td contenteditable="false"></td></tr>
+	  			{% elif forloop.counter == 1 and not forloop.last %}
+	  			<tr><td contenteditable="false"><strong>{{ lokasi }}</strong></td><td contenteditable="false">{{ bmhp }}</td><td contenteditable="false">{{ jml }}</td></tr>
 	  			{% else %}
 	  				{% if forloop.last %}
 	  					<tr><td contenteditable="false"> </td><td contenteditable="false">{{ bmhp }}</td><td contenteditable="false">{{ jml }}</td></tr>
