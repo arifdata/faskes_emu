@@ -109,7 +109,7 @@ def coba_post(sesi):
     rawText = r.text
     regex = re.search(r'csrfmiddlewaretoken" value=".*">', rawText)
     token = regex.group().removeprefix('csrfmiddlewaretoken" value="').removesuffix('">')
-    for rowNum in range(26, sr.max_row + 1):
+    for rowNum in range(27, sr.max_row + 1):
         if sr.cell(row=rowNum, column=75).value != None:
             
             c = 0
@@ -192,7 +192,7 @@ def cekDiagnosa(sesi, diag):
 
 def getDiagnosa():
     diag = []
-    for rowNum in range(26, sr.max_row + 1):
+    for rowNum in range(27, sr.max_row + 1):
         if sr.cell(row=rowNum, column=75).value == None:
             pass
         else:
@@ -225,7 +225,7 @@ def cekPeresep(sesi, peresep):
 
 def getPeresep():
     peresep = []
-    for rowNum in range(26, sr.max_row + 1):
+    for rowNum in range(27, sr.max_row + 1):
         if sr.cell(row=rowNum, column=75).value == None:
             pass
         else:
