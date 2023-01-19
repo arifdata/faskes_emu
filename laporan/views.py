@@ -315,6 +315,8 @@ def laporan_semua(request):
 
             context = {
                 'startdate': request.POST.get("tanggal1"),
+                'sdate': request.POST.get("tanggal1")[5:7],
+                'edate': request.POST.get("tanggal1")[0:4],
                 'enddate': request.POST.get("tanggal2"),
                 'val': query,
                 'bln': now.strftime("%B"), 
