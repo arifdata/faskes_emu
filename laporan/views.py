@@ -189,6 +189,9 @@ def laporan_semua(request):
             cleaned_data_bmhp_unit = {}
             raw_data_bmhp_apt = {}
             raw_data_penerimaan = {}
+            raw_data_gd_ke_apt = {}
+            kunci2 = []
+            cleaned_data_gd_ke_apt = {}
 
             ed = Penerimaan.objects.select_related('nama_barang').filter(tgl_kadaluarsa__gte=f"{three_month_before.year}-{three_month_before.month}-{three_month_before.day}", tgl_kadaluarsa__lte=f"{three_month_after.year}-{three_month_after.month}-{three_month_after.day}").iterator()
 
@@ -230,6 +233,7 @@ def laporan_semua(request):
             cleaned_data_apt = OrderedDict(sorted(cleaned_data_apt.items()))
             
             q2 = Pengeluaran.objects.select_related('nama_barang__nama_obat').filter(keluar_barang__tgl_keluar__gte=request.POST.get("tanggal1"), keluar_barang__tgl_keluar__lte=request.POST.get("tanggal2")).exclude(keluar_barang__tujuan__nama="APOTEK").iterator()
+            q3 = Pengeluaran.objects.select_related('nama_barang__nama_obat').filter(keluar_barang__tgl_keluar__gte=request.POST.get("tanggal1"), keluar_barang__tgl_keluar__lte=request.POST.get("tanggal2")).filter(keluar_barang__tujuan__nama="APOTEK").iterator()
 
             for data in q2:
                 a = {}
@@ -245,6 +249,23 @@ def laporan_semua(request):
                 for x in raw_data_bmhp_unit[d]:
                     c.update(x)
                     cleaned_data_bmhp_unit[d] = dict(c)
+
+            for data in q3:
+                a = {}
+                a[data.nama_barang.nama_obat.nama_obat] = data.jumlah
+                if data.keluar_barang.tujuan.nama not in raw_data_gd_ke_apt.keys():
+                    raw_data_gd_ke_apt[data.keluar_barang.tujuan.nama] = [a]
+                    kunci2.append(data.keluar_barang.tujuan.nama)
+                else:                    
+                    raw_data_gd_ke_apt[data.keluar_barang.tujuan.nama].append(a)
+
+            for d in kunci2:
+                c = Counter()
+                for x in raw_data_gd_ke_apt[d]:
+                    c.update(x)
+                    cleaned_data_gd_ke_apt[d] = dict(c)
+
+            #print(cleaned_data_gd_ke_apt["APOTEK"])
 
             terima = Penerimaan.objects.filter(terima_barang__tgl_terima__gte=request.POST.get("tanggal1")).filter(terima_barang__tgl_terima__lte=request.POST.get("tanggal2")).order_by("terima_barang__tgl_terima")
             for data in terima:
@@ -339,6 +360,7 @@ def laporan_semua(request):
                 #'penyakit': sorted(penyakit, key=lambda k: k['y'], reverse=True)[0:1],
                 'ed': raw_data_ed,
                 'unit': cleaned_data_bmhp_unit,
+                'gd_ke_apt': cleaned_data_gd_ke_apt["APOTEK"],
                 'apt': cleaned_data_apt,
                 'stok_apt': OrderedDict(sorted(raw_data_stok_apotek.items())),
                 'stok_gdg': OrderedDict(sorted(raw_data_stok_gudang.items())),
