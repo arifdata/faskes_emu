@@ -293,6 +293,26 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 
 <div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    	<h4>Distribusi BMHP dari Gudang Ke Apotek</h4>
+    </div>
+</div>
+
+<div class="row start-lg start-md start-sm start-xs">
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<table>
+	  <tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr>
+	  {% for key, value in gd_ke_apt.items %}
+	  <tr><td contenteditable="true"><small>{{ key }}</small></td><td contenteditable="true"><small>{{ value }}</small></td></tr>
+	  {% endfor %}
+	</table>
+	</div>
+</div>
+
+<div class="pagebreak"> </div>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
     	<h4>Distribusi BMHP Ke Unit Lain</h4>
     </div>
 </div>

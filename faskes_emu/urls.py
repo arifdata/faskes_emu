@@ -21,7 +21,7 @@ from apotek.views import DataObatViewSet, PenerimaanViewSet, StokObatApotekViewS
 from poli.views import DiagnosaViewSet, DataPeresepViewSet
 from django.conf import settings
 from django.conf.urls.static import static
-from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko, tengok_stok_alkes, tengok_stok_obat, contact_developer, lap_generik, lap_por, so_apotek, so_gudang, laporan_semua
+from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko, tengok_stok_alkes, tengok_stok_obat, contact_developer, lap_generik, lap_por, so_apotek, so_gudang, laporan_semua, penggunaan_harian
 
 from utils.utils import download_backup
 from django.contrib.auth.views import LoginView
@@ -43,6 +43,7 @@ urlpatterns = [
     path('utils/backupd', download_backup, name='backupd'),
     path('kontak_dev/', contact_developer, name='contact_dev'),
     path('laporan/penggunaan_bmhp/', penggunaan_bmhp, name='penggunaan_bmhp'),
+    path('laporan/penggunaan_harian/', penggunaan_harian, name='penggunaan_harian'),
     path('laporan/laporan_semua/', laporan_semua, name='laporan_semua'),
     path('laporan/cetak_kartu_stok/', cetak_kartu_stok, name='cetak_kartu'),
     path('laporan/lap_narko_psiko/', lap_narko_psiko, name='lap_narko_psiko'),

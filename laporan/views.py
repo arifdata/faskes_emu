@@ -105,6 +105,45 @@ def laporan_page(request):
     return render(request, 'laporan/laporan_generator.html')
 
 @login_required
+def penggunaan_harian(request):
+    from apotek.models import Resep
+    from .forms import TglForm
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = TglForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            raw_data_bmhp_apt = {}
+            
+            q = Resep.objects.select_related('nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).iterator()
+
+            for data in q:
+                #print(data.kunjungan_pasien.tgl_kunjungan, data.nama_obat.nama_obat, data.jumlah, data.kunjungan_pasien.nama_pasien.nama_pasien)
+                if str(data.kunjungan_pasien.tgl_kunjungan) not in raw_data_bmhp_apt:
+                    raw_data_bmhp_apt[str(data.kunjungan_pasien.tgl_kunjungan)] = {data.nama_obat.nama_obat.nama_obat: data.jumlah}                    
+                elif data.nama_obat.nama_obat.nama_obat in raw_data_bmhp_apt[str(data.kunjungan_pasien.tgl_kunjungan)]:
+                    raw_data_bmhp_apt[str(data.kunjungan_pasien.tgl_kunjungan)][data.nama_obat.nama_obat.nama_obat] += data.jumlah
+                elif data.nama_obat.nama_obat.nama_obat not in raw_data_bmhp_apt[str(data.kunjungan_pasien.tgl_kunjungan)]:
+                    raw_data_bmhp_apt[str(data.kunjungan_pasien.tgl_kunjungan)][data.nama_obat.nama_obat.nama_obat] = data.jumlah
+                else:
+                    pass
+            print(raw_data_bmhp_apt)
+            
+            context = {
+                'startdate': request.POST.get("tanggal1"),
+                'enddate': request.POST.get("tanggal2"),
+                'val': raw_data_bmhp_apt,
+            }
+            return render(request, 'laporan/penggunaan_harian.html', context)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = TglForm()
+
+    return render(request, 'laporan/form_penggunaan_harian.html', {'form': form})
+
+@login_required
 def penggunaan_bmhp(request):
     from apotek.models import Resep, Pengeluaran
     from .forms import TglForm

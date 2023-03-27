@@ -1,0 +1,57 @@
+{% extends 'laporan/base.html' %}
+{% block content %}
+
+<div id="content" class="colM">
+<div class="row">
+<div class="col-lg-12 col-xs-12">
+<h1>Pengeluaran BMHP Apotek Harian</h1>
+Pengeluaran BMHP apotek pada tanggal <strong>{{ startdate }}</strong> s/d <strong>{{ enddate }}</strong> <i><small>(YYYY-MM-DD)</small></i>:
+<p></p>
+
+{% if val %}
+
+	<table id="tabel-harian" border="2">
+	  <tr><td contenteditable="false"><strong>Tanggal</strong></td><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
+	  {% for lokasi, value in val.items %}
+	  	{% for bmhp, jml in value.items %}
+	  		{% if forloop.counter == 1 and forloop.last %}
+	  			<tr><td contenteditable="false"><strong>{{ lokasi }}</strong></td><td contenteditable="false">{{ bmhp }}</td><td contenteditable="false">{{ jml }}</td></tr>
+	  			<tr style="background-color:#343A40;"><td contenteditable="false"> </td><td contenteditable="false"></td><td contenteditable="false"></td></tr>
+	  			{% elif forloop.counter == 1 and not forloop.last %}
+	  			<tr><td contenteditable="false"><strong>{{ lokasi }}</strong></td><td contenteditable="false">{{ bmhp }}</td><td contenteditable="false">{{ jml }}</td></tr>
+	  			{% else %}
+	  				{% if forloop.last %}
+	  					<tr><td contenteditable="false"> </td><td contenteditable="false">{{ bmhp }}</td><td contenteditable="false">{{ jml }}</td></tr>
+	  					<tr style="background-color:#343A40;"><td contenteditable="false"> </td><td contenteditable="false"></td><td contenteditable="false"></td></tr>
+	  						{% else %}
+	  						<tr><td contenteditable="false"> </td><td contenteditable="false">{{ bmhp }}</td><td contenteditable="false">{{ jml }}</td></tr>
+	  				{% endif %}
+			{% endif %}
+	  	{% endfor %}
+	  {% endfor %}
+	</table>
+</div>
+
+<br>
+<p><input type="submit" value="Download Excel" onclick="dl_excel_unit('xlsx');"></p>
+
+<script>
+function dl_excel_unit(type, fn, dl) {
+	var elt = document.getElementById('tabel-harian');
+	var wb = XLSX.utils.table_to_book(elt, {sheet:"Penggunaan BMHP Harian"});
+	return dl ?
+		XLSX.write(wb, {bookType:type, bookSST:true, type: 'base64'}) :
+		XLSX.writeFile(wb, fn || ('Penggunaan-BMHP-Harian__{{startdate}}__{{enddate}}.' + (type || 'xlsx')));
+}
+</script>
+
+{% else %}
+<p>Tidak ada data pengeluaran BMHP Apotek pada rentang tanggal di atas. Coba tanggal lainnya.</p>
+<p>(T⌓T)</p>
+
+{% endif %}
+<br>
+
+{% endblock %}
+
+</div>
