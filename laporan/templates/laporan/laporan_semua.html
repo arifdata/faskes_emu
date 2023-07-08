@@ -6,8 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Big Data Report Tahun {{ edate }} Bulan {{ sdate }} Apotek Puskesmas Berakit</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/flexboxgrid.min.css' %}">
+    <link rel="stylesheet" tyddpe="text/css" href="{% static 'css/flexboxgrid.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/chartist.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/print.css' %}">
     <script src="{% static 'js/chartist.min.js' %}"></script>
     <script src="{% static 'js/chartist-plugin-pointlabels.min.js' %}"></script>
     <script src="{% static 'js/chartist-plugin-axistitle.min.js' %}"></script>
@@ -40,6 +41,14 @@
 	  display:inline-block;
 	  transform: rotate(180deg);
 	}
+
+	.kunChart {
+		width: 100%;
+	}
+
+	.peresepanChart {
+		width: 100%;
+	}
 	
 	</style>
   </head>
@@ -52,16 +61,16 @@
     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
     	<p><img src="{% static 'css/report.png' %}" alt="Report" width="40" height="40"></p>
     </div>
-    <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
     	<p><strong>Analisa Big Data Apotek Puskesmas Berakit</strong><br>
     	<small>Tanggal: {{ startdate }} s/d {{ enddate }}</small></p>
     </div>
     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
     	<p><img src="{% static 'css/centralized.png' %}" alt="Pills" width="40" height="40"></p>
     </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
     	<p>
-    	<small>Disusun oleh:<br>FarmAssistBot<span class="copyleft">&copy;</span> by Pratama</small></p>
+    	<small>Disusun oleh:<br>FarmAssistBot / SIBOKIT <span class="copyleft">&copy;</span> by Pratama</small></p>
     </div>
 </div>
 
@@ -71,105 +80,36 @@
     </div>
 </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Grafik Lembar Resep</h4>
-    </div>
-</div>
+<br>
 
 <div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-        <div class="ct-chart ct-octave" id="chartKunjungan"></div>
+      <div class="kunChart">
+        <img src="{{ kunChart64 }}">
+      </div>
     </div>
+
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-        <p>
-        <small>
-        
-        	<li>Total: {{ total_resep }} resep</li>
-        	<li>Rata-rata: {{ rerata_kunjungan|floatformat:0 }} resep</li>
-        	<li>Terbanyak: {{ terbanyak }} resep</li>
-        	<li>Tersedikit: {{ tersedikit }} resep</li>
-        
-        </small>
-        </p>
+      <p>
+      <li>Total: {{ total_resep }} resep</li>
+      <li>Rerata: {{ rerata_kunjungan|floatformat:0 }} resep</li>
+      <li>Terbanyak: {{ terbanyak }} resep</li>
+      <li>Tersedikit: {{ tersedikit }} resep</li>
+      </p>
     </div>
 </div>
 
-<script>
-  var optionsKunjungan = {
-  	low: 0
-  };
-  new Chartist.Line('#chartKunjungan', {
-    labels: {{ labels_kunjungan|safe }},
-    series: [{{ data_kunjungan }}]
-  }, {
-  	plugins: [
-    Chartist.plugins.ctPointLabels({
-      textAnchor: 'middle'
-    }),
-    Chartist.plugins.ctAxisTitle({
-      axisX: {
-        axisTitle: 'Tanggal',
-        axisClass: 'ct-axis-title',
-        offset: {
-          x: 0,
-          y: 30
-        },
-        textAnchor: 'middle'
-      },
-      axisY: {
-        axisTitle: 'Jumlah Resep',
-        axisClass: 'ct-axis-title',
-        offset: {
-          x: 0,
-          y: -5
-        },
-      }
-    })
-  ],
-  low: 0,
-  showArea: true
-  });
-</script>
+<br>
 
 <div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Peresepan Obat Terbanyak</h4>
+      <div class="peresepanChart">
+        <img src="{{ peresepanChart64 }}">
+      </div>
     </div>
 </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<div class="ct-chart ct-octave" id="chartObatTerbanyak"></div>
-    </div>
-</div>
-
-<script>
-new Chartist.Bar('#chartObatTerbanyak', {
-  labels: {{ labels_obat_terbanyak|safe }},
-  series: [
-    {{ data_obat_terbanyak }}
-  ]
-}, {
-  seriesBarDistance: 15,
-  reverseData: true,
-  horizontalBars: true,
-  axisY: {
-    offset: 400,
-    position: 'end',
-    labelOffset: {
-      x: 0,
-      y: 0
-    },
-  },
-  chartPadding: {
-    top: 5,
-    right: 5,
-    bottom: 5,
-    left: 5
-  },
-});
-</script>
+<div class="pagebreak"> </div>
 
 <div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

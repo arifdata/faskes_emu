@@ -199,6 +199,25 @@ def penggunaan_bmhp(request):
 
     return render(request, 'laporan/form_penggunaan_bmhp.html', {'form': form})
 
+def genKunjChart(x, y, judul):
+    import pygal
+    from pygal.style import RedBlueStyle
+    
+    lineChart = pygal.Line(fill=True, title=judul, style=RedBlueStyle, print_values=True, print_values_position="top", x_title="Tanggal", y_title="Jml Pasien", show_legend=False, x_label_rotation=20, show_x_guides=True, margin=20)
+    lineChart.x_labels = x
+    lineChart.add("Jml Pasien", y)
+    return lineChart.render_data_uri()
+
+def genObatTerbanyakChart(label, data):
+    import pygal
+    from pygal.style import RedBlueStyle
+
+    barChart = pygal.HorizontalBar(title="Penggunaan 20 Obat Terbanyak di Apotek", print_values=True, legend_at_bottom=True, legend_box_size=10, legend_at_bottom_columns=2, style=RedBlueStyle)
+    for i in range(0, len(label)):
+        barChart.add(label[i], data[i])
+    return barChart.render_data_uri()
+    
+
 @login_required
 def laporan_semua(request):
     import datetime
@@ -379,16 +398,14 @@ def laporan_semua(request):
                 'edate': request.POST.get("tanggal1")[0:4],
                 'enddate': request.POST.get("tanggal2"),
                 'val': query,
-                'bln': now.strftime("%B"), 
-                'thn': now.year, 
-                #'labels_kunjungan': list(cleaned_data_kunjungan.keys()), 
-                'labels_kunjungan': [x[0:2] for x in cleaned_data_kunjungan.keys()], 
-                'data_kunjungan': list(cleaned_data_kunjungan.values()),
+                #'labels_kunjungan': list(cleaned_data_kunjungan.keys()),
+                'kunChart64': genKunjChart([x[0:2] for x in cleaned_data_kunjungan.keys()], list(cleaned_data_kunjungan.values()), "Grafik Kunjungan {} sampai {}".format(request.POST.get("tanggal1"), request.POST.get("tanggal2"))),
                 'terbanyak': maksimum,
                 'tersedikit': minimum,
                 'total_resep': sum(list(cleaned_data_kunjungan.values())),
                 'rerata_kunjungan': rerata,
                 'maks': maksimum,
+                'peresepanChart64': genObatTerbanyakChart(list(cleaned_data_obat.keys())[0:20], list(cleaned_data_obat.values())[0:20]),
                 'labels_obat_terbanyak': list(cleaned_data_obat.keys())[0:20],
                 'data_obat_terbanyak': list(cleaned_data_obat.values())[0:20],
                 'labels_penulis_resep': list(raw_data_penulis.keys()),
