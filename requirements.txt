@@ -8,3 +8,6 @@ djangorestframework==3.13.1
 Markdown==3.3.7
 django-filter==21.1
 drf-writable-nested==0.6.3
+requests==2.31.0
+pygal==3.0.0
+lxml==4.9.3
