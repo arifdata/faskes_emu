@@ -26,16 +26,42 @@
 	@media print {
 	    .pagebreak { page-break-before: always; } /* page-break-after works, as well */
 	}
-	
-	table, th, td {
-	  border: 1px solid white;
+
+	table {
+	  border: 1px solid black;
 	  border-collapse: collapse;
+    vertical-align: middle;
 	}
+
+
+  caption {
+    font-weight: bold;
+    font-size: 18px;
+    text-align: left;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  body {
+    font-family: sans-serif;
+  }
+
+  thead {
+    background-color: #e27876;
+    color: white;
+  }
+
+  th, td {
+    padding: 5px;
+  }
+
+  .colNo {
+    width: 10px;
+  }
 	
-	th, td {
-	  background-color: #FF6464;
-	  padding: 2px;
-	}
+  tr:nth-child(even) {
+    background-color: #EEE;
+  }
 
 	.copyleft {
 	  display:inline-block;
@@ -80,7 +106,11 @@
     </div>
 </div>
 
-<br>
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    	<h4>Grafik Kunjungan Pasien</h4>
+    </div>
+</div>
 
 <div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
@@ -90,16 +120,23 @@
     </div>
 
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+      <small>
       <p>
       <li>Total: {{ total_resep }} resep</li>
       <li>Rerata: {{ rerata_kunjungan|floatformat:0 }} resep</li>
       <li>Terbanyak: {{ terbanyak }} resep</li>
       <li>Tersedikit: {{ tersedikit }} resep</li>
       </p>
+      </small>
     </div>
 </div>
 
-<br>
+
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    	<h4>Grafik Obat Terbanyak Digunakan Pasien</h4>
+    </div>
+</div>
 
 <div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -118,83 +155,56 @@
 </div>
 
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
-    	<div class="ct-chart ct-octave" id="chartPeresepTerbanyak"></div>
-    </div>
-    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-	    <p>
-	    <small>
-	    {% for key, val in peresep.items %}
-	    	<li>{{ key }}: {{ val }} lembar resep</li>
-	    {% endfor %}
-	    
-	    </small>
-	    </p>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="peresepanChart">
+        <img src="{{ peresepChart64 }}">
+      </div>
     </div>
 </div>
 
-<script>
-var peresepOptions = {
-  labelDirection: 'explode',
-  labelInterpolationFnc: function(value) {
-    return value
-  }
-};
-
-var peresepResponsiveOptions = [
-  ['screen and (min-width: 100px)', {
-    chartPadding: 30,
-    labelOffset: 80,
-    labelDirection: 'explode',
-    labelInterpolationFnc: function(value) {
-      return value;
-    }
-  }]
-];
-
-new Chartist.Pie('#chartPeresepTerbanyak', {
-  labels: {{ labels_penulis_resep|safe }},
-  series: {{ data_penulis_resep }}
-}, peresepOptions, peresepResponsiveOptions);
-</script>
+<div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+      <small>
+	    <p>
+	    {% for key, val in peresep.items %}
+	    	<li>{{ key }}: {{ val }} lembar</li>
+	    {% endfor %}
+	    </p>
+      </small>
+    </div>
+</div>
 
 <div class="pagebreak"> </div>
 
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Diagnosa terbanyak</h4>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
     </div>
-</div>
-
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
     	<table class="table">
-    	<thead><tr><th><small>No.</small></th><th><small>Diagnosa</small></th><th><small>Jumlah</small></th></tr></thead>
+      <caption>Diagnosa Terbanyak</caption>
+    	<thead><tr><th class="colNo"><small>No.</small></th><th><small>Diagnosa</small></th><th><small>Jumlah</small></th></tr></thead>
     	{% for x, y in penyakit.items %}
     		{% if forloop.counter > 40 %}
     		{% else%}
-    		<tbody><tr><td><small>{{ forloop.counter }}</small></td><td contenteditable="true"><small>{{ x }}</small></td><td><small>{{ y }}</small></td></tr></tbody>
+    		<tr><td><small>{{ forloop.counter }}</small></td><td contenteditable="true"><small>{{ x }}</small></td><td><small>{{ y }}</small></td></tr>
     		{% endif %}
     	{% endfor %}
     	</table>
     </div>
-    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
     </div>
 </div>
 
 <div class="pagebreak"> </div>
 {% if penerimaan %}
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Penerimaan BMHP</h4>
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
     </div>
-</div>
 
-<div class="row start-lg start-md start-sm start-xs">
-
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
 	<table>
-	  <tr><td contenteditable="false"><small><strong>No.</strong></small></td><td contenteditable="false"><small><strong>Nama BMHP</strong></small></td><td contenteditable="false"><small><strong>Tgl Terima</strong></small></td><td contenteditable="false"><small><strong>Sumber</strong></small></td><td contenteditable="false"><small><strong>No. Batch</strong></small></td><td contenteditable="false"><small><strong>Tgl Kadaluarsa</strong></small></td><td contenteditable="false"><small><strong>Jumlah</strong></small></td></tr>
+    <caption>Penerimaan BMHP</caption>
+    <thead><tr><th contenteditable="false"><small><strong>No.</strong></small></th><th contenteditable="false"><small><strong>Nama BMHP</strong></small></th><th contenteditable="false"><small><strong>Tgl Terima</strong></small></th><th contenteditable="false"><small><strong>Sumber</strong></small></th><th contenteditable="false"><small><strong>No. Batch</strong></small></th><th contenteditable="false"><small><strong>Tgl Kadaluarsa</strong></small></th><th contenteditable="false"><small><strong>Jumlah</strong></small></th></tr></thead>
 	  {% for key, value in penerimaan.items %}
 	  <tr><td contenteditable="true"><small>{{ forloop.counter }}</small></td>{% for data in value %}<td contenteditable="true"><small>{{ data }}</small></td>{% endfor %}</tr>
 	  {% endfor %}
@@ -212,16 +222,13 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 <div class="pagebreak"> </div>
 
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Penggunaan Obat Di Apotek</h4>
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
     </div>
-</div>
 
-<div class="row start-lg start-md start-sm start-xs">
-
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
 	<table>
-	  <tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr>
+    <caption>Penggunaan Obat Di Apotek</caption>
+    <thead><tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
 	  {% for key, value in apt.items %}
 	  <tr><td contenteditable="true"><small>{{ key }}</small></td><td contenteditable="true"><small>{{ value }}</small></td></tr>
 	  {% endfor %}
@@ -232,16 +239,13 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 <div class="pagebreak"> </div>
 
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Distribusi BMHP dari Gudang Ke Apotek</h4>
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
     </div>
-</div>
 
-<div class="row start-lg start-md start-sm start-xs">
-
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
 	<table>
-	  <tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr>
+   	<caption>Distribusi BMHP dari Gudang Ke Apotek</caption>
+    <thead><tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
 	  {% for key, value in gd_ke_apt.items %}
 	  <tr><td contenteditable="true"><small>{{ key }}</small></td><td contenteditable="true"><small>{{ value }}</small></td></tr>
 	  {% endfor %}
@@ -252,27 +256,24 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 <div class="pagebreak"> </div>
 
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Distribusi BMHP Ke Unit Lain</h4>
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
     </div>
-</div>
 
-<div class="row start-lg start-md start-sm start-xs">
-
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
 	<table>
-	  <tr><td contenteditable="false"><strong><small>Lokasi Unit</small></strong></td><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr>
+   	<caption>Distribusi BMHP Ke Unit Lain</caption>
+    <thead><tr><td contenteditable="false"><strong><small>Lokasi Unit</small></strong></td><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
 	  {% for lokasi, value in unit.items %}
 	  	{% for bmhp, jml in value.items %}
 	  		{% if forloop.counter == 1 and forloop.last %}
 	  			<tr><td contenteditable="true"><strong><small>{{ lokasi }}</small></strong></td><td contenteditable="true"><small>{{ bmhp }}</small></td><td contenteditable="true"><small>{{ jml }}</small></td></tr>
-	  			<tr><td style="background-color:#343A40;" contenteditable="false"> </td><td style="background-color:#343A40;" contenteditable="false"></td><td style="background-color:#343A40;" contenteditable="false"></td></tr>
+	  			<tr><td style="background-color:#e27876;" contenteditable="false"> </td><td style="background-color:#e27876;" contenteditable="false"></td><td style="background-color:#e27876;" contenteditable="false"></td></tr>
 	  		{% elif forloop.counter == 1 and not forloop.last %}
 	  			<tr><td contenteditable="true"><strong><small>{{ lokasi }}</small></strong></td><td contenteditable="true"><small>{{ bmhp }}</small></td><td contenteditable="true"><small>{{ jml }}</small></td></tr>
 	  		{% else %}
 	  			{% if forloop.last %}
 	  			<tr><td contenteditable="true"> </td><td contenteditable="true"><small>{{ bmhp }}</small></td><td contenteditable="true"><small>{{ jml }}</small></td></tr>
-	  			<tr><td style="background-color:#343A40;" contenteditable="false"> </td><td style="background-color:#343A40;" contenteditable="false"></td><td style="background-color:#343A40;" contenteditable="false"></td></tr>
+	  			<tr><td style="background-color:#e27876;" contenteditable="false"> </td><td style="background-color:#e27876;" contenteditable="false"></td><td style="background-color:#e27876;" contenteditable="false"></td></tr>
 	  			{% else %}
 	  				<tr><td contenteditable="true"> </td><td contenteditable="true"><small>{{ bmhp }}</small></td><td contenteditable="true"><small>{{ jml }}</small></td></tr>
 	  			{% endif %}
@@ -286,17 +287,12 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 <div class="pagebreak"> </div>
 
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Stok Obat di Apotek</h4>
-    </div>
-</div>
-
-<div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
     </div>
     <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
 	<table>
-	  <tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr>
+    <caption>Stok Obat di Apotek</caption>
+    <thead><tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
 	  {% for key, value in stok_apt.items %}
 	  <tr><td contenteditable="true"><small>{{ key }}</small></td><td contenteditable="true"><small>{{ value }}</small></td></tr>
 	  {% endfor %}
@@ -311,19 +307,14 @@ new Chartist.Pie('#chartPeresepTerbanyak', {
 <div class="pagebreak"> </div>
 
 <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Stok Obat di Gudang</h4>
-    </div>
-</div>
-
-<div class="row start-lg start-md start-sm start-xs">
 
     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
     </div>
     
     <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
 	<table>
-	  <tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr>
+    	<caption>Stok Obat di Gudang</caption>
+    <thead><tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
 	  {% for key, value in stok_gdg.items %}
 	  <tr><td contenteditable="true"><small>{{ key }}</small></td><td contenteditable="true"><small>{{ value }}</small></td></tr>
 	  {% endfor %}

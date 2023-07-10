@@ -216,7 +216,19 @@ def genObatTerbanyakChart(label, data):
     for i in range(0, len(label)):
         barChart.add(label[i], data[i])
     return barChart.render_data_uri()
-    
+
+def genPeresepChart(label, data):
+    import pygal
+    from pygal.style import RedBlueStyle
+
+    total = sum(data)
+    pieChart = pygal.Pie(title="Persentase Lembar Resep", print_values=True, style=RedBlueStyle, legend_at_bottom=True, margin=10)
+    for i in range(0, len(label)):
+        persentase = (data[i] / total) * 100
+        pieChart.add(label[i], float("{:.2f}".format(persentase)))
+    pieChart.value_formatter = lambda x: "{} %".format(x)
+    return pieChart.render_data_uri()
+
 
 @login_required
 def laporan_semua(request):
@@ -406,10 +418,7 @@ def laporan_semua(request):
                 'rerata_kunjungan': rerata,
                 'maks': maksimum,
                 'peresepanChart64': genObatTerbanyakChart(list(cleaned_data_obat.keys())[0:20], list(cleaned_data_obat.values())[0:20]),
-                'labels_obat_terbanyak': list(cleaned_data_obat.keys())[0:20],
-                'data_obat_terbanyak': list(cleaned_data_obat.values())[0:20],
-                'labels_penulis_resep': list(raw_data_penulis.keys()),
-                'data_penulis_resep': list(raw_data_penulis.values()),
+                'peresepChart64': genPeresepChart(list(raw_data_penulis.keys()), list(raw_data_penulis.values())),
                 'peresep': raw_data_penulis,
                 'penyakit': OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))),
                 'penerimaan': raw_data_penerimaan,
