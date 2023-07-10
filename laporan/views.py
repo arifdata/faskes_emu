@@ -203,9 +203,9 @@ def genKunjChart(x, y, judul):
     import pygal
     from pygal.style import RedBlueStyle
     
-    lineChart = pygal.Line(fill=True, title=judul, style=RedBlueStyle, print_values=True, print_values_position="top", x_title="Tanggal", y_title="Jml Pasien", show_legend=False, x_label_rotation=20, show_x_guides=True, margin=20)
+    lineChart = pygal.Line(fill=True, title=judul, style=RedBlueStyle, print_values=True, print_values_position="top", x_title="Tanggal", y_title="Jml Lembar Resep", show_legend=False, x_label_rotation=20, show_x_guides=True, margin=20)
     lineChart.x_labels = x
-    lineChart.add("Jml Pasien", y)
+    lineChart.add("Jml Lembar Resep", y)
     return lineChart.render_data_uri()
 
 def genObatTerbanyakChart(label, data):
@@ -222,13 +222,24 @@ def genPeresepChart(label, data):
     from pygal.style import RedBlueStyle
 
     total = sum(data)
-    pieChart = pygal.Pie(title="Persentase Lembar Resep", print_values=True, style=RedBlueStyle, legend_at_bottom=True, margin=10)
+    pieChart = pygal.Pie(title="Persentase Lembar Resep", print_values=True, style=RedBlueStyle, legend_at_bottom=True, margin=10, print_labels=True)
     for i in range(0, len(label)):
         persentase = (data[i] / total) * 100
-        pieChart.add(label[i], float("{:.2f}".format(persentase)))
+        pieChart.add(label[i], [{'value': float("{:.2f}".format(persentase)), 'label': label[i]}])
     pieChart.value_formatter = lambda x: "{} %".format(x)
     return pieChart.render_data_uri()
 
+def genTenPenyakit(data):
+    import pygal
+    from pygal.style import RedBlueStyle
+    labels = []
+    for key in data.keys():
+        labels.append(key)
+
+    tm = pygal.Treemap(print_labels=True, print_values=True, legend_at_bottom=True, legend_at_bottom_columns=1, margin=10)
+    for i in range(0, len(labels)):
+        tm.add(labels[i], [{'value': data[labels[i]], 'label': labels[i].split(' (')[0]}])
+    return tm.render_data_uri()
 
 @login_required
 def laporan_semua(request):
@@ -411,7 +422,7 @@ def laporan_semua(request):
                 'enddate': request.POST.get("tanggal2"),
                 'val': query,
                 #'labels_kunjungan': list(cleaned_data_kunjungan.keys()),
-                'kunChart64': genKunjChart([x[0:2] for x in cleaned_data_kunjungan.keys()], list(cleaned_data_kunjungan.values()), "Grafik Kunjungan {} sampai {}".format(request.POST.get("tanggal1"), request.POST.get("tanggal2"))),
+                'kunChart64': genKunjChart([x[0:2] for x in cleaned_data_kunjungan.keys()], list(cleaned_data_kunjungan.values()), "Pelayanan Resep dari {} sampai {}".format(request.POST.get("tanggal1"), request.POST.get("tanggal2"))),
                 'terbanyak': maksimum,
                 'tersedikit': minimum,
                 'total_resep': sum(list(cleaned_data_kunjungan.values())),
@@ -420,6 +431,7 @@ def laporan_semua(request):
                 'peresepanChart64': genObatTerbanyakChart(list(cleaned_data_obat.keys())[0:20], list(cleaned_data_obat.values())[0:20]),
                 'peresepChart64': genPeresepChart(list(raw_data_penulis.keys()), list(raw_data_penulis.values())),
                 'peresep': raw_data_penulis,
+                'toppenyakit': genTenPenyakit(OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))[0:10])),
                 'penyakit': OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))),
                 'penerimaan': raw_data_penerimaan,
                 #'penyakit': sorted(penyakit, key=lambda k: k['y'], reverse=True)[0:1],
