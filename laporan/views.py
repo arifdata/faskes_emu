@@ -238,7 +238,7 @@ def genTenPenyakit(data):
 
     tm = pygal.Treemap(print_labels=True, print_values=True, legend_at_bottom=True, legend_at_bottom_columns=1, margin=10)
     for i in range(0, len(labels)):
-        tm.add(labels[i], [{'value': data[labels[i]], 'label': labels[i].split(' (')[0]}])
+        tm.add(labels[i], [{'value': data[labels[i]], 'label': 'Essential (primary) hypertension' if labels[i] == 'Essential (primary) hypertension (I10)' else labels[i].split(' (')[0]}])
     return tm.render_data_uri()
 
 @login_required
