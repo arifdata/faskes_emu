@@ -128,7 +128,6 @@ def penggunaan_harian(request):
                     raw_data_bmhp_apt[str(data.kunjungan_pasien.tgl_kunjungan)][data.nama_obat.nama_obat.nama_obat] = data.jumlah
                 else:
                     pass
-            print(raw_data_bmhp_apt)
             
             context = {
                 'startdate': request.POST.get("tanggal1"),
@@ -708,13 +707,15 @@ def so_apotek(request):
                 #Bila stok fisik lebih kecil daripada stok tercatat sebelumnya
                 if int(request.POST[obat.nama_obat.nama_obat]) < stok_apt_sebelum.sisa_stok:
                     selisih = stok_apt_sebelum.sisa_stok - int(request.POST[obat.nama_obat.nama_obat])
-                    kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Staf", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
+                    #kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Staf", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
+                    kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="SO", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
                     kartu_stok_apt_input.save()
 
                 #Bila stok fisik lebih besar daripada stok tercatat sebelumnya
                 if int(request.POST[obat.nama_obat.nama_obat]) > stok_apt_sebelum.sisa_stok:
                     selisih = int(request.POST[obat.nama_obat.nama_obat]) - stok_apt_sebelum.sisa_stok
-                    kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Retur", stok_terima=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
+                    #kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Retur", stok_terima=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
+                    kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="SO", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
                     kartu_stok_apt_input.save()
                     
             return render(request, 'laporan/so_apotek.html', context)
@@ -752,13 +753,13 @@ def so_gudang(request):
                     #Bila stok fisik lebih kecil daripada stok tercatat sebelumnya
                     if int(request.POST[obat.nama_obat.nama_obat]) < stok_gd_sebelum.sisa_stok:
                         selisih = stok_gd_sebelum.sisa_stok - int(request.POST[obat.nama_obat.nama_obat])
-                        kartu_stok_gd_input = KartuStokGudang(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Staf", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]))
+                        kartu_stok_gd_input = KartuStokGudang(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="SO", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]))
                         kartu_stok_gd_input.save()
 
                     #Bila stok fisik lebih besar daripada stok tercatat sebelumnya
                     if int(request.POST[obat.nama_obat.nama_obat]) > stok_gd_sebelum.sisa_stok:
                         selisih = int(request.POST[obat.nama_obat.nama_obat]) - stok_gd_sebelum.sisa_stok
-                        kartu_stok_gd_input = KartuStokGudang(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Retur", stok_terima=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]))
+                        kartu_stok_gd_input = KartuStokGudang(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="SO", stok_terima=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]))
                         kartu_stok_gd_input.save()
                 except AttributeError:
                     pass
@@ -842,4 +843,44 @@ def lap_por(request):
     else:
         form = PorForm()
     return render(request, 'laporan/form_lap_por.html', {'form': form})
+
+@login_required
+def lap_pasien(request):
+    from .forms import TglForm
+    if request.method == 'POST':
+        from apotek.models import Resep
+        form = TglForm(request.POST)
+        if form.is_valid():
+            try:
+                #refdose = dict(Resep.ATURAN_PK)
+                counter = 1
+                raw_data = {}
+                q = Resep.objects.select_related('kunjungan_pasien__nama_pasien', 'nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).order_by('kunjungan_pasien__tgl_kunjungan').iterator()
+                
+                for data in q:
+                    if not raw_data:
+                        raw_data[counter] = {"nama": data.kunjungan_pasien.nama_pasien.nama_pasien, "tgl": data.kunjungan_pasien.tgl_kunjungan.strftime("%Y-%m-%d"), "obat": [(data.nama_obat.nama_obat.nama_obat, data.aturan_pakai, data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab)], "id": data.kunjungan_pasien.id, "usia": data.kunjungan_pasien.nama_pasien.umur(), "diagn": [x.diagnosa for x in data.kunjungan_pasien.diagnosa.distinct()]}
+                    elif data.kunjungan_pasien.nama_pasien.nama_pasien == raw_data[counter]["nama"] and data.kunjungan_pasien.id == raw_data[counter]["id"]:
+                        raw_data[counter]["obat"].append((data.nama_obat.nama_obat.nama_obat, data.aturan_pakai, data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab))
+                    else:
+                        counter += 1
+                        raw_data[counter] = {"nama": data.kunjungan_pasien.nama_pasien.nama_pasien, "tgl": data.kunjungan_pasien.tgl_kunjungan.strftime("%Y-%m-%d"), "obat": [(data.nama_obat.nama_obat.nama_obat, data.aturan_pakai, data.lama_pengobatan, data.jumlah, data.nama_obat.nama_obat.is_ab)], "id": data.kunjungan_pasien.id, "usia": data.kunjungan_pasien.nama_pasien.umur(), "diagn": [x.diagnosa for x in data.kunjungan_pasien.diagnosa.distinct()]}
+                        
+                ctx = {
+                    'data': raw_data,
+                    'input': {
+                        'date1': request.POST.get("tanggal1"),
+                        'date2': request.POST.get("tanggal2"),
+                    }
+                }
+                #a = [x.diagnosa for x in raw_data[1]["diagn"].distinct()]
+                return render(request, 'laporan/lap_pasien.html', context=ctx)
+                #return HttpResponse(ctx['data'])
+
+            except Exception as e:
+                return HttpResponse(e)
+
+    else:
+        form = TglForm()
+    return render(request, 'laporan/form_lap_pasien.html', {'form': form})
     

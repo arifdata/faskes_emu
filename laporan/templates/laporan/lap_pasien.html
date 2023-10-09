@@ -1,0 +1,45 @@
+{% extends 'laporan/base.html' %}
+{% block content %}
+
+<div id="content" class="colM">
+<div class="row">
+<div class="col-lg-12 col-xs-12">
+<h1>Laporan POR {{ input.diag }}: {{ input.date1 }} s/d {{ input.date2 }}</h1>
+
+{% if data %}
+    <table id="tabel-por" border="2">
+    <tr><td contenteditable="false"><strong>Tgl</strong></td><td contenteditable="false"><strong>No</strong></td><td contenteditable="false"><strong>Nama</strong></td><td contenteditable="false"><strong>Umur</strong></td><td contenteditable="false"><strong>Jumlah Item</strong></td><td contenteditable="false"><strong>Antibiotik?</strong></td><td contenteditable="false"><strong>Nama Obat</strong></td><td contenteditable="false"><strong>Dosis Obat</strong></td><td contenteditable="false"><strong>Lama Pemakaian (hari)</strong></td><td contenteditable="false"><strong>Quantity Obat</strong></td><td contenteditable="false"><strong>Diagnosa</strong></td><td contenteditable="false"><strong>Administrasi</strong></td><td contenteditable="false"><strong>Obat</strong></td><td contenteditable="false"><strong>Dosis</strong></td><td contenteditable="false"><strong>Waktu & Frekuensi</strong></td><td contenteditable="false"><strong>Tdk Ada Interaksi Obat</strong><td contenteditable="false"><strong>Nama & Dosis</strong></td></td><td contenteditable="false"><strong>Indikasi</strong></td><td contenteditable="false"><strong>Cara Pakai</strong></td><td contenteditable="false"><strong>Efek Samping</strong></td><td contenteditable="false"><strong>Penyimpanan</strong></td></tr>
+    {% for key, val in data.items %}
+        {% for obat, dosis, durasi, jumlah, ab in val.obat %}
+            {% if forloop.first %}
+                <tr><td contenteditable="false">{{ val.tgl }}</td><td contenteditable="false">{{ key }}</td><td contenteditable="false">{{ val.nama|slice:":1" }}</td><td contenteditable="false">{{ val.usia }}</td><td contenteditable="false">{{ val.obat|length }}</td><td contenteditable="false">{% if ab == True %}Ya{% else %}{% endif %}</td><td contenteditable="false">{{ obat }}</td><td contenteditable="false">{{ dosis }}</td><td contenteditable="false">{{ durasi }}</td><td contenteditable="false">{{ jumlah }}</td><td contenteditable="false">{{ val.diagn|join:"," }}</td><td contenteditable="false"><strong>✓</strong></td><td contenteditable="false"><strong>✓</strong></td><td contenteditable="false"><strong>✓</strong></td><td contenteditable="false"><strong>✓</strong></td><td contenteditable="false"><strong>✓</strong></td><td contenteditable="false"><strong>✓</strong></td><td contenteditable="false"><strong>✓</strong></td><td contenteditable="false"><strong>✓</strong></td><td contenteditable="false"><strong>✓</strong></td><td contenteditable="false"><strong>✓</strong></td></tr>
+            {% else %}
+                <tr><td contenteditable="false"></td><td contenteditable="false"></td><td contenteditable="false"></td><td contenteditable="false"></td><td contenteditable="false"></td><td contenteditable="false">{% if ab == True %}Ya{% else %}{% endif %}</td><td contenteditable="false">{{ obat }}</td><td contenteditable="false">{{ dosis }}</td><td contenteditable="false">{{ durasi }}</td><td contenteditable="false">{{ jumlah }}</td></tr>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </table>
+    <br>
+    <p><input type="submit" value="Download Excel" onclick="dl_excel('xlsx');"></p>
+
+    <script>
+    function dl_excel(type, fn, dl) {
+    	var elt = document.getElementById('tabel-por');
+    	var wb = XLSX.utils.table_to_book(elt, {sheet:"Kunjungan {{input.diag}}"});
+    	return dl ?
+    		XLSX.write(wb, {bookType:type, bookSST:true, type: 'base64'}) :
+    		XLSX.writeFile(wb, fn || ('Laporan-Kunjungan-{{input.diag}}__{{input.date1}}__{{input.date2}}.' + (type || 'xlsx')));
+    }
+    </script>
+{% else %}
+    Tidak ada data. Coba tanggal / diagnosa lainnya.
+{% endif %}
+
+<br>
+<br>
+<br>
+</div>
+</div>
+</div>
+
+{% endblock %}
