@@ -215,6 +215,29 @@
 </div>
 
 <div class="pagebreak"> </div>
+
+ <div class="row start-lg start-md start-sm start-xs">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    	<h4>Sebaran Penyakit</h4>
+    </div>
+</div>
+
+     {% for lokasi, penyakit_map in lokasi_penyakit.items %}
+        <table class="table">
+        <caption>Penyakit Terbanyak di {{ lokasi }}</caption>
+
+    	<thead><tr><th class="colNo"><small>No.</small></th><th><small>Diagnosa</small></th><th><small>Jumlah</small></th></tr></thead>
+    	{% for x, y in penyakit_map.items %}
+    		{% if forloop.counter > 40 %}
+    		{% else%}
+    		<tr><td><small>{{ forloop.counter }}</small></td><td contenteditable="true"><small>{{ x }}</small></td><td><small>{{ y }}</small></td></tr>
+    		{% endif %}
+    	{% endfor %}
+    	</table>
+
+        <div class="pagebreak"></div>
+      {% endfor %}
+
 {% if penerimaan %}
 <div class="row start-lg start-md start-sm start-xs">
     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">

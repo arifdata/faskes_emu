@@ -261,6 +261,7 @@ def laporan_semua(request):
             #dict utk menampung data sementara
             raw_data_kunjungan = {}
             raw_data_penyakit = {}
+            raw_penyakit_per_lokasi = {}
             raw_data_obat = {}
             raw_data_penulis = {}
             raw_data_ed = {}
@@ -281,6 +282,23 @@ def laporan_semua(request):
             #query data dari awal bulan sekarang sampai sekarang
             query = DataKunjungan.objects.select_related('penulis_resep').filter(tgl_kunjungan__gte=request.POST.get("tanggal1"), tgl_kunjungan__lte=request.POST.get("tanggal2"))
 
+            # query alamat
+            for data in query:
+               if data.nama_pasien.alamat not in raw_penyakit_per_lokasi.keys():
+                raw_penyakit_per_lokasi[data.nama_pasien.alamat] = {}
+                for penyakit in data.diagnosa.values('diagnosa'):
+                    if penyakit['diagnosa'] not in raw_penyakit_per_lokasi[data.nama_pasien.alamat].keys():
+                        raw_penyakit_per_lokasi[data.nama_pasien.alamat].update({penyakit['diagnosa']: 1})
+                    else:
+                        raw_penyakit_per_lokasi[data.nama_pasien.alamat][penyakit['diagnosa']] += 1
+               else:
+                   for penyakit in data.diagnosa.values('diagnosa'):
+                       if penyakit['diagnosa'] not in raw_penyakit_per_lokasi[data.nama_pasien.alamat].keys():
+                           raw_penyakit_per_lokasi[data.nama_pasien.alamat].update({penyakit['diagnosa']: 1})
+                       else:
+                            raw_penyakit_per_lokasi[data.nama_pasien.alamat][penyakit['diagnosa']] += 1
+            #print(raw_penyakit_per_lokasi)
+
             # hitung penulis resep
             for data in query:
                 if data.penulis_resep.nama_peresep not in raw_data_penulis:
@@ -295,6 +313,7 @@ def laporan_semua(request):
                         raw_data_penyakit[diag['diagnosa']] = 1
                     else:
                         raw_data_penyakit[diag['diagnosa']] += 1
+            #print(raw_data_penyakit)
             
             # memasukkan tanggal beserta jumlah kunjungannya respectively ke dict raw_data_kunjungan
             for data in query:
@@ -432,6 +451,7 @@ def laporan_semua(request):
                 'peresep': raw_data_penulis,
                 'toppenyakit': genTenPenyakit(OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))[0:10])),
                 'penyakit': OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))),
+                'lokasi_penyakit': raw_penyakit_per_lokasi,
                 'penerimaan': raw_data_penerimaan,
                 #'penyakit': sorted(penyakit, key=lambda k: k['y'], reverse=True)[0:1],
                 'ed': raw_data_ed,
