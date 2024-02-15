@@ -21,7 +21,7 @@ from apotek.views import DataObatViewSet, PenerimaanViewSet, StokObatApotekViewS
 from poli.views import DiagnosaViewSet, DataPeresepViewSet
 from django.conf import settings
 from django.conf.urls.static import static
-from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko, tengok_stok_alkes, tengok_stok_obat, contact_developer, lap_generik, lap_por, so_apotek, so_gudang, laporan_semua, penggunaan_harian, lap_pasien
+from laporan.views import index_page, laporan_page, penggunaan_bmhp, cetak_kartu_stok, lap_narko_psiko, tengok_stok_alkes, tengok_stok_obat, contact_developer, lap_generik, lap_por, so_apotek, so_gudang, laporan_semua, all_stock, penggunaan_harian, lap_pasien
 
 from utils.utils import download_backup
 from django.contrib.auth.views import LoginView
@@ -52,6 +52,7 @@ urlpatterns = [
     path('laporan/lap_generik/', lap_generik, name='lap_generik'),
     path('laporan/lap_por/', lap_por, name='lap_por'),
     path('laporan/lap_pasien/', lap_pasien, name='lap_pasien'),
+    path('laporan/stok_semua/', all_stock, name='allstock'),
     re_path(r"^accounts/login/*", LoginView.as_view(), name="login"),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
