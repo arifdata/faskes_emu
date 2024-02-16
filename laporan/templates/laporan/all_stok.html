@@ -29,6 +29,7 @@
 
         <p class="text-sm text-emerald-700">Disusun oleh :</p>
         <p class="text-sm text-emerald-700">FarmAssistBot / SIBOKIT © by Pratama</p>
+        <p class="text-xs text-emerald-700">v.2023-10-23</p>
       </div>
     </div>
   </div>
@@ -575,5 +576,51 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
   </div>
 
 </div> <!-- div container-->
+
+<div class="pagebreak"> </div>
+
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Sisa Stok Obat di Gudang Obat</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+<!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-6 py-1">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
+	    {% for key, value in stok_gdg.items %}
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+                {{ key }}
+          </th>
+              <td class="px-1 py-1"> {{ value }}</td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
 </body>
 </html>
