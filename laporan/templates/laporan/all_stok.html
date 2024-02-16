@@ -36,7 +36,7 @@
 
 <div class="bg-emerald-600 px-4 py-3 text-white">
   <p class="text-center text-lg font-medium">
-    Tanggal: {{ startdate }} sampai {{ enddate }}
+    Tanggal : {{ startdate|date:"d F Y" }} - {{ enddate|date:"d F Y" }}
   </p>
 </div>
 
@@ -44,7 +44,7 @@
 
 <span class="flex items-center">
   <span class="h-px flex-1 bg-emerald-700"></span>
-  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Grafik Pelayanan Resep Harian</span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Line Chart Pelayanan Resep Harian</span>
   <span class="h-px flex-1 bg-emerald-700"></span>
 </span>
 
@@ -75,7 +75,7 @@
 
 <span class="flex items-center">
   <span class="h-px flex-1 bg-emerald-700"></span>
-  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Grafik Obat Terbanyak Diresepkan</span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Bar Chart Obat Terbanyak Diresepkan</span>
   <span class="h-px flex-1 bg-emerald-700"></span>
 </span>
 
@@ -99,7 +99,7 @@
 
 <span class="flex items-center">
   <span class="h-px flex-1 bg-emerald-700"></span>
-  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Grafik Penulis Resep</span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Pie Chart Penulis Resep</span>
   <span class="h-px flex-1 bg-emerald-700"></span>
 </span>
 
@@ -128,7 +128,7 @@
 
 <span class="flex items-center">
   <span class="h-px flex-1 bg-emerald-700"></span>
-  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">10 Penyakit Terbanyak</span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">TreeMap 10 Penyakit Terbanyak</span>
   <span class="h-px flex-1 bg-emerald-700"></span>
 </span>
 
@@ -427,5 +427,20 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
 </div> <!-- div container-->
 <div class="pagebreak"> </div>
 
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Distribusi dari Gudang Obat ke Apotek</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+<div role="alert" class="rounded border-s-4 border-emerald-700 bg-emerald-300 p-4">
+  <strong class="block font-medium text-grey-300"> Distribusi dari Gudang ke Apotek </strong>
+
+  <p class="mt-2 text-sm text-grey-300">
+    Perpindahan BMHP dari gudang obat ke apotek pada rentang tanggal diatas. 
+  </p>
+</div>
+
+</div> <!--div container-->
 </body>
 </html>

@@ -451,10 +451,12 @@ def laporan_semua(request):
                     raw_data_stok_gudang[sa.nama_obat.nama_obat] = sa.sisa_stok
 
             context = {
-                'startdate': request.POST.get("tanggal1"),
+                #'startdate': request.POST.get("tanggal1"),
+                'startdate': datetime.datetime.strptime(request.POST.get("tanggal1"), "%Y-%m-%d").date(),
                 'sdate': request.POST.get("tanggal1")[5:7],
                 'edate': request.POST.get("tanggal1")[0:4],
-                'enddate': request.POST.get("tanggal2"),
+                #'enddate': request.POST.get("tanggal2"),
+                'enddate': datetime.datetime.strptime(request.POST.get("tanggal2"), "%Y-%m-%d").date(),
                 'val': query,
                 #'labels_kunjungan': list(cleaned_data_kunjungan.keys()),
                 'kunChart64': genKunjChart([x[0:2] for x in cleaned_data_kunjungan.keys()], list(cleaned_data_kunjungan.values()), "Pelayanan Resep dari {} sampai {}".format(request.POST.get("tanggal1"), request.POST.get("tanggal2"))),
