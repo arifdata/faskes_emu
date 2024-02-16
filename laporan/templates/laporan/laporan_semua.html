@@ -549,6 +549,9 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
       <!-- Table head -->
       <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
         <tr>
+          <th scope="col" class="px-1 py-1">
+            No.
+          </th>
           <th scope="col" class="px-6 py-1">
             Nama BMHP
           </th>
@@ -563,9 +566,10 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
 	    {% for key, value in stok_apt.items %}
         <tr class="border-b odd:bg-emerald-50">
           <th scope="row" class="px-1 py-1">
-                {{ key }}
+                {{ forloop.counter }}
           </th>
-              <td class="px-1 py-1"> {{ value }}</td>
+              <td class="px-6 py-1"> {{ key }}</td>
+              <td class="px-3 py-1"> {{ value }}</td>
         </tr>
         {% endfor %}
 
@@ -595,6 +599,9 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
       <!-- Table head -->
       <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
         <tr>
+          <th scope="col" class="px-1 py-1">
+            No.
+          </th>
           <th scope="col" class="px-6 py-1">
             Nama BMHP
           </th>
@@ -609,9 +616,10 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
 	    {% for key, value in stok_gdg.items %}
         <tr class="border-b odd:bg-emerald-50">
           <th scope="row" class="px-1 py-1">
-                {{ key }}
+                {{ forloop.counter }}
           </th>
-              <td class="px-1 py-1"> {{ value }}</td>
+              <td class="px-6 py-1"> {{ key }}</td>
+              <td class="px-3 py-1"> {{ value }}</td>
         </tr>
         {% endfor %}
 
