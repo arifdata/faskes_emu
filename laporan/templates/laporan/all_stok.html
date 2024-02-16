@@ -157,51 +157,89 @@
   <span class="h-px flex-1 bg-emerald-700"></span>
 </span>
 
-<div class="overflow-x-auto self-center rounded-lg">
-  <table class="min-w-50 divide-y-2 divide-emerald-700 bg-white text-sm rounded-lg">
-    <thead class="ltr:text-left">
-      <tr>
-        <th class="whitespace-nowrap px-4 py-2 font-medium text-white bg-emerald-700 text-start">No.</th>
-        <th class="whitespace-nowrap px-4 py-2 font-medium text-white bg-emerald-700 text-start">Diagnosa</th>
-        <th class="whitespace-nowrap px-4 py-2 font-medium text-white bg-emerald-700 text-start">Jumlah</th>
-      </tr>
-    </thead>
-
-    <tbody class="divide-y divide-emerald-700">
+<div class="max-w-screen-xl mx-auto px-4 py-2">
+  <div class="mt-1 shadow-sm border rounded-lg overflow-x-auto">
+    <table class="w-full table-auto text-sm text-left">
+      <thead class="bg-gray-50 text-gray-600 font-medium border-b">
+        <tr>
+          <th class="py-1 px-1 font-medium text-white bg-emerald-700">No.</th>
+          <th class="py-1 px-1 font-medium text-white bg-emerald-700">Diagnosa</th>
+          <th class="py-1 px-1 font-medium text-white bg-emerald-700">Jumlah</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-600 divide-y">
 		{% for x, y in penyakit.items %}
 		{% if forloop.counter > 40 %}
-		{% else%}
-      <tr class="odd:bg-emerald-50">
-        <td class="whitespace-nowrap px-4 py-2 font-medium text-emerald-700">{{ forloop.counter }}</td>
-        <td class="whitespace-nowrap px-4 py-2 text-emerald-700">{{ x }}</td>
-        <td class="whitespace-nowrap px-4 py-2 text-emerald-700">{{ y }}</td>
-      </tr>
-      {% endif %}
-      {% endfor %}
-    </tbody>
-  </table>
+		{% else %}
+          <tr class="odd:bg-emerald-50">
+            <td
+              class="px-1 py-1"
+            >{{ forloop.counter }}</td>
+            <td
+              class="px-1 py-1 whitespace-nowrap"
+            >{{ x }}</td>
+            <td
+              class="px-1 py-1"
+            >{{ y }}</td>
+          </tr>
+		{% endif %}
+		{% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 
-
 </div>
 
+<div class="pagebreak"> </div>
 
+<div class="container mx-auto px-1 py-2">
+
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Sebaran Penyakit</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+<div class="max-w-screen-xl mx-auto px-4 py-2">
+  <div class="mt-1 shadow-sm border rounded-lg overflow-x-auto">
+	{% for lokasi, penyakit_map in lokasi_penyakit.items %}
+    <table class="w-full table-auto text-sm text-left">
+		<caption class="py-2 font-medium text-md text-emerald-700">Penyakit di {{ lokasi }}</caption>
+      <thead class="bg-gray-50 text-gray-600 font-medium border-b">
+        <tr>
+          <th class="py-1 px-1 font-medium text-white bg-emerald-700">No.</th>
+          <th class="py-1 px-1 font-medium text-white bg-emerald-700">Diagnosa</th>
+          <th class="py-1 px-1 font-medium text-white bg-emerald-700">Jumlah</th>
+        </tr>
+      </thead>
+      {% for x, y in penyakit_map.items %}
+      {% if forloop.counter > 40 %}
+      {% else%}
+      <tbody class="text-gray-600 divide-y">
+
+          <tr class="odd:bg-emerald-50">
+            <td
+              class="px-1 py-1"
+            >{{ forloop.counter }}</td>
+            <td
+              class="px-1 py-1 whitespace-nowrap"
+            >{{ x }}</td>
+            <td
+              class="px-1 py-1"
+            >{{ y }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+      </tbody>
+    
+    </table>
+    <div class="pagebreak"> </div>
+    {% endfor %}
+  </div>
+</div>
+
+</div>
 
 </body>
 </html>
-
-
-<!--
-<div id="content" class="colM">
-
-    <table id="tabel-allstok" border="2">
-        <tr><td contenteditable="false"><strong>Nama BMHP</strong></td><td contenteditable="false"><strong>Jumlah</strong></td></tr>
-        {% for nama, jml in bmhp.items %}
-            <tr><td contenteditable="false">{{ nama }}</td><td contenteditable="false">{{ jml }}</td></tr>
-        {% endfor %}
-    </table>
-</div>
-
-<br>
-<h1>x</h1>
--->
