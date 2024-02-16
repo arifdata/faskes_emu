@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Big Data Report Tahun {{ edate }} Bulan {{ sdate }} Apotek Puskesmas Berakit</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
   @media print {
@@ -15,7 +16,7 @@
 <header class="bg-gray-50">
   <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
     <div class="sm:flex sm:items-center gap-6">
-      <svg class="h-8" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="h-16" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="SVGRepo_bgCarrier" stroke-width="0"/>
 
 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -24,7 +25,7 @@
       </svg>
     </a>
       <div class="text-center sm:text-left">
-        <h1 class="text-xl font-bold text-emerald-900">Analisa Big Data Apotek Puskesmas Berakit</h1>
+        <h1 class="text-xl font-bold text-emerald-900">Laporan Big Data Apotek Puskesmas Berakit</h1>
 
         <p class="text-sm text-emerald-700">Disusun oleh :</p>
         <p class="text-sm text-emerald-700">FarmAssistBot / SIBOKIT © by Pratama</p>
@@ -59,7 +60,7 @@
 </div>
 
   <div class="basis-1/5 ">
-	  <ul class="items-start list-disc">
+	  <ul class="items-start list-none">
 		<li class="text-xs text-emerald-700">Total : {{ total_resep }} resep</li>
 		<li class="text-xs text-emerald-700">Rerata : {{ rerata_kunjungan|floatformat:0 }} resep</li>
 		<li class="text-xs text-emerald-700">Terbanyak : {{ terbanyak }} resep</li>
@@ -530,5 +531,49 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
   {% endfor %}
 
 </div> <!-- div container -->
+
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Sisa Stok Obat di Apotek</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+<!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-6 py-1">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
+	    {% for key, value in stok_apt.items %}
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+                {{ key }}
+          </th>
+              <td class="px-1 py-1"> {{ value }}</td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div> <!-- div container-->
 </body>
 </html>

@@ -215,11 +215,11 @@ def penggunaan_bmhp(request):
 
     return render(request, 'laporan/form_penggunaan_bmhp.html', {'form': form})
 
-def genKunjChart(x, y, judul):
+def genKunjChart(x, y):
     import pygal
     from pygal.style import LightenStyle
     
-    lineChart = pygal.Line(fill=True, title=judul, style=LightenStyle('#047857'), print_values=True, print_values_position="top", x_title="Tanggal", y_title="Jml Lembar Resep", show_legend=False, x_label_rotation=20, show_x_guides=True, margin=20)
+    lineChart = pygal.Line(fill=True, style=LightenStyle('#047857'), print_values=True, print_values_position="top", x_title="Tanggal", y_title="Jml Lembar Resep", show_legend=False, x_label_rotation=20, show_x_guides=True, margin=20)
     lineChart.x_labels = x
     lineChart.add("Jml Lembar Resep", y)
     return lineChart.render_data_uri()
@@ -459,7 +459,7 @@ def laporan_semua(request):
                 'enddate': datetime.datetime.strptime(request.POST.get("tanggal2"), "%Y-%m-%d").date(),
                 'val': query,
                 #'labels_kunjungan': list(cleaned_data_kunjungan.keys()),
-                'kunChart64': genKunjChart([x[0:2] for x in cleaned_data_kunjungan.keys()], list(cleaned_data_kunjungan.values()), "Pelayanan Resep dari {} sampai {}".format(request.POST.get("tanggal1"), request.POST.get("tanggal2"))),
+                'kunChart64': genKunjChart([x[0:2] for x in cleaned_data_kunjungan.keys()], list(cleaned_data_kunjungan.values())),
                 'terbanyak': maksimum,
                 'tersedikit': minimum,
                 'total_resep': sum(list(cleaned_data_kunjungan.values())),
