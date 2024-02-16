@@ -228,7 +228,52 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
   </p>
 </div>
 
+  <!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
 
+    <!-- Table -->
+	{% for lokasi, penyakit_map in lokasi_penyakit.items %}
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+		  <caption class="py-2 font-medium text-md text-emerald-700">Penyakit di {{ lokasi }}</caption>
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-1 py-1">
+            No.
+          </th>
+          <th scope="col" class="px-6 py-1">
+            Diagnosa
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      {% for x, y in penyakit_map.items %}
+      {% if forloop.counter > 40 %}
+      {% else%}
+      <tbody>
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+                {{ forloop.counter }} 
+          </th>
+              <td class="px-1 py-1">{{ x }}</td>
+              <td class="px-1 py-1">{{ y }}</td>
+        </tr>
+          {% endif %}
+          {% endfor %}
+      </tbody>
+
+    </table>
+    <div class="pagebreak"> </div>
+    {% endfor %}
+
+  </div>
+
+      <!--
 <div class="max-w-screen-xl mx-auto px-4 py-2">
   <div class="mt-1 shadow-sm border rounded-lg overflow-x-auto">
 	{% for lokasi, penyakit_map in lokasi_penyakit.items %}
@@ -265,7 +310,9 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
     <div class="pagebreak"> </div>
     {% endfor %}
   </div>
+-->
 </div>
+
 
 
 {% if penerimaan %}
