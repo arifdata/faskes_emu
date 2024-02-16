@@ -1,378 +1,626 @@
-{% load static %}
-<html lang="en">
-  <!-- The language defaults to English - update accordingly if necessary -->
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Big Data Report Tahun {{ edate }} Bulan {{ sdate }} Apotek Puskesmas Berakit</title>
-    <link rel="stylesheet" tyddpe="text/css" href="{% static 'css/flexboxgrid.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/chartist.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/print.css' %}">
-    <script src="{% static 'js/chartist.min.js' %}"></script>
-    <script src="{% static 'js/chartist-plugin-pointlabels.min.js' %}"></script>
-    <script src="{% static 'js/chartist-plugin-axistitle.min.js' %}"></script>
-  	<style>
-	hr {
-	  display: block;
-	  margin-top: 0.5em;
-	  margin-bottom: 0.5em;
-	  margin-left: auto;
-	  margin-right: auto;
-	  border-style: inset;
-	  border-width: 2px;
-	}
-	
-	@media print {
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Big Data Report Tahun {{ edate }} Bulan {{ sdate }} Apotek Puskesmas Berakit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+  @media print {
 	    .pagebreak { page-break-before: always; } /* page-break-after works, as well */
 	}
-
-	table {
-	  border: 1px solid black;
-	  border-collapse: collapse;
-    vertical-align: middle;
-	}
-
-
-  caption {
-    font-weight: bold;
-    font-size: 18px;
-    text-align: left;
-    color: #333;
-    margin-bottom: 10px;
-  }
-
-  body {
-    font-family: sans-serif;
-  }
-
-  thead {
-    background-color: #e27876;
-    color: white;
-  }
-
-  th, td {
-    padding: 5px;
-  }
-
-  .colNo {
-    width: 10px;
-  }
-	
-  tr:nth-child(even) {
-    background-color: #EEE;
-  }
-
-	.copyleft {
-	  display:inline-block;
-	  transform: rotate(180deg);
-	}
-
-	.kunChart {
-		width: 100%;
-	}
-
-	.peresepanChart {
-		width: 100%;
-	}
-
-  li {
-    list-style-type: square;
-    font-size: 12px;
-  }
-
-  .copyright {
-    font-size: 12px;
-  }
-	
-	</style>
-  </head>
-
+  </style>
+</head>
 <body>
-{% if val %}
-<div class="container">
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    	<p><img src="{% static 'css/report.png' %}" alt="Report" width="40" height="40"></p>
-    </div>
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-    	<p><strong>Analisa Big Data Apotek Puskesmas Berakit</strong><br>
-    	<small>Tanggal: {{ startdate }} s/d {{ enddate }}</small></p>
-    </div>
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    	<p><img src="{% static 'css/centralized.png' %}" alt="Pills" width="40" height="40"></p>
-    </div>
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-    	<p>
-      <div class="copyright">Disusun oleh:<br>FarmAssistBot / SIBOKIT <span class="copyleft">&copy;</span> by Pratama</div></p>
-    </div>
-</div>
+<header class="bg-gray-50">
+  <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+    <div class="sm:flex sm:items-center gap-6">
+      <svg class="h-16" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="SVGRepo_bgCarrier" stroke-width="0"/>
 
-<div class="row center-lg center-md center-sm center-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<hr>
-    </div>
-</div>
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Grafik Pelayanan Resep Harian</h4>
-    </div>
-</div>
+<g id="SVGRepo_iconCarrier"> <g transform="translate(1 1)"> <path style="fill:#E4F2DE;" d="M61.293,419.693c-5.973,5.973-14.507,10.24-23.893,10.24h102.4V105.667 c0-18.773-15.36-34.133-34.133-34.133c-9.387,0-17.92,3.413-23.893,10.24c5.973-5.973,14.507-10.24,23.893-10.24h256V3.267H3.267 V395.8c0,18.773,15.36,34.133,34.133,34.133C46.787,429.933,55.32,426.52,61.293,419.693L61.293,419.693z M498.2,105.667V498.2 H139.8v-68.267V105.667c0-18.773-15.36-34.133-34.133-34.133h256h102.4C482.84,71.533,498.2,86.893,498.2,105.667L498.2,105.667z"/> <path style="fill:#80D6FA;" d="M208.067,327.533H242.2v-51.2h-34.133V327.533z M344.6,327.533h34.133V242.2H344.6V327.533z M276.333,327.533h34.133V208.067h-34.133V327.533z M412.867,327.533H447V139.8h-34.133V327.533z"/> </g> <path style="fill:#51565F;" d="M499.2,503.467H140.8c-2.56,0-4.267-1.707-4.267-4.267v-64H89.6c-2.56,0-4.267-1.707-4.267-4.267 c0-2.56,1.707-4.267,4.267-4.267h46.933v-320c0-16.213-13.653-29.867-29.867-29.867S76.8,90.453,76.8,106.667V396.8 c0,21.333-17.067,38.4-38.4,38.4S0,418.133,0,396.8V4.267C0,1.707,1.707,0,4.267,0h358.4c2.56,0,4.267,1.707,4.267,4.267V38.4 c0,2.56-1.707,4.267-4.267,4.267S358.4,40.96,358.4,38.4V8.533H8.533V396.8c0,16.213,13.653,29.867,29.867,29.867 s29.867-13.653,29.867-29.867V106.667c0-21.333,17.067-38.4,38.4-38.4s38.4,17.067,38.4,38.4v388.267h349.867V106.667 c0-16.213-13.653-29.867-29.867-29.867H166.4c-2.56,0-4.267-1.707-4.267-4.267c0-2.56,1.707-4.267,4.267-4.267h298.667 c21.333,0,38.4,17.067,38.4,38.4V499.2C503.467,501.76,501.76,503.467,499.2,503.467z M430.933,435.2H209.067 c-2.56,0-4.267-1.707-4.267-4.267c0-2.56,1.707-4.267,4.267-4.267h221.867c2.56,0,4.267,1.707,4.267,4.267 C435.2,433.493,433.493,435.2,430.933,435.2z M396.8,384h-51.2c-2.56,0-4.267-1.707-4.267-4.267c0-2.56,1.707-4.267,4.267-4.267 h51.2c2.56,0,4.267,1.707,4.267,4.267C401.067,382.293,399.36,384,396.8,384z M311.467,384h-102.4c-2.56,0-4.267-1.707-4.267-4.267 c0-2.56,1.707-4.267,4.267-4.267h102.4c2.56,0,4.267,1.707,4.267,4.267C315.733,382.293,314.027,384,311.467,384z M413.867,332.8 h-34.133c-2.56,0-4.267-1.707-4.267-4.267v-81.067h-25.6v81.067c0,2.56-1.707,4.267-4.267,4.267h-34.133 c-2.56,0-4.267-1.707-4.267-4.267v-115.2h-25.6v115.2c0,2.56-1.707,4.267-4.267,4.267H243.2c-2.56,0-4.267-1.707-4.267-4.267V281.6 h-25.6v46.933c0,2.56-1.707,4.267-4.267,4.267s-4.267-1.707-4.267-4.267v-51.2c0-2.56,1.707-4.267,4.267-4.267H243.2 c2.56,0,4.267,1.707,4.267,4.267v46.933h25.6v-115.2c0-2.56,1.707-4.267,4.267-4.267h34.133c2.56,0,4.267,1.707,4.267,4.267v115.2 h25.6V243.2c0-2.56,1.707-4.267,4.267-4.267h34.133c2.56,0,4.267,1.707,4.267,4.267v81.067h25.6V140.8 c0-2.56,1.707-4.267,4.267-4.267h17.067c2.56,0,4.267,1.707,4.267,4.267c0,2.56-1.707,4.267-4.267,4.267h-12.8v183.467 C418.133,331.093,416.427,332.8,413.867,332.8z"/> </g>
+      </svg>
+    </a>
+      <div class="text-center sm:text-left">
+        <h1 class="text-xl font-bold text-emerald-900">Laporan Big Data Apotek Puskesmas Berakit</h1>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-      <div class="kunChart">
-        <img src="{{ kunChart64 }}">
+        <p class="text-sm text-emerald-700">Disusun oleh :</p>
+        <p class="text-sm text-emerald-700">FarmAssistBot / SIBOKIT © by Pratama</p>
+        <p class="text-xs text-emerald-700">version.2023.10.23</p>
       </div>
     </div>
+  </div>
+</header>
 
-    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-      <p>
-      <li>Total: {{ total_resep }} resep</li>
-      <li>Rerata: {{ rerata_kunjungan|floatformat:0 }} resep</li>
-      <li>Terbanyak: {{ terbanyak }} resep</li>
-      <li>Tersedikit: {{ tersedikit }} resep</li>
-      </p>
-    </div>
+
+<div class="bg-emerald-600 px-4 py-3 text-white">
+  <p class="text-center text-lg font-medium">
+    Tanggal : {{ startdate|date:"d F Y" }} - {{ enddate|date:"d F Y" }}
+  </p>
 </div>
 
+<div class="container mx-auto px-1 py-2">
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Grafik Obat Terbanyak Digunakan Pasien</h4>
-    </div>
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Line Chart Pelayanan Resep Harian</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+
+<div class="flex flex-row gap-1">
+<div class="basis-4/5">
+  <img
+    alt=""
+    src="{{ kunChart64 }}"
+    class="object-contain object-center w-full h-96"
+  />
 </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <div class="peresepanChart">
-        <img src="{{ peresepanChart64 }}">
-      </div>
-    </div>
+  <div class="basis-1/5 ">
+	  <ul class="items-start list-none">
+		<li class="text-xs text-emerald-700">Total : {{ total_resep }} resep</li>
+		<li class="text-xs text-emerald-700">Rerata : {{ rerata_kunjungan|floatformat:0 }} resep</li>
+		<li class="text-xs text-emerald-700">Terbanyak : {{ terbanyak }} resep</li>
+		<li class="text-xs text-emerald-700">Tersedikit : {{ tersedikit }} resep</li>
+      </ul>
+  </div>
+
+</div>
+
+</div>
+
+<div class="container mx-auto px-1 py-2">
+
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Bar Chart Obat Terbanyak Diresepkan</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+
+<div class="flex-1">
+<div class="basis-1">
+  <img
+    alt=""
+    src="{{ peresepanChart64 }}"
+    class="object-contain object-center w-full h-full"
+  />
+</div>
+
+</div>
+
 </div>
 
 <div class="pagebreak"> </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Data Penulis Resep</h4>
-    </div>
+<div class="container mx-auto px-1 py-2">
+
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Pie Chart Penulis Resep</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+<div class="flex flex-row gap-3">
+<div class="basis-3/5">
+  <img
+    alt=""
+    src="{{ peresepChart64 }}"
+    class="object-fill object-center w-full h-96"
+  />
 </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <div class="peresepanChart">
-        <img src="{{ peresepChart64 }}">
-      </div>
-    </div>
+  <div class="basis-2/5">
+	  <ul class="items-start list-disc">
+		{% for key, val in peresep.items %}
+		<li class="text-xs text-emerald-700">{{ key }}: {{ val }} lembar</li>
+		{% endfor %}
+      </ul>
+  </div>
+
 </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-	    <p>
-	    {% for key, val in peresep.items %}
-	    	<li>{{ key }}: {{ val }} lembar</li>
-	    {% endfor %}
-	    </p>
-    </div>
 </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>10 Penyakit Terbanyak</h4>
-    </div>
+<div class="container mx-auto px-1 py-2">
+
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">TreeMap 10 Penyakit Terbanyak</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+
+<div class="flex-1">
+<div class="basis-1">
+  <img
+    alt=""
+    src="{{ toppenyakit }}"
+    class="object-contain object-center w-full h-full"
+  />
 </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <div class="peresepanChart">
-        <img src="{{ toppenyakit }}">
-      </div>
-    </div>
 </div>
 
-<div class="pagebreak"> </div>
-
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-    </div>
-    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-    	<table class="table">
-      <caption>Diagnosa Terbanyak</caption>
-    	<thead><tr><th class="colNo"><small>No.</small></th><th><small>Diagnosa</small></th><th><small>Jumlah</small></th></tr></thead>
-    	{% for x, y in penyakit.items %}
-    		{% if forloop.counter > 40 %}
-    		{% else%}
-    		<tr><td><small>{{ forloop.counter }}</small></td><td contenteditable="true"><small>{{ x }}</small></td><td><small>{{ y }}</small></td></tr>
-    		{% endif %}
-    	{% endfor %}
-    	</table>
-    </div>
-    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-    </div>
 </div>
 
 <div class="pagebreak"> </div>
 
- <div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Sebaran Penyakit</h4>
-    </div>
+<div class="container mx-auto px-1 py-2">
+
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Penyakit Terbanyak</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+
+<div role="alert" class="rounded border-s-4 border-emerald-700 bg-emerald-300 p-4">
+  <strong class="block font-medium text-grey-300"> Penyakit Terbanyak </strong>
+
+  <p class="mt-2 text-sm text-grey-300">
+    Data penyakit terbanyak menggambarkan total keseluruhan penyakit / diagnosa pasien yang datang berobat ke puskesmas. 
+  </p>
 </div>
 
-     {% for lokasi, penyakit_map in lokasi_penyakit.items %}
-        <table class="table">
-        <caption>Sebaran Penyakit di {{ lokasi }}</caption>
+<div class="max-w-screen-xl mx-auto px-4 py-2">
+  <div class="mt-1 shadow-sm border rounded-lg overflow-x-auto">
+    <table class="w-full table-auto text-sm text-left">
+      <thead class="bg-gray-50 text-gray-600 font-medium border-b">
+        <tr>
+          <th class="py-1 px-1 font-medium text-white bg-emerald-700">No.</th>
+          <th class="py-1 px-1 font-medium text-white bg-emerald-700">Diagnosa</th>
+          <th class="py-1 px-1 font-medium text-white bg-emerald-700">Jumlah</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-600 divide-y">
+		{% for x, y in penyakit.items %}
+		{% if forloop.counter > 40 %}
+		{% else %}
+          <tr class="odd:bg-emerald-50">
+            <td
+              class="px-1 py-1"
+            >{{ forloop.counter }}</td>
+            <td
+              class="px-1 py-1 whitespace-nowrap"
+            >{{ x }}</td>
+            <td
+              class="px-1 py-1"
+            >{{ y }}</td>
+          </tr>
+		{% endif %}
+		{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
-    	<thead><tr><th class="colNo"><small>No.</small></th><th><small>Diagnosa</small></th><th><small>Jumlah</small></th></tr></thead>
-    	{% for x, y in penyakit_map.items %}
-    		{% if forloop.counter > 40 %}
-    		{% else%}
-    		<tr><td><small>{{ forloop.counter }}</small></td><td contenteditable="true"><small>{{ x }}</small></td><td><small>{{ y }}</small></td></tr>
-    		{% endif %}
-    	{% endfor %}
-    	</table>
+</div>
 
-        <div class="pagebreak"></div>
-      {% endfor %}
+<div class="pagebreak"> </div>
+
+<div class="container mx-auto px-1 py-2">
+
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Sebaran Penyakit</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+<div role="alert" class="rounded border-s-4 border-emerald-700 bg-emerald-300 p-4">
+  <strong class="block font-medium text-grey-300"> Sebaran penyakit </strong>
+
+  <p class="mt-2 text-sm text-grey-300">
+    Data sebaran penyakit mengelompokkan penyakit / diagnosa pasien yang datang berobat dari wilayah tertentu.
+  </p>
+
+<span class="inline-flex items-center justify-center rounded-full bg-red-100 px-2.5 py-0.5 text-red-700">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ms-1 me-1.5 h-4 w-4">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"></path>
+  </svg>
+
+  <p class="whitespace-nowrap text-sm">Perhatian</p>
+</span>
+<p class="text-xs text-grey-300 py-0">
+Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperbaiki dengan mengupdate data pasien.
+  </p>
+</div>
+
+  <!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+	{% for lokasi, penyakit_map in lokasi_penyakit.items %}
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+		  <caption class="py-2 font-medium text-lg text-emerald-700 text-start">Penyakit di {{ lokasi }}</caption>
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-1 py-1">
+            No.
+          </th>
+          <th scope="col" class="px-6 py-1">
+            Diagnosa
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      {% for x, y in penyakit_map.items %}
+      {% if forloop.counter > 40 %}
+      {% else%}
+      <tbody>
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+                {{ forloop.counter }} 
+          </th>
+              <td class="px-1 py-1">{{ x }}</td>
+              <td class="px-1 py-1">{{ y }}</td>
+        </tr>
+          {% endif %}
+          {% endfor %}
+      </tbody>
+
+    </table>
+    <div class="pagebreak"> </div>
+    {% endfor %}
+
+  </div>
+
+</div>
+
+
 
 {% if penerimaan %}
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    </div>
 
-    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-	<table>
-    <caption>Penerimaan BMHP</caption>
-    <thead><tr><th contenteditable="false"><small><strong>No.</strong></small></th><th contenteditable="false"><small><strong>Nama BMHP</strong></small></th><th contenteditable="false"><small><strong>Tgl Terima</strong></small></th><th contenteditable="false"><small><strong>Sumber</strong></small></th><th contenteditable="false"><small><strong>No. Batch</strong></small></th><th contenteditable="false"><small><strong>Tgl Kadaluarsa</strong></small></th><th contenteditable="false"><small><strong>Jumlah</strong></small></th></tr></thead>
-	  {% for key, value in penerimaan.items %}
-	  <tr><td contenteditable="true"><small>{{ forloop.counter }}</small></td>{% for data in value %}<td contenteditable="true"><small>{{ data }}</small></td>{% endfor %}</tr>
-	  {% endfor %}
-	</table>
-	</div>
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Penerimaan BMHP</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+<div role="alert" class="rounded border-s-4 border-emerald-700 bg-emerald-300 p-4">
+  <strong class="block font-medium text-grey-300"> Penerimaan BMHP </strong>
+
+  <p class="mt-2 text-sm text-grey-300">
+    Barang Medis Habis Pakai yang masuk dan diterima oleh Puskesmas Berakit pada waktu periode tanggal diatas. Baik yang berasal dari BPFAK ataupun sumber lainnya. 
+  </p>
+</div>
+
+  <!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-1 py-1">
+            No.
+          </th>
+          <th scope="col" class="px-6 py-1">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Tgl Terima
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Sumber
+          </th>
+          <th scope="col" class="px-3 py-1">
+            No. Batch
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Tgl Kadaluarsa 
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
+	      {% for key, value in penerimaan.items %}
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+            {{ forloop.counter }}
+          </th>
+          {% for data in value %}
+          <td class="px-1 py-1">{{ data }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
 </div>
 {% else %}
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    	<h4>Tidak Ada Penerimaan BMHP Pada Rentang Tanggal Tersebut</h4>
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Penerimaan BMHP</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+  <div role="alert" class="rounded border-s-4 border-red-500 bg-red-50 p-4">
+    <div class="flex items-center gap-2 text-red-800">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+        <path
+          fill-rule="evenodd"
+          d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+          clip-rule="evenodd"
+        />
+      </svg>
+
+      <strong class="block font-medium"> Data Kosong </strong>
     </div>
-</div>
+
+    <p class="mt-2 text-sm text-red-700">
+      Tidak ada penerimaan BMHP pada rentang tanggal tersebut.
+    </p>
+  </div>
+
 {% endif %}
 
-<div class="pagebreak"> </div>
-
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    </div>
-
-    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-	<table>
-    <caption>Penggunaan Obat Di Apotek</caption>
-    <thead><tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
-	  {% for key, value in apt.items %}
-	  <tr><td contenteditable="true"><small>{{ key }}</small></td><td contenteditable="true"><small>{{ value }}</small></td></tr>
-	  {% endfor %}
-	</table>
-	</div>
 </div>
 
 <div class="pagebreak"> </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    </div>
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Penggunaan Obat di Apotek</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+<div role="alert" class="rounded border-s-4 border-emerald-700 bg-emerald-300 p-4">
+  <strong class="block font-medium text-grey-300"> Penggunaan Obat di Apotek </strong>
 
-    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-	<table>
-   	<caption>Distribusi BMHP dari Gudang Ke Apotek</caption>
-    <thead><tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
-	  {% for key, value in gd_ke_apt.items %}
-	  <tr><td contenteditable="true"><small>{{ key }}</small></td><td contenteditable="true"><small>{{ value }}</small></td></tr>
-	  {% endfor %}
-	</table>
-	</div>
+  <p class="mt-2 text-sm text-grey-300">
+    Jenis & jumlah obat yang diresepkan kepada pasien dalam rentang waktu diatas. 
+  </p>
 </div>
 
+<!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-6 py-1">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
+	    {% for key, value in apt.items %}
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+                {{ key }}
+          </th>
+              <td class="px-1 py-1"> {{ value }}</td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div> <!-- div container-->
 <div class="pagebreak"> </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    </div>
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Distribusi dari Gudang Obat ke Apotek</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+<div role="alert" class="rounded border-s-4 border-emerald-700 bg-emerald-300 p-4">
+  <strong class="block font-medium text-grey-300"> Distribusi dari Gudang ke Apotek </strong>
 
-    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-	<table>
-   	<caption>Distribusi BMHP Ke Unit Lain</caption>
-    <thead><tr><td contenteditable="false"><strong><small>Lokasi Unit</small></strong></td><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
-	  {% for lokasi, value in unit.items %}
+  <p class="mt-2 text-sm text-grey-300">
+    Perpindahan BMHP dari gudang obat ke apotek pada rentang tanggal diatas. 
+  </p>
+</div>
+<!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-6 py-1">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
+	    {% for key, value in gd_ke_apt.items %}
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+                {{ key }}
+          </th>
+              <td class="px-1 py-1"> {{ value }}</td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+</div> <!--div container-->
+<div class="pagebreak"> </div>
+
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Distribusi dari Gudang Obat ke Sub Unit Lain</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+<div role="alert" class="rounded border-s-4 border-emerald-700 bg-emerald-300 p-4">
+  <strong class="block font-medium text-grey-300"> Distribusi dari Gudang ke Sub Unit Lain </strong>
+
+  <p class="mt-2 text-sm text-grey-300">
+    Perpindahan BMHP dari gudang obat ke sub unit pelayanan lain seperti: KIA, Labor, IGD, Posyandu, Pustu Polindes, dll pada rentang tanggal diatas. 
+  </p>
+</div>
+
+<!-- Table responsive wrapper -->
+	{% for lokasi, value in unit.items %}
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+		  <caption class="py-2 font-medium text-lg text-emerald-700 text-start">Distribusi ke Sub Unit {{ lokasi }}</caption>
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-6 py-0.5">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-0.5">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
 	  	{% for bmhp, jml in value.items %}
-	  		{% if forloop.counter == 1 and forloop.last %}
-	  			<tr><td contenteditable="true"><strong><small>{{ lokasi }}</small></strong></td><td contenteditable="true"><small>{{ bmhp }}</small></td><td contenteditable="true"><small>{{ jml }}</small></td></tr>
-	  			<tr><td style="background-color:#e27876;" contenteditable="false"> </td><td style="background-color:#e27876;" contenteditable="false"></td><td style="background-color:#e27876;" contenteditable="false"></td></tr>
-	  		{% elif forloop.counter == 1 and not forloop.last %}
-	  			<tr><td contenteditable="true"><strong><small>{{ lokasi }}</small></strong></td><td contenteditable="true"><small>{{ bmhp }}</small></td><td contenteditable="true"><small>{{ jml }}</small></td></tr>
-	  		{% else %}
-	  			{% if forloop.last %}
-	  			<tr><td contenteditable="true"> </td><td contenteditable="true"><small>{{ bmhp }}</small></td><td contenteditable="true"><small>{{ jml }}</small></td></tr>
-	  			<tr><td style="background-color:#e27876;" contenteditable="false"> </td><td style="background-color:#e27876;" contenteditable="false"></td><td style="background-color:#e27876;" contenteditable="false"></td></tr>
-	  			{% else %}
-	  				<tr><td contenteditable="true"> </td><td contenteditable="true"><small>{{ bmhp }}</small></td><td contenteditable="true"><small>{{ jml }}</small></td></tr>
-	  			{% endif %}
-			{% endif %}
-	  	{% endfor %}
-	  {% endfor %}
-	</table>
-	</div>
-</div>
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-0.5">
+                {{ bmhp }}
+          </th>
+              <td class="px-1 py-1"> {{ jml }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+
+  </div>
+  <div class="pagebreak"> </div>
+  {% endfor %}
+
+</div> <!-- div container -->
+
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Sisa Stok Obat di Apotek</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+
+<!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-6 py-1">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
+	    {% for key, value in stok_apt.items %}
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+                {{ key }}
+          </th>
+              <td class="px-1 py-1"> {{ value }}</td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div> <!-- div container-->
 
 <div class="pagebreak"> </div>
 
-<div class="row start-lg start-md start-sm start-xs">
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    </div>
-    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-	<table>
-    <caption>Stok Obat di Apotek</caption>
-    <thead><tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
-	  {% for key, value in stok_apt.items %}
-	  <tr><td contenteditable="true"><small>{{ key }}</small></td><td contenteditable="true"><small>{{ value }}</small></td></tr>
-	  {% endfor %}
-	</table>
-	</div>
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Sisa Stok Obat di Gudang Obat</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
 
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    </div>
-	
-</div>
+<!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
 
-<div class="pagebreak"> </div>
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
 
-<div class="row start-lg start-md start-sm start-xs">
+      <!-- Table head -->
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-6 py-1">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
 
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    </div>
-    
-    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-	<table>
-    	<caption>Stok Obat di Gudang</caption>
-    <thead><tr><td contenteditable="false"><strong><small>Nama BMHP</small></strong></td><td contenteditable="false"><strong><small>Jumlah</small></strong></td></tr></thead>
-	  {% for key, value in stok_gdg.items %}
-	  <tr><td contenteditable="true"><small>{{ key }}</small></td><td contenteditable="true"><small>{{ value }}</small></td></tr>
-	  {% endfor %}
-	</table>
-	</div>
+      <!-- Table body -->
+      <tbody>
+	    {% for key, value in stok_gdg.items %}
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+                {{ key }}
+          </th>
+              <td class="px-1 py-1"> {{ value }}</td>
+        </tr>
+        {% endfor %}
 
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-    </div>
-</div>
+      </tbody>
 
-{% else %}
-<p>Tidak ada data pengeluaran BMHP Apotek pada rentang tanggal di atas. Coba tanggal lainnya.</p>
-<p>(T⌓T)</p>
+    </table>
 
-{% endif %}
-<br>
+  </div>
 
 </div>
 </body>
+</html>

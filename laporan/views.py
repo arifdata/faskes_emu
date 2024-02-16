@@ -481,8 +481,7 @@ def laporan_semua(request):
                 'stok_gdg': OrderedDict(sorted(raw_data_stok_gudang.items())),
             }
             #print(OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))))
-            #return render(request, 'laporan/laporan_semua.html', context)
-            return render(request, 'laporan/all_stok.html', context)
+            return render(request, 'laporan/laporan_semua.html', context)
 
     # if a GET (or any other method) we'll create a blank form
     else:
