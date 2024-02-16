@@ -8,6 +8,23 @@ from socket import gethostname, gethostbyname
 # Create your views here.
 def contact_developer(request):
     return render(request, 'laporan/hubungi_developer.html')
+
+def all_stock(request):
+    bmhp = {}
+    from apotek.models import StokObatApotek, StokObatGudang
+    q = StokObatGudang.objects.all()
+    for i in q:
+        bmhp[i.nama_obat.nama_obat] = i.jml
+
+    r = StokObatApotek.objects.all()
+    for i in r:
+        bmhp[i.nama_obat.nama_obat] += i.jml
+
+    ctx = {
+        'bmhp': bmhp
+    }
+        
+    return render(request, 'laporan/all_stok.html', ctx)
     
 def index_page(request):
     import datetime
@@ -200,28 +217,28 @@ def penggunaan_bmhp(request):
 
 def genKunjChart(x, y, judul):
     import pygal
-    from pygal.style import RedBlueStyle
+    from pygal.style import LightenStyle
     
-    lineChart = pygal.Line(fill=True, title=judul, style=RedBlueStyle, print_values=True, print_values_position="top", x_title="Tanggal", y_title="Jml Lembar Resep", show_legend=False, x_label_rotation=20, show_x_guides=True, margin=20)
+    lineChart = pygal.Line(fill=True, title=judul, style=LightenStyle('#047857'), print_values=True, print_values_position="top", x_title="Tanggal", y_title="Jml Lembar Resep", show_legend=False, x_label_rotation=20, show_x_guides=True, margin=20)
     lineChart.x_labels = x
     lineChart.add("Jml Lembar Resep", y)
     return lineChart.render_data_uri()
 
 def genObatTerbanyakChart(label, data):
     import pygal
-    from pygal.style import RedBlueStyle
+    from pygal.style import SolidColorStyle
 
-    barChart = pygal.HorizontalBar(title="Penggunaan 20 Obat Terbanyak di Apotek", print_values=True, legend_at_bottom=True, legend_box_size=10, legend_at_bottom_columns=2, style=RedBlueStyle)
+    barChart = pygal.HorizontalBar(title="Penggunaan 20 Obat Terbanyak di Apotek", print_values=True, legend_at_bottom=True, legend_box_size=10, legend_at_bottom_columns=2, style=SolidColorStyle)
     for i in range(0, len(label)):
         barChart.add(label[i], data[i])
     return barChart.render_data_uri()
 
 def genPeresepChart(label, data):
     import pygal
-    from pygal.style import RedBlueStyle
+    from pygal.style import SolidColorStyle
 
     total = sum(data)
-    pieChart = pygal.Pie(title="Persentase Lembar Resep", print_values=True, style=RedBlueStyle, legend_at_bottom=True, margin=10, print_labels=True)
+    pieChart = pygal.Pie(title="Persentase Lembar Resep", print_values=True, style=SolidColorStyle, legend_at_bottom=True, margin=10, print_labels=True)
     for i in range(0, len(label)):
         persentase = (data[i] / total) * 100
         pieChart.add(label[i], [{'value': float("{:.2f}".format(persentase)), 'label': label[i]}])
@@ -230,12 +247,12 @@ def genPeresepChart(label, data):
 
 def genTenPenyakit(data):
     import pygal
-    from pygal.style import RedBlueStyle
+    from pygal.style import SolidColorStyle
     labels = []
     for key in data.keys():
         labels.append(key)
 
-    tm = pygal.Treemap(print_labels=True, print_values=True, legend_at_bottom=True, legend_at_bottom_columns=1, margin=10)
+    tm = pygal.Treemap(print_labels=True, print_values=True, legend_at_bottom=True, legend_at_bottom_columns=1, margin=10, style=SolidColorStyle)
     for i in range(0, len(labels)):
         tm.add(labels[i], [{'value': data[labels[i]], 'label': 'Essential (primary) hypertension' if labels[i] == 'Essential (primary) hypertension (I10)' else labels[i].split(' (')[0]}])
     return tm.render_data_uri()
@@ -462,7 +479,8 @@ def laporan_semua(request):
                 'stok_gdg': OrderedDict(sorted(raw_data_stok_gudang.items())),
             }
             #print(OrderedDict(sorted(cleaned_data_penyakit.items(), reverse=True, key=operator.itemgetter(1))))
-            return render(request, 'laporan/laporan_semua.html', context)
+            #return render(request, 'laporan/laporan_semua.html', context)
+            return render(request, 'laporan/all_stok.html', context)
 
     # if a GET (or any other method) we'll create a blank form
     else:
