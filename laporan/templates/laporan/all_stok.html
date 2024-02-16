@@ -273,44 +273,6 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
 
   </div>
 
-      <!--
-<div class="max-w-screen-xl mx-auto px-4 py-2">
-  <div class="mt-1 shadow-sm border rounded-lg overflow-x-auto">
-	{% for lokasi, penyakit_map in lokasi_penyakit.items %}
-    <table class="w-full table-auto text-sm text-left">
-		<caption class="py-2 font-medium text-md text-emerald-700">Penyakit di {{ lokasi }}</caption>
-      <thead class="bg-gray-50 text-gray-600 font-medium border-b">
-        <tr>
-          <th class="py-1 px-1 font-medium text-white bg-emerald-700">No.</th>
-          <th class="py-1 px-1 font-medium text-white bg-emerald-700">Diagnosa</th>
-          <th class="py-1 px-1 font-medium text-white bg-emerald-700">Jumlah</th>
-        </tr>
-      </thead>
-      {% for x, y in penyakit_map.items %}
-      {% if forloop.counter > 40 %}
-      {% else%}
-      <tbody class="text-gray-600 divide-y">
-
-          <tr class="odd:bg-emerald-50">
-            <td
-              class="px-1 py-1"
-            >{{ forloop.counter }}</td>
-            <td
-              class="px-1 py-1 whitespace-normal"
-            >{{ x }}</td>
-            <td
-              class="px-1 py-1"
-            >{{ y }}</td>
-          </tr>
-          {% endif %}
-          {% endfor %}
-      </tbody>
-    
-    </table>
-    <div class="pagebreak"> </div>
-    {% endfor %}
-  </div>
--->
 </div>
 
 
@@ -323,6 +285,13 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
   <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Penerimaan BMHP</span>
   <span class="h-px flex-1 bg-emerald-700"></span>
 </span>
+<div role="alert" class="rounded border-s-4 border-emerald-700 bg-emerald-300 p-4">
+  <strong class="block font-medium text-grey-300"> Penerimaan BMHP </strong>
+
+  <p class="mt-2 text-sm text-grey-300">
+    Barang Medis Habis Pakai yang masuk dan diterima oleh Puskesmas Berakit pada waktu periode tanggal diatas. Baik yang berasal dari BPFAK ataupun sumber lainnya. 
+  </p>
+</div>
 
   <!-- Table responsive wrapper -->
   <div class="overflow-x-auto bg-white py-3">
@@ -403,6 +372,60 @@ Data "KOSONG", "BELUM DIKETAHUI", dan wilayah lain yang belum jelas harus diperb
 {% endif %}
 
 </div>
+
+<div class="pagebreak"> </div>
+
+<div class="container mx-auto px-1 py-2">
+<span class="flex items-center">
+  <span class="h-px flex-1 bg-emerald-700"></span>
+  <span class="shrink-0 px-6 font-medium text-md text-emerald-700">Penggunaan Obat di Apotek</span>
+  <span class="h-px flex-1 bg-emerald-700"></span>
+</span>
+<div role="alert" class="rounded border-s-4 border-emerald-700 bg-emerald-300 p-4">
+  <strong class="block font-medium text-grey-300"> Penggunaan Obat di Apotek </strong>
+
+  <p class="mt-2 text-sm text-grey-300">
+    Jenis & jumlah obat yang diresepkan kepada pasien dalam rentang waktu diatas. 
+  </p>
+</div>
+
+<!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-emerald-700">
+        <tr>
+          <th scope="col" class="px-6 py-1">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-1">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
+	    {% for key, value in apt.items %}
+        <tr class="border-b odd:bg-emerald-50">
+          <th scope="row" class="px-1 py-1">
+                {{ key }}
+          </th>
+              <td class="px-1 py-1"> {{ value }}</td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div> <!-- div container-->
+<div class="pagebreak"> </div>
 
 </body>
 </html>
