@@ -922,4 +922,61 @@ def lap_pasien(request):
     else:
         form = TglForm()
     return render(request, 'laporan/form_lap_pasien.html', {'form': form})
-    
+
+@login_required
+def manifest_distribusi(request):
+    from apotek.models import Resep, Pengeluaran
+    from .forms import TglForm
+    import datetime
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = TglForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            raw_data_bmhp_apt = {}
+            raw_data_bmhp_unit = {}
+            kunci = []
+            cleaned_data_bmhp_unit = {}
+            
+            q = Resep.objects.select_related('nama_obat__nama_obat').filter(kunjungan_pasien__tgl_kunjungan__gte=request.POST.get("tanggal1"), kunjungan_pasien__tgl_kunjungan__lte=request.POST.get("tanggal2")).iterator()
+            q2 = Pengeluaran.objects.select_related('nama_barang__nama_obat').filter(keluar_barang__tgl_keluar__gte=request.POST.get("tanggal1"), keluar_barang__tgl_keluar__lte=request.POST.get("tanggal2")).exclude(keluar_barang__tujuan__nama="APOTEK").iterator()
+
+            for data in q:
+                if data.nama_obat.nama_obat.nama_obat not in raw_data_bmhp_apt:
+                    raw_data_bmhp_apt[data.nama_obat.nama_obat.nama_obat] = data.jumlah
+                else:
+                    raw_data_bmhp_apt[data.nama_obat.nama_obat.nama_obat] += data.jumlah
+
+            cleaned_data_obat = dict(sorted(raw_data_bmhp_apt.items(), key=operator.itemgetter(1),reverse=True))
+            cleaned_data_obat = OrderedDict(sorted(cleaned_data_obat.items()))
+
+            for data in q2:
+                a = {}
+                a[data.nama_barang.nama_obat.nama_obat] = data.jumlah
+                if data.keluar_barang.tujuan.nama not in raw_data_bmhp_unit.keys():
+                    raw_data_bmhp_unit[data.keluar_barang.tujuan.nama] = [a]
+                    kunci.append(data.keluar_barang.tujuan.nama)
+                else:                    
+                    raw_data_bmhp_unit[data.keluar_barang.tujuan.nama].append(a)
+
+            for d in kunci:
+                c = Counter()
+                for x in raw_data_bmhp_unit[d]:
+                    c.update(x)
+                    cleaned_data_bmhp_unit[d] = dict(c)
+            
+            context = {
+                'startdate': datetime.datetime.strptime(request.POST.get("tanggal1"), "%Y-%m-%d").date(),
+                'enddate': datetime.datetime.strptime(request.POST.get("tanggal2"), "%Y-%m-%d").date(),
+                'val': cleaned_data_obat,
+                'unit': cleaned_data_bmhp_unit,
+            }
+            return render(request, 'laporan/manifest_distribusi.html', context)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = TglForm()
+
+    return render(request, 'laporan/form_manifest_dist.html', {'form': form})
+   

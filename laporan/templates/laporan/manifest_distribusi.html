@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Manifest Distribusi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+  @media print {
+	    .pagebreak { page-break-before: always; } /* page-break-after works, as well */
+	}
+  </style>
+</head>
+<body>
+
+<header class="bg-gray-50">
+  <div class="mx-auto max-w-screen-xl px-4 py-4 lg:px-8">
+    <div class="sm:flex sm:items-center gap-6">
+      <svg class="h-16" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <g id="SVGRepo_iconCarrier"> <rect x="25.336" y="275.822" style="fill:#CAA977;" width="275.78" height="198.456"/> <rect x="8.021" y="227.738" style="fill:#DFCAA3;" width="293.095" height="48.082"/> <rect x="301.117" y="275.822" style="fill:#A88D63;" width="185.547" height="198.456"/> <rect x="301.117" y="227.738" style="fill:#CAA977;" width="202.862" height="48.082"/> <path style="fill:#451a03;" d="M435.949,305.643c7.827,0,14.174,6.346,14.174,14.174c0,7.829-6.347,14.175-14.174,14.175H376.32 c-7.83,0-14.175-6.346-14.175-14.175c0-7.828,6.345-14.174,14.175-14.174H435.949z"/> <rect x="25.336" y="375.039" style="fill:#451a03;" width="123.655" height="52.705"/> <rect x="131.045" y="74.789" style="fill:#CAA977;" width="212.552" height="152.949"/> <rect x="117.698" y="37.731" style="fill:#DFCAA3;" width="225.899" height="37.058"/> <rect x="343.597" y="74.789" style="fill:#A88D63;" width="143.002" height="152.949"/> <rect x="343.597" y="37.731" style="fill:#CAA977;" width="156.35" height="37.058"/> <path style="fill:#451a03;" d="M447.509,97.774c6.033,0,10.925,4.891,10.925,10.924c0,6.035-4.892,10.926-10.925,10.926h-45.956 c-6.035,0-10.925-4.891-10.925-10.926c0-6.033,4.89-10.924,10.925-10.924C401.553,97.774,447.509,97.774,447.509,97.774z"/> <rect x="131.045" y="151.258" style="fill:#451a03;" width="95.303" height="40.618"/> <path d="M503.979,219.714h-9.362V82.81h5.323c4.431,0,8.021-3.591,8.021-8.021V37.731c0-4.431-3.59-8.021-8.021-8.021H117.701 c-4.431,0-8.021,3.59-8.021,8.021v37.058c0,4.43,3.59,8.021,8.021,8.021h5.325v136.904H8.021c-4.431,0-8.021,3.59-8.021,8.021 v48.082c0,4.431,3.59,8.021,8.021,8.021h9.294v190.43c0,4.431,3.59,8.021,8.021,8.021h461.328c4.431,0,8.021-3.59,8.021-8.021 v-190.43h9.293c4.431,0,8.021-3.59,8.021-8.021v-48.082C512,223.304,508.41,219.714,503.979,219.714z M351.616,45.751h140.302 v21.016H351.616V45.751z M351.616,82.81h126.958v136.904H351.616V82.81z M125.723,45.751h209.852v21.016H125.723V45.751z M226.348,199.901c4.431,0,8.021-3.59,8.021-8.021v-40.618c0-4.431-3.59-8.021-8.021-8.021h-87.279V82.81h196.506v136.904H139.068 v-19.812h87.281V199.901z M139.068,183.858v-24.576h79.258v24.576H139.068z M293.1,466.247H33.358v-30.481H148.99 c4.431,0,8.021-3.59,8.021-8.021v-52.703c0-4.431-3.59-8.021-8.021-8.021H33.358v-83.182h259.741v182.408H293.1z M33.358,419.724 v-36.66h107.612v36.66H33.358z M293.1,267.796H16.042v-32.04H293.1V267.796z M478.643,466.247H309.142V283.839h169.501V466.247z M495.958,267.796H309.142v-32.04h186.815V267.796z"/> </g>
+
+          </svg>
+      <div class="text-center sm:text-left">
+        <h1 class="text-xl font-bold text-amber-900">Manifest Distribusi BMHP Puskesmas Berakit</h1>
+
+        <p class="text-sm text-amber-700">Disusun oleh :</p>
+        <p class="text-sm text-amber-700">FarmAssistBot / SIBOKIT © Pratama</p>
+        <p class="text-xs text-amber-700">version.2023.10.23</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="bg-amber-600 px-4 py-2 text-white">
+  <p class="text-center text-lg font-medium">
+    Tanggal : {{ startdate|date:"d F Y" }} - {{ enddate|date:"d F Y" }}
+  </p>
+</div>
+
+<div class="container mx-auto px-1 py-2">
+<div role="alert" class="rounded border-s-4 border-amber-700 bg-amber-300 p-4">
+  <strong class="block font-medium text-grey-300"> Distribusi Bahan Medis Habis Pakai </strong>
+
+  <p class="mt-2 text-sm text-grey-300">
+  Perpindahan bahan medis habis pakai dari gudang obat ke sub unit puskesmas pada rentang tanggal diatas. 
+  </p>
+</div>
+
+      <div class="grid grid-cols-2 gap-10">
+
+          <!-- Each <div> is a single column.
+  Place some content inside to see the effect. -->
+	  {% for lokasi, value in unit.items %}
+
+      {% if forloop.counter|divisibleby:2 %}
+      
+          <div>
+  <!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+		  <caption class="py-2 font-medium text-lg text-amber-700 text-start">{{ lokasi }}</caption>
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-amber-700">
+        <tr>
+          <th scope="col" class="px-1 py-0.5">
+            No.
+          </th>
+          <th scope="col" class="px-6 py-0.5">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-3 py-0.5">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      {% for bmhp, jml in value.items %}
+      <tbody>
+        <tr class="border-b odd:bg-amber-50">
+              <td class="px-1 py-0.5"> {{ forloop.counter }}</td>
+              <td class="px-6 py-0.5"> {{ bmhp }}</td>
+              <td class="px-3 py-0.5"> {{ jml }}</td>
+        </tr>
+
+      </tbody>
+      {% endfor %}
+
+    </table>
+
+  </div>
+
+        </div>
+          {% else %}
+        <div>
+<!-- Table responsive wrapper -->
+  <div class="overflow-x-auto bg-white py-3">
+
+    <!-- Table -->
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto">
+
+      <!-- Table head -->
+		  <caption class="py-2 font-medium text-lg text-amber-700 text-start">{{ lokasi }}</caption>
+      <thead class="text-white uppercase tracking-wider border-b-2 bg-amber-700">
+        <tr>
+          <th scope="col" class="px-3 py-0.5">
+            No.
+          </th>
+          <th scope="col" class="px-3 py-0.5">
+            Nama BMHP
+          </th>
+          <th scope="col" class="px-2 py-0.5">
+            Jumlah
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      {% for bmhp, jml in value.items %}
+      <tbody>
+        <tr class="border-b odd:bg-amber-50">
+              <td class="px-3 py-0.5"> {{ forloop.counter }}</td>
+              <td class="px-3 py-0.5"> {{ bmhp }}</td>
+              <td class="px-2 py-0.5"> {{ jml }}</td>
+        </tr>
+
+      </tbody>
+      {% endfor %}
+
+    </table>
+
+  </div>
+
+        </div>
+
+    {% endif %}
+    {% endfor %}
+      </div>
+
+</body>
+</html>
