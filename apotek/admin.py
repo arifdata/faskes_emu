@@ -1,8 +1,11 @@
 from django.contrib import admin
-from .models import DataObat, StokObatGudang, Resep, Penerimaan, BukuPenerimaan, SumberTerima, StokObatApotek, Pengeluaran, BukuPengeluaran, TujuanKeluar, KartuStokGudang, KartuStokApotek
+from .models import DataObat, StokObatGudang, Resep, Penerimaan, BukuPenerimaan, SumberTerima, StokObatApotek, Pengeluaran, BukuPengeluaran, TujuanKeluar, KartuStokGudang, KartuStokApotek, SOApotek
 from rangefilter.filters import DateRangeFilter
 
 # Register your models here.
+@admin.register(SOApotek)
+class SOApotekAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(KartuStokGudang)
 class KartuStokGudangAdmin(admin.ModelAdmin):

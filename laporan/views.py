@@ -718,7 +718,7 @@ def tengok_stok_obat(request):
 @login_required
 def so_apotek(request):
     from .forms import SingleTgl
-    from apotek.models import StokObatApotek, KartuStokApotek
+    from apotek.models import StokObatApotek, KartuStokApotek, SOApotek
 
     stok_apotek = StokObatApotek.objects.all()
     form = SingleTgl(request.POST)
@@ -726,6 +726,7 @@ def so_apotek(request):
         'data': stok_apotek
     }
     context['form'] = form
+    json_data = {}
     
     if request.method == 'POST':
         if form.is_valid():
@@ -738,6 +739,7 @@ def so_apotek(request):
                 if int(request.POST[obat.nama_obat.nama_obat]) != obat.jml:
                     obat.jml = request.POST[obat.nama_obat.nama_obat]
                     obat.save()
+                    json_data[obat.nama_obat.nama_obat] = [obat.jml, obat.jml]
 
                 #Penyesuaian kartu stok tiap item
                 query_kartu_apt = KartuStokApotek.objects.filter(nama_obat__nama_obat=obat)
@@ -749,6 +751,7 @@ def so_apotek(request):
                     #kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Staf", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
                     kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="SO", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
                     kartu_stok_apt_input.save()
+                    json_data[obat.nama_obat.nama_obat] = [stok_apt_sebelum.sisa_stok, int(request.POST[obat.nama_obat.nama_obat])]
 
                 #Bila stok fisik lebih besar daripada stok tercatat sebelumnya
                 if int(request.POST[obat.nama_obat.nama_obat]) > stok_apt_sebelum.sisa_stok:
@@ -756,6 +759,10 @@ def so_apotek(request):
                     #kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="Retur", stok_terima=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
                     kartu_stok_apt_input = KartuStokApotek(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="SO", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]), ref=obat.id)
                     kartu_stok_apt_input.save()
+                    json_data[obat.nama_obat.nama_obat] = [stok_apt_sebelum.sisa_stok, int(request.POST[obat.nama_obat.nama_obat])]
+
+            data_so = SOApotek(tgl=form['tanggal'].value(), data=json_data)
+            data_so.save()
                     
             return render(request, 'laporan/so_apotek.html', context)
             

@@ -5,6 +5,14 @@ import datetime
 #from poli.models import DataKunjungan
 
 # Create your models here.
+class SOApotek(models.Model):
+    tgl = models.DateField()
+    data = models.JSONField()
+
+    def __str__(self):
+        return str(self.tgl)
+    class Meta:
+        verbose_name_plural = "Stok Opname Apotek"
 
 class KartuStokGudang(models.Model):
     nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
