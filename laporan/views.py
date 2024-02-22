@@ -772,7 +772,7 @@ def so_apotek(request):
 @login_required
 def so_gudang(request):
     from .forms import SingleTgl
-    from apotek.models import StokObatGudang, KartuStokGudang
+    from apotek.models import StokObatGudang, KartuStokGudang, SOGudang
 
     stok_gudang = StokObatGudang.objects.all()
     form = SingleTgl(request.POST)
@@ -780,6 +780,7 @@ def so_gudang(request):
         'data': stok_gudang
     }
     context['form'] = form
+    json_data = {}
     
     if request.method == 'POST':
         if form.is_valid():
@@ -792,6 +793,7 @@ def so_gudang(request):
                 if int(request.POST[obat.nama_obat.nama_obat]) != obat.jml:
                     obat.jml = request.POST[obat.nama_obat.nama_obat]
                     obat.save()
+                    json_data[obat.nama_obat.nama_obat] = [obat.jml, obat.jml]
 
                 #Penyesuaian kartu stok tiap item
                 stok_gd_sebelum = KartuStokGudang.objects.filter(nama_obat__nama_obat=obat.nama_obat).last()
@@ -801,15 +803,19 @@ def so_gudang(request):
                         selisih = stok_gd_sebelum.sisa_stok - int(request.POST[obat.nama_obat.nama_obat])
                         kartu_stok_gd_input = KartuStokGudang(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="SO", stok_keluar=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]))
                         kartu_stok_gd_input.save()
+                        json_data[obat.nama_obat.nama_obat] = [stok_gd_sebelum.sisa_stok, int(request.POST[obat.nama_obat.nama_obat])]
 
                     #Bila stok fisik lebih besar daripada stok tercatat sebelumnya
                     if int(request.POST[obat.nama_obat.nama_obat]) > stok_gd_sebelum.sisa_stok:
                         selisih = int(request.POST[obat.nama_obat.nama_obat]) - stok_gd_sebelum.sisa_stok
                         kartu_stok_gd_input = KartuStokGudang(nama_obat=obat.nama_obat, tgl=form['tanggal'].value(), unit="SO", stok_terima=selisih, sisa_stok=int(request.POST[obat.nama_obat.nama_obat]))
                         kartu_stok_gd_input.save()
+                        json_data[obat.nama_obat.nama_obat] = [stok_gd_sebelum.sisa_stok, int(request.POST[obat.nama_obat.nama_obat])]
                 except AttributeError:
                     pass
-                    
+
+            data_so = SOGudang(tgl=form['tanggal'].value(), data=json_data)
+            data_so.save()
             return render(request, 'laporan/so_gudang.html', context)
             
     else:

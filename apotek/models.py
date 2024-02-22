@@ -5,6 +5,15 @@ import datetime
 #from poli.models import DataKunjungan
 
 # Create your models here.
+class SOGudang(models.Model):
+    tgl = models.DateField()
+    data = models.JSONField()
+
+    def __str__(self):
+        return str(self.tgl)
+    class Meta:
+        verbose_name_plural = "Stok Opname Gudang"
+
 class SOApotek(models.Model):
     tgl = models.DateField()
     data = models.JSONField()
