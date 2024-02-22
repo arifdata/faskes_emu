@@ -12,7 +12,7 @@ class SOGudang(models.Model):
     def __str__(self):
         return str(self.tgl)
     class Meta:
-        verbose_name_plural = "Stok Opname Gudang"
+        verbose_name_plural = "SO Gudang"
 
 class SOApotek(models.Model):
     tgl = models.DateField()
@@ -21,7 +21,7 @@ class SOApotek(models.Model):
     def __str__(self):
         return str(self.tgl)
     class Meta:
-        verbose_name_plural = "Stok Opname Apotek"
+        verbose_name_plural = "SO Apotek"
 
 class KartuStokGudang(models.Model):
     nama_obat = models.ForeignKey('apotek.DataObat', on_delete=models.CASCADE)
