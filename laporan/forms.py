@@ -25,4 +25,4 @@ class PorForm(TglForm):
 class SOGudangForm(forms.Form):
     from apotek.models import SOGudang
     CHOICES = sorted([tgl.id, tgl.tgl] for tgl in SOGudang.objects.all())
-    pilihan = forms.ChoiceField(widget=forms.Select, choices=CHOICES)
+    pilihan = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)

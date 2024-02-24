@@ -169,7 +169,11 @@ def cetak_so_gudang(request):
 
         if form.is_valid():
             dataso = SOGudang.objects.get(pk=request.POST.get("pilihan"))
-            return HttpResponse(dataso.data["Amoksilit"])
+            context = {
+                'tanggal': dataso.tgl,
+                'data': dataso.data,
+            }
+            return render(request, 'laporan/hasil_so_gudang.html', context)
 
     else:
         form = SOGudangForm()
