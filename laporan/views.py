@@ -160,6 +160,24 @@ def penggunaan_harian(request):
     return render(request, 'laporan/form_penggunaan_harian.html', {'form': form})
 
 @login_required
+def cetak_so_gudang(request):
+    from apotek.models import SOGudang
+    from .forms import SOGudangForm
+
+    if request.method == 'POST':
+        form = SOGudangForm(request.POST)
+
+        if form.is_valid():
+            dataso = SOGudang.objects.get(pk=request.POST.get("pilihan"))
+            return HttpResponse(dataso.data["Amoksilit"])
+
+    else:
+        form = SOGudangForm()
+
+    return render(request, 'laporan/form_cetak_so_gudang.html', {'form': form})
+
+
+@login_required
 def penggunaan_bmhp(request):
     from apotek.models import Resep, Pengeluaran
     from .forms import TglForm
