@@ -14,7 +14,7 @@ class SOGudangAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return False
     def has_add_permission(self, request, obj=None):
-        return True
+        return False
 
 @admin.register(SOApotek)
 class SOApotekAdmin(admin.ModelAdmin):

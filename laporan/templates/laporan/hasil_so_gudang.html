@@ -4,6 +4,7 @@
  <head> 
   <meta charset="UTF-8" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <title>Stok Opname Gudang {{ tanggal|date:"d-M-Y" }} Puskesmas Berakit</title> 
   <script src="https://cdn.tailwindcss.com"></script> 
   <style>
   @media print {
@@ -14,28 +15,55 @@
  <body> 
   <header class="bg-gray-50"> 
    <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8"> 
-    <div class="sm:flex sm:items-center gap-6"> 
-     <svg class="h-16" viewbox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg"> 
-      <g id="SVGRepo_bgCarrier" stroke-width="0" /> 
-      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" /> 
-      <g id="SVGRepo_iconCarrier"> 
-       <g transform="translate(1 1)"> 
-        <path style="fill:#E4F2DE;" d="M61.293,419.693c-5.973,5.973-14.507,10.24-23.893,10.24h102.4V105.667 c0-18.773-15.36-34.133-34.133-34.133c-9.387,0-17.92,3.413-23.893,10.24c5.973-5.973,14.507-10.24,23.893-10.24h256V3.267H3.267 V395.8c0,18.773,15.36,34.133,34.133,34.133C46.787,429.933,55.32,426.52,61.293,419.693L61.293,419.693z M498.2,105.667V498.2 H139.8v-68.267V105.667c0-18.773-15.36-34.133-34.133-34.133h256h102.4C482.84,71.533,498.2,86.893,498.2,105.667L498.2,105.667z" /> 
-        <path style="fill:#80D6FA;" d="M208.067,327.533H242.2v-51.2h-34.133V327.533z M344.6,327.533h34.133V242.2H344.6V327.533z M276.333,327.533h34.133V208.067h-34.133V327.533z M412.867,327.533H447V139.8h-34.133V327.533z" /> 
-       </g> 
-       <path style="fill:#51565F;" d="M499.2,503.467H140.8c-2.56,0-4.267-1.707-4.267-4.267v-64H89.6c-2.56,0-4.267-1.707-4.267-4.267 c0-2.56,1.707-4.267,4.267-4.267h46.933v-320c0-16.213-13.653-29.867-29.867-29.867S76.8,90.453,76.8,106.667V396.8 c0,21.333-17.067,38.4-38.4,38.4S0,418.133,0,396.8V4.267C0,1.707,1.707,0,4.267,0h358.4c2.56,0,4.267,1.707,4.267,4.267V38.4 c0,2.56-1.707,4.267-4.267,4.267S358.4,40.96,358.4,38.4V8.533H8.533V396.8c0,16.213,13.653,29.867,29.867,29.867 s29.867-13.653,29.867-29.867V106.667c0-21.333,17.067-38.4,38.4-38.4s38.4,17.067,38.4,38.4v388.267h349.867V106.667 c0-16.213-13.653-29.867-29.867-29.867H166.4c-2.56,0-4.267-1.707-4.267-4.267c0-2.56,1.707-4.267,4.267-4.267h298.667 c21.333,0,38.4,17.067,38.4,38.4V499.2C503.467,501.76,501.76,503.467,499.2,503.467z M430.933,435.2H209.067 c-2.56,0-4.267-1.707-4.267-4.267c0-2.56,1.707-4.267,4.267-4.267h221.867c2.56,0,4.267,1.707,4.267,4.267 C435.2,433.493,433.493,435.2,430.933,435.2z M396.8,384h-51.2c-2.56,0-4.267-1.707-4.267-4.267c0-2.56,1.707-4.267,4.267-4.267 h51.2c2.56,0,4.267,1.707,4.267,4.267C401.067,382.293,399.36,384,396.8,384z M311.467,384h-102.4c-2.56,0-4.267-1.707-4.267-4.267 c0-2.56,1.707-4.267,4.267-4.267h102.4c2.56,0,4.267,1.707,4.267,4.267C315.733,382.293,314.027,384,311.467,384z M413.867,332.8 h-34.133c-2.56,0-4.267-1.707-4.267-4.267v-81.067h-25.6v81.067c0,2.56-1.707,4.267-4.267,4.267h-34.133 c-2.56,0-4.267-1.707-4.267-4.267v-115.2h-25.6v115.2c0,2.56-1.707,4.267-4.267,4.267H243.2c-2.56,0-4.267-1.707-4.267-4.267V281.6 h-25.6v46.933c0,2.56-1.707,4.267-4.267,4.267s-4.267-1.707-4.267-4.267v-51.2c0-2.56,1.707-4.267,4.267-4.267H243.2 c2.56,0,4.267,1.707,4.267,4.267v46.933h25.6v-115.2c0-2.56,1.707-4.267,4.267-4.267h34.133c2.56,0,4.267,1.707,4.267,4.267v115.2 h25.6V243.2c0-2.56,1.707-4.267,4.267-4.267h34.133c2.56,0,4.267,1.707,4.267,4.267v81.067h25.6V140.8 c0-2.56,1.707-4.267,4.267-4.267h17.067c2.56,0,4.267,1.707,4.267,4.267c0,2.56-1.707,4.267-4.267,4.267h-12.8v183.467 C418.133,331.093,416.427,332.8,413.867,332.8z" /> 
-      </g> 
-     </svg>  
+    <div class="sm:flex sm:items-center gap-6">
+      <svg fill="#0369a1" height="64px" width="64px" version="1.2" baseProfile="tiny" id="_x31_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-63 65 128 128" xml:space="preserve" stroke="#0369a1">
+
+        <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <g id="SVGRepo_iconCarrier"> <path d="M-37.4,95.7h28.5v34.1h-28.5V95.7z M2.4,95.7h22.8v5.7H2.4V95.7z M2.4,124.2h22.8v5.7H2.4V124.2z M2.4,109.9h22.8v5.7H2.4 V109.9z M-37.4,138.6h62.5v5.7h-62.5V138.6z M-37.4,166.4h62.5v5.7h-62.5V166.4z M-37.4,152.1h62.5v5.7h-62.5V152.1z M-39,66.6v10.9 h-12.6v114.2h92.6v-10.9h12.6V66.6H-39z M35.3,186.1H-46V83.1h7h5.7h68.6v91.9v5.7V186.1z M48,175.1h-7V77.4h-74.3v-5.1H48V175.1z"/> </g>
+
+      </svg>
      <div class="text-center sm:text-left"> 
-      <h1 class="text-xl font-bold text-emerald-900">Stok Opname Gudang Apotek Puskesmas Berakit</h1> 
-      <p class="text-sm text-emerald-700">Disusun oleh :</p> 
-      <p class="text-sm text-emerald-700">FarmAssistBot / SIBOKIT &copy; by Pratama</p> 
-      <p class="text-xs text-emerald-700">version.2023.10.23</p> 
+      <h1 class="text-xl font-bold text-cyan-900">Stok Opname Gudang Apotek Puskesmas Berakit</h1> 
+      <p class="text-sm text-cyan-700">Disusun oleh :</p> 
+      <p class="text-sm text-cyan-700">FarmAssistBot / SIBOKIT &copy; by Pratama</p> 
+      <p class="text-xs text-cyan-700">version.2023.10.23</p> 
      </div> 
     </div> 
    </div> 
   </header> 
-  <div class="bg-emerald-600 px-4 py-3 text-white"> 
+  <div class="bg-cyan-600 px-4 py-3 text-white"> 
       <p class="text-center text-lg font-medium"> Tanggal : {{ tanggal }} </p>
+  </div>
+  <div class="container mx-auto px-1 py-2">
+   <!-- Table responsive wrapper --> 
+   <div class="overflow-x-auto bg-white py-3"> 
+    <!-- Table --> 
+    <table class="min-w-full text-left text-xs whitespace-normal table-auto"> 
+     <!-- Table head --> 
+     <thead class="text-white uppercase tracking-wider border-b-2 bg-cyan-700"> 
+      <tr> 
+       <th scope="col" class="px-1 py-1"> No. </th> 
+       <th scope="col" class="px-6 py-1"> Nama BMHP </th> 
+       <th scope="col" class="px-3 py-1"> Stok Tercatat </th> 
+       <th scope="col" class="px-3 py-1"> Stok Fisik </th> 
+       <th scope="col" class="px-3 py-1"> Keterangan </th> 
+      </tr> 
+     </thead> 
+     <!-- Table body --> 
+     <tbody>
+       {% for key, value in data.items %} 
+      <tr class="border-b odd:bg-cyan-50"> 
+       <th scope="row" class="px-1 py-1"> {{ forloop.counter }} </th>  
+       <td class="px-6 py-1">{{ key }}</td> 
+       <td class="px-3 py-1">{{ value.0 }}</td> 
+       <td class="px-3 py-1">{{ value.1 }}</td> 
+       {% if value.0 == value.1 %}<td class="px-3 py-1"></td>{% else %}<td class="px-3 py-1">Keliru input</td>{% endif %}  
+      </tr> {% endfor %} 
+     </tbody> 
+    </table> 
+   </div>
   </div>
 </html>
