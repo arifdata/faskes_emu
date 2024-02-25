@@ -180,6 +180,27 @@ def cetak_so_gudang(request):
 
     return render(request, 'laporan/form_cetak_so_gudang.html', {'form': form})
 
+@login_required
+def cetak_so_apotek(request):
+    from apotek.models import SOApotek
+    from .forms import SOApotekForm
+
+    if request.method == 'POST':
+        form = SOApotekForm(request.POST)
+
+        if form.is_valid():
+            dataso = SOApotek.objects.get(pk=request.POST.get("pilihan"))
+            context = {
+                'tanggal': dataso.tgl,
+                'data': dataso.data,
+            }
+            return render(request, 'laporan/hasil_so_apotek.html', context)
+
+    else:
+        form = SOApotekForm()
+
+    return render(request, 'laporan/form_cetak_so_apotek.html', {'form': form})
+
 
 @login_required
 def penggunaan_bmhp(request):
