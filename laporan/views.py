@@ -838,6 +838,11 @@ def so_gudang(request):
                     obat.save()
                     json_data[obat.nama_obat.nama_obat] = [obat.jml, obat.jml]
 
+                if int(request.POST[obat.nama_obat.nama_obat]) == obat.jml:
+                    obat.jml = request.POST[obat.nama_obat.nama_obat]
+                    obat.save()
+                    json_data[obat.nama_obat.nama_obat] = [obat.jml, obat.jml]
+
                 #Penyesuaian kartu stok tiap item
                 stok_gd_sebelum = KartuStokGudang.objects.filter(nama_obat__nama_obat=obat.nama_obat).last()
                 try:
