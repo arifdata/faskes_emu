@@ -26,7 +26,7 @@
 
       </svg>
      <div class="text-center sm:text-left"> 
-      <h1 class="text-xl font-bold text-cyan-900">Stok Opname Apotek Puskesmas Berakit</h1> 
+      <h1 class="text-l font-bold text-cyan-900">Stok Opname Apotek Puskesmas Berakit</h1> 
       <p class="text-sm text-cyan-700">Disusun oleh :</p> 
       <p class="text-sm text-cyan-700">FarmAssistBot / SIBOKIT &copy; by Pratama</p> 
       <p class="text-xs text-cyan-700">version.2023.10.23</p> 
@@ -57,10 +57,10 @@
        {% for key, value in data.items %} 
       <tr class="border-b odd:bg-cyan-50"> 
        <th scope="row" class="px-1 py-1"> {{ forloop.counter }} </th>  
-       <td class="px-6 py-1">{{ key }}</td> 
-       <td class="px-3 py-1">{{ value.0 }}</td> 
-       <td class="px-3 py-1">{{ value.1 }}</td> 
-       {% if value.0 == value.1 %}<td class="px-3 py-1"></td>{% else %}<td class="px-3 py-1">Keliru input</td>{% endif %}  
+       <td contenteditable="true" class="px-6 py-1">{{ key }}</td> 
+       <td contenteditable="true" class="px-3 py-1">{{ value.0 }}</td> 
+       <td contenteditable="true" class="px-3 py-1">{{ value.1 }}</td> 
+       {% if value.0 == value.1 %}<td contenteditable="true" class="px-3 py-1"></td>{% else %}<td contenteditable="true" class="px-3 py-1">Keliru input</td>{% endif %}  
       </tr> {% endfor %} 
      </tbody> 
     </table> 

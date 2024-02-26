@@ -784,6 +784,11 @@ def so_apotek(request):
                     obat.save()
                     json_data[obat.nama_obat.nama_obat] = [obat.jml, obat.jml]
 
+                if int(request.POST[obat.nama_obat.nama_obat]) == obat.jml:
+                    obat.jml = request.POST[obat.nama_obat.nama_obat]
+                    obat.save()
+                    json_data[obat.nama_obat.nama_obat] = [obat.jml, obat.jml]
+
                 #Penyesuaian kartu stok tiap item
                 query_kartu_apt = KartuStokApotek.objects.filter(nama_obat__nama_obat=obat)
                 stok_apt_sebelum = query_kartu_apt[len(query_kartu_apt)-1]
