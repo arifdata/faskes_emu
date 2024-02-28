@@ -1,33 +1,33 @@
 from django.contrib import admin
-from .models import DataObat, StokObatGudang, Resep, Penerimaan, BukuPenerimaan, SumberTerima, StokObatApotek, Pengeluaran, BukuPengeluaran, TujuanKeluar, KartuStokGudang, KartuStokApotek, SOApotek, SOGudang
+from .models import DataObat, StokObatGudang, Resep, Penerimaan, BukuPenerimaan, SumberTerima, StokObatApotek, Pengeluaran, BukuPengeluaran, TujuanKeluar, KartuStokGudang, KartuStokApotek #SOApotek, SOGudang
 from rangefilter.filters import DateRangeFilter
 
 # Register your models here.
-@admin.register(SOGudang)
-class SOGudangAdmin(admin.ModelAdmin):
-    def log_addition(self, *args):
-        return False
-    def log_change(self, *args):
-        return False
-    def log_deletion(self, *args):
-        return
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_add_permission(self, request, obj=None):
-        return False
+# @admin.register(SOGudang)
+# class SOGudangAdmin(admin.ModelAdmin):
+#     def log_addition(self, *args):
+#         return False
+#     def log_change(self, *args):
+#         return False
+#     def log_deletion(self, *args):
+#         return
+#     def has_change_permission(self, request, obj=None):
+#         return False
+#     def has_add_permission(self, request, obj=None):
+#         return False
 
-@admin.register(SOApotek)
-class SOApotekAdmin(admin.ModelAdmin):
-    def log_addition(self, *args):
-        return False
-    def log_change(self, *args):
-        return False
-    def log_deletion(self, *args):
-        return
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_add_permission(self, request, obj=None):
-        return False
+# @admin.register(SOApotek)
+# class SOApotekAdmin(admin.ModelAdmin):
+#     def log_addition(self, *args):
+#         return False
+#     def log_change(self, *args):
+#         return False
+#     def log_deletion(self, *args):
+#         return
+#     def has_change_permission(self, request, obj=None):
+#         return False
+#     def has_add_permission(self, request, obj=None):
+#         return False
 
 @admin.register(KartuStokGudang)
 class KartuStokGudangAdmin(admin.ModelAdmin):

@@ -107,8 +107,8 @@ class StokObatApotek(models.Model):
     jml = models.SmallIntegerField(verbose_name="Jumlah")
     
     def __str__(self):
-        #return "{} [{}]".format(self.nama_obat.nama_obat, self.jml) #non aktifkan jika SO APOTEK
-        return "{}".format(self.nama_obat.nama_obat) #aktifkan ketika SO APOTEK, non aktifkan jika enggak SO
+        return "{} [{}]".format(self.nama_obat.nama_obat, self.jml) #non aktifkan jika SO APOTEK
+        #return "{}".format(self.nama_obat.nama_obat) #aktifkan ketika SO APOTEK, non aktifkan jika enggak SO
     class Meta:
         verbose_name_plural = "Stok Obat Apotek"
 
