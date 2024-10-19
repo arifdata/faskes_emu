@@ -87,13 +87,14 @@ def getIDObat(sesi, obat):
 def getIDDiagnosa(sesi, rowNum):
     diag = []
     idDiag = []
-    diag.append(sr.cell(row=rowNum, column=64).value)
-    diag.append(sr.cell(row=rowNum, column=66).value)
+    diag.append(sr.cell(row=rowNum, column=65).value)
     diag.append(sr.cell(row=rowNum, column=68).value)
-    diag.append(sr.cell(row=rowNum, column=70).value)
-    diag.append(sr.cell(row=rowNum, column=72).value)
-    
-    diag = [i for i in diag if i is not None]
+    diag.append(sr.cell(row=rowNum, column=71).value)
+    diag.append(sr.cell(row=rowNum, column=74).value)
+    diag.append(sr.cell(row=rowNum, column=77).value)
+
+    # harus trim spasi kosong di belakang gara-gara epus ubah format laporan, asem tenan
+    diag = [i[:-1] for i in diag if i is not None]
 
     for namapenyakit in diag:
         url = "http://localhost:8000/api/diagnosa/?format=json&search={}".format(namapenyakit)
@@ -110,7 +111,7 @@ def coba_post(sesi):
     regex = re.search(r'csrfmiddlewaretoken" value=".*">', rawText)
     token = regex.group().removeprefix('csrfmiddlewaretoken" value="').removesuffix('">')
     for rowNum in range(27, sr.max_row + 1):
-        if sr.cell(row=rowNum, column=75).value != None:
+        if sr.cell(row=rowNum, column=80).value != None:
             
             c = 0
             nama_pasien = sr.cell(row=rowNum, column=3).value
@@ -126,7 +127,7 @@ def coba_post(sesi):
             tmpDosisObat = "resep_set-{}-aturan_pakai"
             tmpLamaMinumObat = "resep_set-{}-lama_pengobatan"
 
-            listObat = getObat(sr.cell(row=rowNum, column=75).value)
+            listObat = getObat(sr.cell(row=rowNum, column=80).value)
             files = {
                 "csrfmiddlewaretoken": token,
                 "diagnosa": [],
@@ -193,16 +194,16 @@ def cekDiagnosa(sesi, diag):
 def getDiagnosa():
     diag = []
     for rowNum in range(27, sr.max_row + 1):
-        if sr.cell(row=rowNum, column=75).value == None:
+        if sr.cell(row=rowNum, column=80).value == None:
             pass
         else:
-            diag.append(sr.cell(row=rowNum, column=64).value)
-            diag.append(sr.cell(row=rowNum, column=66).value)
+            diag.append(sr.cell(row=rowNum, column=65).value)
             diag.append(sr.cell(row=rowNum, column=68).value)
-            diag.append(sr.cell(row=rowNum, column=70).value)
-            diag.append(sr.cell(row=rowNum, column=72).value)
-    
-    diag = [i for i in diag if i is not None]
+            diag.append(sr.cell(row=rowNum, column=71).value)
+            diag.append(sr.cell(row=rowNum, column=74).value)
+            diag.append(sr.cell(row=rowNum, column=77).value)
+    # update terbaru epus mengharuskan kita trim spasi di akhir string diagnosa, bangke emang
+    diag = [i[:-1] for i in diag if i is not None]
     return diag
 
 def cekPeresep(sesi, peresep):
@@ -226,7 +227,7 @@ def cekPeresep(sesi, peresep):
 def getPeresep():
     peresep = []
     for rowNum in range(27, sr.max_row + 1):
-        if sr.cell(row=rowNum, column=75).value == None:
+        if sr.cell(row=rowNum, column=80).value == None:
             pass
         else:
             peresep.append(sr.cell(row=rowNum, column=29).value)
