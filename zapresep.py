@@ -178,9 +178,10 @@ def cekDiagnosa(sesi, diag):
     q = r.json()
     c = 0
     daftar_diagnosa = [d["diagnosa"] for d in q]
+    daftar_diagnosa_cleaned = list(dict.fromkeys(daftar_diagnosa))
 
     for diagnosa in diag:
-        if diagnosa not in daftar_diagnosa:
+        if diagnosa not in daftar_diagnosa_cleaned:
             json = {
                 "diagnosa" : diagnosa
             }
