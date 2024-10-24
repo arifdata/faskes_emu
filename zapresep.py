@@ -94,7 +94,7 @@ def getIDDiagnosa(sesi, rowNum):
     diag.append(sr.cell(row=rowNum, column=77).value)
 
     # harus trim spasi kosong di belakang gara-gara epus ubah format laporan, asem tenan
-    diag = [i[:-1] for i in diag if i is not None]
+    diag = [i for i in diag if i is not None]
 
     for namapenyakit in diag:
         url = "http://localhost:8000/api/diagnosa/?format=json&search={}".format(namapenyakit)
@@ -204,8 +204,9 @@ def getDiagnosa():
             diag.append(sr.cell(row=rowNum, column=74).value)
             diag.append(sr.cell(row=rowNum, column=77).value)
     # update terbaru epus mengharuskan kita trim spasi di akhir string diagnosa, bangke emang
-    diag = [i[:-1] for i in diag if i is not None]
-    return diag
+    diag = [i for i in diag if i is not None]
+    diag_cleaned = list(dict.fromkeys(diag))
+    return diag_cleaned
 
 def cekPeresep(sesi, peresep):
     r = sesi.get("http://localhost:8000/api/peresep/")
