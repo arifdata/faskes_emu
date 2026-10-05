@@ -10,4 +10,5 @@ django-filter==21.1
 drf-writable-nested==0.6.3
 requests==2.31.0
 pygal==3.0.0
-lxml==4.9.3
+lxml
+setuptools==81.0.0
